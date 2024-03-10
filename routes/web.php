@@ -69,5 +69,9 @@ Route::group(['prefix' => 'seller'], function () {
 
         Route::get('/get-data-product-size', [OrderManageController::class, 'getDataProductSize'])->name('seller.getDataProductSize');
 
+        Route::get('/generate-unique-order-id',[OrderManageController::class, 'generateUniqueOrderId'])->name('seller.generateUniqueOrderId');
+
+        Route::get('/generate-table-id',[OrderManageController::class, 'generateTableId'])->name('seller.generateTableId');
+
     });
 })->middleware('checRole, seller');

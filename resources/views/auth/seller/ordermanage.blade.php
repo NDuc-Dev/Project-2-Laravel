@@ -8,6 +8,10 @@
         .product-dropdown>.dropdown-divider {
             border-top: 1px solid #2c2e33;
         }
+
+        .modal-dialog-scrollable .modal-content {
+            overflow: unset;
+        }
     </style>
     <div class="main-panel">
         <div class="content-wrapper">
@@ -35,8 +39,8 @@
                 </div>
             </div>
 
-            <div class="modal fade" id="form-focus" tabindex="-1" role="dialog" aria-labelledby="form-focus"
-                aria-hidden="true" id="dialog">
+            <div class="modal fade" id="form-focus" tabindex="-1" data-bs-focus="false" role="dialog"
+                aria-labelledby="form-focus" aria-hidden="true" id="dialog">
                 <div class="modal-dialog modal-xl modal-dialog-scrollable">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -47,14 +51,14 @@
                             </button>
                         </div>
                         <div class="modal-body row">
-                            <div class="col-md-6 col-xs-12">
-                                <div class="form-group mt-3 ms-3 me-3"id="scrollable-dropdown-menu">
+                            <div class="col-lg-6">
+                                <div class="form-group mt-3 ms-2 me-2"id="scrollable-dropdown-menu">
                                     <label for="search-input">Search Product</label>
                                     <input type="text" id="search-input" name="search-input" class="typeahead"
                                         spellcheck="false" autocomplete="off" placeholder="Search products">
                                 </div>
                                 <div class="card-body">
-                                    <h4 class="card-title">Product List</h4>
+                                    <h4 class="card-title">Menu</h4>
                                     <div class="table-responsive">
                                         <table class="table table-hover" id="productTable">
                                             <thead>
@@ -65,23 +69,47 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6 col-xs-12">
-                                <div class="card-body">
-                                    <h4 class="card-title">Order details</h4>
-                                    <p id="order-code" class="text-muted">Order Code: ******</p>
-                                    <p id="order-table" class="text-muted">OrderTable: **</p>
-                                    <div class="table-responsive">
-                                        <table class="table" id="productOrder">
-                                            <thead>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-                                        </table>
+                            <div class="col-lg-6">
+                                <div class="card">
+
+                                    <div class="card-body">
+                                        <h4 class="card-title">Order</h4>
+                                        <div id='order-details' class="order-details d-none">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <p id="order-code" class="text-muted"></p>
+                                                    <p id="order-table" class="text-muted"></p>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <p id="order-code" class="text-muted">Order Staff:
+                                                        {{ Auth::user()->name }}
+                                                    </p>
+                                                    <p id="order-date" class="text-muted"></p>
+                                                </div>
+                                            </div>
+                                            <div class="table-responsive">
+                                                <table class="table table-hover" id="productOrder">
+                                                    <thead>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                                <div class="row mt-4 mx-0">
+                                                    <div class="mt-2 col-md-6 ms-auto p-0">
+                                                        <h6 id="total"></h6>
+                                                    </div>
+                                                    <div class="col-md-6 p-0 d-flex">
+                                                        <button class="btn btn-info btn-md " style="flex: auto" type="button">
+                                                            Submit
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -91,9 +119,5 @@
     <script>
         var products = @json($products);
         console.log(products);
-        var foodcategories = @json($foodcategories);
-        console.log(foodcategories);
-        var drinkCategories = @json($drinkCategories);
-        console.log(drinkCategories);
     </script>
 @endsection
