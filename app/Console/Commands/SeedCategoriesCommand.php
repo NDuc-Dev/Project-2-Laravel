@@ -12,7 +12,7 @@ class SeedCategoriesCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'categories:create';
+    protected $signature = 'category:create';
 
     /**
      * The console command description.

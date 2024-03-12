@@ -16,7 +16,7 @@ class ProductController extends Controller
     {
         $this->middleware('checkRole:admin,admin');
     }
-    
+
     public function getProduct()
     {
         $dataProducts = Products::all();
@@ -53,6 +53,11 @@ class ProductController extends Controller
             $product->descriptions = $request->input('descriptions');
             $product->product_category = $request->input('categorySelect');
             $product->product_images = $imagePath;
+            if ($request->input("group_category") == 1) {
+                $product->unit = "Cup";
+            } else {
+                $product->unit = "Piece/Pack";
+            }
             $product->status = 0;
             $product->status_in_stock = 1;
             $product->save();
@@ -195,7 +200,6 @@ class ProductController extends Controller
                 } elseif ($size['size_id'] == 4 && $size['unit_price'] != null) {
                     $hasNonNullUnitPrice4 = true;
                 }
-
             }
             $isValidCase = false;
             $ngu = 0;
@@ -231,7 +235,6 @@ class ProductController extends Controller
 
             DB::commit();
             return response()->json(['success' => true, 'message' => 'Product updated successfully'], 200);
-
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['success' => false, 'message' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500);

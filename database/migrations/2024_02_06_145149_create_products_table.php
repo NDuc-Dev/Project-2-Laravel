@@ -19,6 +19,7 @@ class CreateProductsTable extends Migration
             $table->string('descriptions', 1000);
             $table->string('product_images', 1000);
             $table->string('product_category', 1000);
+            $table->string('unit');
             $table->integer('status');
             $table->integer('status_in_stock');
         });
