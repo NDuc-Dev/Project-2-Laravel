@@ -16,7 +16,7 @@ class Products extends Model
     protected $primaryKey = 'product_id';
 
     protected $fillable = [
-        'status', 'product_name','product_images', 'product_category', 'descriptions','status_in_stock','unit'
+        'status', 'product_name','product_images', 'product_category', 'descriptions','status_in_stock','unit_name'
     ];
 
     public function productSizes()

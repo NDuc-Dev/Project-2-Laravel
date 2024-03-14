@@ -48,6 +48,7 @@
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.2/additional-methods.min.js" defer></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
+
     <!-- DataTables JS -->
 
 </head>
@@ -103,7 +104,7 @@
 
         <!-- End custom js for this page -->
 
-       
+
 
 </body>
 

@@ -140,6 +140,7 @@ $(document).ready(function () {
     $.validator.addMethod("regex", function (value, element) {
         return this.optional(element) || /^[a-zA-Z ]+$/.test(value);
     });
+    
     $.validator.addMethod("minimumLetters", function (value, element) {
         var lettersCount = value.replace(/\s/g, "").length;
         return lettersCount >= 1;

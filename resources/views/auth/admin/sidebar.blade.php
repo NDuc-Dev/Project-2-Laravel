@@ -102,11 +102,11 @@
                 </a>
                 <div class="collapse" id="ui-basic">
                     <ul class="nav flex-column sub-menu">
-                        <li class="nav-item"> <a class="nav-link" href="{{ route('seller.orderManage')}}">Buttons</a></li>
-                        <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Dropdowns</a>
+                        <li class="nav-item"> <a class="nav-link" href="{{ route('seller.orderManage')}}">New</a></li>
+                        <li class="nav-item"> <a class="nav-link" href="#">2</a>
                         </li>
                         <li class="nav-item"> <a class="nav-link"
-                                href="pages/ui-features/typography.html">Typography</a>
+                                href="#">3</a>
                         </li>
                     </ul>
                 </div>

@@ -1,11 +1,15 @@
 $(document).ready(function () {
+    var orderDateElement = $("#order-date");
+    var orderTableElement = $("#order-table");
+    var orderCodeElement = $("#order-code");
+    var dataOrders = [];
+
     //sử dụng bloodhound tạo index cho search
     var suggestions = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace("product_name"),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         local: products,
     });
-    console.log(suggestions);
     suggestions.initialize();
 
     //tạo thanh search sử dụng typeahead
@@ -28,7 +32,6 @@ $(document).ready(function () {
                 ],
                 suggestion: function (data) {
                     changeSearchResults(data);
-                    // console.log(data);
                     var status =
                         data.status_in_stock == 1
                             ? '<label class="badge badge-success">On Sale</label>'
@@ -56,7 +59,7 @@ $(document).ready(function () {
     $(".typeahead").on("input", function () {
         // Lấy giá trị hiện tại của thanh search
         var searchValue = $(this).val();
-        var tableTest = $("#result").DataTable();
+        var tableSearch = $("#result").DataTable();
         //nếu xuất hiện thay đổi giá trị trên thanh search mà giá trị query của phần tử đầu tiên không thay đổi, tức là không thấy sản phẩm cho lần query này
         if (
             (dataresult.length != 0 &&
@@ -64,14 +67,13 @@ $(document).ready(function () {
                 searchValue != "") ||
             (dataresult.length == 0 && searchValue != "")
         ) {
-            console.log("none");
-            tableTest.clear();
-            tableTest.draw();
+            tableSearch.clear();
+            tableSearch.draw();
             dataresult = [];
             $(".dataTables_empty").text("There are no matches");
         }
         if (searchValue == "") {
-            tableTest.destroy();
+            tableSearch.destroy();
             dataresult = [];
             initializeDataTableProduct(products);
         }
@@ -79,7 +81,6 @@ $(document).ready(function () {
 
     //kiểm tra dữ liệu từ các lần query trước khi push dữ liệu vào mảng, xem có sự trùng lặp hay không
     function changeSearchResults(data) {
-        // console.log(results._query);
         if (dataresult.length == 0) {
             dataresult.push(data);
         } else {
@@ -105,7 +106,7 @@ $(document).ready(function () {
             ordering: false,
             paging: true,
             lengthChange: false,
-            autoWidth: true,
+            // autoWidth: true,
             limit: 10,
             responsive: true,
             searching: false,
@@ -127,7 +128,7 @@ $(document).ready(function () {
                 },
                 {
                     data: "product_name",
-                    title: "Product Name",
+                    title: "Product",
                 },
                 {
                     data: "status_in_stock",
@@ -164,7 +165,6 @@ $(document).ready(function () {
                 // Xử lý dữ liệu ProductSize được trả về
                 if (response.success) {
                     var productSize = response.productSize;
-                    console.log(productSize);
                     var dropdownbtn = ``;
                     if (productSize.length == 3) {
                         dropdownbtn = `
@@ -178,7 +178,7 @@ $(document).ready(function () {
                         </div>
                         <div class="form-group">
                             <label for="quantity-input"> Quantity </label>
-                            <input type="number" id="quantity-input" class="form-control" placeholder="Nhập số lượng">
+                            <input type="number" id="quantity-input" class="form-control" placeholder="Input quantity (default:1)">
                         </div>`;
                     } else {
                         dropdownbtn = `
@@ -196,88 +196,99 @@ $(document).ready(function () {
                     swal.fire({
                         title: rowData.product_name,
                         html: dropdownbtn,
+                        focusConfirm: false,
+                        preConfirm: () => {
+                            const quantity =
+                                document.getElementById("quantity-input").value;
+                            if (quantity <= 0 && quantity != "") {
+                                swal.showValidationMessage(
+                                    "Quantity must large than 0 !"
+                                );
+                            }
+                            return { quantity: quantity };
+                        },
                         showCancelButton: true,
                         confirmButtonText: "Add to Order",
                     }).then((result) => {
-                        // if (result.isConfirmed) {
-                        //     var sizeId = $("#size-select").val();
-                        //     var subSize = "";
-                        //     if (sizeId == 1) {
-                        //         subSize = "S";
-                        //     } else if (sizeId == 2) {
-                        //         subSize = "M";
-                        //     } else if (sizeId == 3) {
-                        //         subSize = "L";
-                        //     } else {
-                        //         subSize = "";
-                        //     }
-                        //     var quantity = $("#quantity-input").val();
-                        //     // console.log(sizeId);
-                        //     if (quantity == "") {
-                        //         quantity = 1;
-                        //     }
-                        //     console.log(quantity);
-                        //     for (var i = 0; i < productSize.length; i++) {
-                        //         if (productSize[i].size_id == sizeId) {
-                        //             unit_price = productSize[i].unit_price;
-                        //         }
-                        //     }
-                        //     var rowData = {
-                        //         product_name:
-                        //             datum.product_name + " " + subSize,
-                        //         size: sizeId,
-                        //         unit_price: unit_price,
-                        //         quantity: quantity,
-                        //         amount: unit_price * quantity,
-                        //     };
-                        //     if (dataOrders.length == 0) {
-                        //         addDataToTable(rowData);
-                        //     } else {
-                        //         var duplicateProduct = findDuplicateProduct(
-                        //             dataOrders,
-                        //             rowData
-                        //         );
-                        //         if (duplicateProduct) {
-                        //             duplicateProduct.quantity =
-                        //                 parseInt(
-                        //                     duplicateProduct.quantity
-                        //                 ) + parseInt(rowData.quantity);
-                        //             duplicateProduct.amount =
-                        //                 duplicateProduct.unit_price *
-                        //                 duplicateProduct.quantity;
-                        //             var table =
-                        //                 $("#productOrder").DataTable();
-                        //             table.clear();
-                        //             table.rows.add(dataOrders).draw();
-                        //             var total = 0;
-                        //             for (
-                        //                 var i = 0;
-                        //                 i < dataOrders.length;
-                        //                 i++
-                        //             ) {
-                        //                 total += dataOrders[i].amount;
-                        //             }
-                        //             var totalElement = $("#total");
-                        //             totalElement.text(
-                        //                 "Total : " + total + " VND"
-                        //             );
-                        //         } else {
-                        //             addDataToTable(rowData);
-                        //         }
-                        //     }
-                        // }
+                        if (result.isConfirmed) {
+                            var sizeId = $("#size-select").val();
+                            var subSize = "";
+                            if (sizeId == 1) {
+                                subSize = "S";
+                            } else if (sizeId == 2) {
+                                subSize = "M";
+                            } else if (sizeId == 3) {
+                                subSize = "L";
+                            } else {
+                                subSize = "";
+                            }
+                            var quantity = $("#quantity-input").val();
+                            if (quantity == "") {
+                                quantity = 1;
+                            }
+                            for (var i = 0; i < productSize.length; i++) {
+                                if (productSize[i].size_id == sizeId) {
+                                    unit_price = productSize[i].unit_price;
+                                }
+                            }
+                            var rowDataProduct = {
+                                product_name:
+                                    rowData.product_name + " " + subSize,
+                                size: sizeId,
+                                unit_name: rowData.unit_name,
+                                unit_price: unit_price,
+                                quantity: quantity,
+                                amount: unit_price * quantity,
+                            };
+                            if (dataOrders.length == 0) {
+                                addDataToTable(rowDataProduct);
+                            } else {
+                                var duplicateProduct = findDuplicateProduct(
+                                    dataOrders,
+                                    rowDataProduct
+                                );
+                                if (duplicateProduct) {
+                                    duplicateProduct.quantity =
+                                        parseInt(duplicateProduct.quantity) +
+                                        parseInt(rowDataProduct.quantity);
+
+                                    duplicateProduct.amount =
+                                        duplicateProduct.unit_price *
+                                        duplicateProduct.quantity;
+                                    var table = $("#productOrder").DataTable();
+                                    table.clear();
+                                    table.rows.add(dataOrders).draw();
+                                    var total = 0;
+                                    for (
+                                        var i = 0;
+                                        i < dataOrders.length;
+                                        i++
+                                    ) {
+                                        total += dataOrders[i].amount;
+                                    }
+                                    totalFormat = formatCurrency(total);
+                                    var totalElement = $("#total");
+                                    totalElement.text(
+                                        "Total : " +
+                                            formatCurrency(total) +
+                                            " VND"
+                                    );
+                                } else {
+                                    addDataToTable(rowDataProduct);
+                                }
+                            }
+                        }
                     });
                 } else {
                 }
             },
         });
-        console.log("Dữ liệu hàng:", rowData);
     });
 
     $("#productOrderBefore").DataTable({
         data: [],
-        scrollY: "220px",
-        scrollX: true,
+        scrollY: false,
+        scrollX: false,
         info: false,
         ordering: false,
         paging: false,
@@ -286,8 +297,8 @@ $(document).ready(function () {
         responsive: true,
         searching: false,
         columns: [
-            { data: "product_name", title: "Product Name" },
-            { data: "unit_price", title: "Unit Price" },
+            { data: "product_name", title: "Product" },
+            // { data: "unit_price", title: "Unit Price" },
             { data: "quantity", title: "Quantity" },
             { data: "amount", title: "Amount" },
         ],
@@ -295,58 +306,11 @@ $(document).ready(function () {
 
     function addDataToTable(rowData) {
         dataOrders.push(rowData);
-        if (dataOrders.length > 0) {
-            var orderCodeElement = $("#order-code");
-            if (orderCodeElement.text() === "") {
-                var csrfToken = $('meta[name="csrf-token"]').attr("content");
-                $.ajax({
-                    url: `generate-unique-order-id`,
-                    method: "GET",
-                    headers: {
-                        "X-CSRF-TOKEN": csrfToken,
-                    },
-                    success: function (response) {
-                        orderCodeElement.text("Order Code: " + response);
-                    },
-                });
-            }
-            var orderTableElement = $("#order-table");
-            if (orderTableElement.text() === "") {
-                $.ajax({
-                    url: `generate-table-id`,
-                    method: "GET",
-                    headers: {
-                        "X-CSRF-TOKEN": csrfToken,
-                    },
-                    success: function (response) {
-                        orderTableElement.text("Order Table : " + response);
-                    },
-                });
-            }
-            var orderDateElement = $("#order-date");
-            if (orderDateElement.text() === "") {
-                var currentTimestamp = $.now();
-
-                var currentDate = new Date(currentTimestamp);
-                var dd = currentDate.getDate();
-                var MM = currentDate.getMonth() + 1;
-                var yyyy = currentDate.getFullYear().toString();
-                var hh = currentDate.getHours();
-                var mm = currentDate.getMinutes();
-
-                dd = dd < 10 ? "0" + dd : dd;
-                mm = mm < 10 ? "0" + mm : mm;
-
-                var formattedTime =
-                    hh + ":" + mm + " " + dd + "/" + MM + "/" + yyyy;
-                orderDateElement.text("Order Date : " + formattedTime);
-            }
-            $("#order-details").removeClass("d-none");
-        }
         if (dataOrders.length == 1) {
+            generateOrderInfo();
             var table = $("#productOrder").DataTable({
                 data: dataOrders,
-                scrollY: "200px",
+                scrollY: false,
                 scrollX: true,
                 info: false,
                 ordering: false,
@@ -356,25 +320,16 @@ $(document).ready(function () {
                 responsive: true,
                 searching: false,
                 columns: [
-                    { data: "product_name", title: "Product Name" },
-                    // {
-                    //     data: "size",
-                    //     title: "Size",
-                    //     render: function (data, type, row) {
-                    //         if (data == 1) {
-                    //             return "S";
-                    //         } else if (data == 2) {
-                    //             return "M";
-                    //         } else if (data == 3) {
-                    //             return "L";
-                    //         } else if (data == 4) {
-                    //             return "Pack/Piece";
-                    //         }
-                    //     },
-                    // },
-                    { data: "unit_price", title: "Unit Price" },
+                    { data: "product_name", title: "Product" },
+                    // { data: "unit_price", title: "Unit Price" },
                     { data: "quantity", title: "Quantity" },
-                    { data: "amount", title: "Amount" },
+                    {
+                        data: "amount",
+                        title: "Amount",
+                        render: function (data, type, row) {
+                            return formatCurrency(data); // Gọi hàm định dạng tiền tệ và trả về giá trị đã định dạng
+                        },
+                    },
                 ],
             });
         } else if (dataOrders.length > 1) {
@@ -382,12 +337,244 @@ $(document).ready(function () {
             table.clear();
             table.rows.add(dataOrders).draw();
         }
-        var total = 0;
+        checkTotal(dataOrders);
+    }
+
+    function findDuplicateProduct(dataOrders, rowDataProducts) {
         for (var i = 0; i < dataOrders.length; i++) {
-            total += dataOrders[i].amount;
+            if (
+                dataOrders[i].product_name === rowDataProducts.product_name &&
+                dataOrders[i].size === rowDataProducts.size
+            ) {
+                return dataOrders[i];
+            }
         }
+        return null;
+    }
+
+    function generateOrderInfo() {
+        if (orderCodeElement.text() === "") {
+            var csrfToken = $('meta[name="csrf-token"]').attr("content");
+            $.ajax({
+                url: `generate-unique-order-id`,
+                method: "GET",
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,
+                },
+                success: function (response) {
+                    orderCodeElement.text(response);
+                },
+            });
+        }
+        if (orderTableElement.text() === "") {
+            $.ajax({
+                url: `generate-table-id`,
+                method: "GET",
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,
+                },
+                success: function (response) {
+                    orderTableElement.text(response);
+                },
+            });
+        }
+        if (orderDateElement.text() === "") {
+            var currentTimestamp = $.now();
+
+            var currentDate = new Date(currentTimestamp);
+            var dd = currentDate.getDate();
+            var MM = currentDate.getMonth() + 1;
+            var yyyy = currentDate.getFullYear().toString();
+            var hh = currentDate.getHours();
+            var mm = currentDate.getMinutes();
+
+            dd = dd < 10 ? "0" + dd : dd;
+            mm = mm < 10 ? "0" + mm : mm;
+
+            var formattedTime =
+                hh + ":" + mm + " " + dd + "/" + MM + "/" + yyyy;
+            orderDateElement.text(formattedTime);
+        }
+        $("#order-details-after").removeClass("d-none");
+        $("#order-details-before").addClass("d-none");
+    }
+
+    function formatCurrency(data) {
+        var formatter = new Intl.NumberFormat("vi-VN", {
+            style: "currency",
+            currency: "VND",
+        });
+        var formattedValue = formatter.format(data);
+        formattedValue = formattedValue.replace("₫", "");
+        return formattedValue;
+    }
+
+    var element = $("#productOrderBefore").find(".dataTables_empty");
+    if (element) {
+        element.text("Welcome to NDC Coffee");
+    }
+
+    $("#productOrder").on("click", "tr", function () {
+        var rowIndex = $("#productOrder").DataTable().row(this).index();
+        var rowDataProduct = $("#productOrder")
+            .DataTable()
+            .row(rowIndex)
+            .data();
+        Swal.fire({
+            title: rowDataProduct.product_name,
+            html: `
+            <div class="form-group">
+                <label for="quantity-input-change"> Input new quantity </label>
+                <input type="number" class="form-control" id="quantity-input-change" placeholder="New quantity">
+            </div>
+            <div class="swal-buttons">
+            <button id="btn-delete" class="btn btn-danger py-3 mx-1 my-1">Delete Product</button>
+            <button id="btn-confirm" class="btn btn-primary py-3 mx-1 my-1">Change</button>
+                <button id="btn-cancel" class="btn btn-dark py-3 mx-1 my-1">Cancel</button>
+            </div>
+            `,
+            showCancelButton: false,
+            showConfirmButton: false,
+            preConfirm: () => {
+                const quantity = document.getElementById(
+                    "quantity-input-change"
+                ).value;
+                if (quantity <= 0 && quantity != "") {
+                    swal.showValidationMessage("Quantity must large than 0 !");
+                }
+                return { quantity: quantity };
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var quantityChange = $("#quantity-input-change").val();
+                rowDataProduct.quantity = quantityChange;
+                rowDataProduct.amount =
+                    quantityChange * rowDataProduct.unit_price;
+                $("#productOrder")
+                    .DataTable()
+                    .row(rowIndex)
+                    .data(rowDataProduct)
+                    .draw();
+
+                checkTotal(dataOrders);
+            }
+        });
+
+        $(".swal-buttons").on("click", "#btn-cancel", function () {
+            Swal.close();
+        });
+
+        $(".swal-buttons").on("click", "#btn-delete", function () {
+            Swal.fire({
+                title: "Delete ?",
+                text:
+                    "Are you sure you want to delete " +
+                    rowDataProduct.product_name +
+                    " from order ?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Confirm",
+                cancelButtonText: "Cancel",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $("#productOrder")
+                        .DataTable()
+                        .row(rowIndex)
+                        .remove()
+                        .draw();
+
+                    var index = dataOrders.findIndex(
+                        (item) =>
+                            item.product_name === rowDataProduct.product_name
+                    );
+                    if (index !== -1) {
+                        dataOrders.splice(index, 1);
+                    }
+                    Swal.fire("Success", "Delete product success", "success");
+                    if (dataOrders.length == 0) {
+                        removeDataProductTable();
+                    }
+                    checkTotal(dataOrders);
+                }
+            });
+        });
+        $(".swal-buttons").on("click", "#btn-confirm", function () {
+            Swal.clickConfirm();
+        });
+    });
+
+    function checkTotal(dOrder) {
+        var total = 0;
+        for (var i = 0; i < dOrder.length; i++) {
+            total += dOrder[i].amount;
+        }
+        totalFormat = formatCurrency(total);
         var totalElement = $("#total");
-        totalElement.text("");
-        totalElement.text("Total : " + total + " VND");
+        totalElement.text(totalFormat);
+    }
+
+    $("#order-details-after").on("click", "#cancel-order-btn", function () {
+        Swal.fire({
+            title: "Cancel ?",
+            icon: "question",
+            text: "Do you want to cancel this order ?",
+            showCancelButton: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                removeDataProductTable();
+            }
+        });
+    });
+
+    $("#order-details-after").on("click", "#submit-order-btn", function () {
+        console.log(dataOrders);
+        console.log(orderTableElement.text());
+        console.log(orderCodeElement.text());
+        var total1 = $("#total").text();
+
+        Swal.fire({
+            title: "Payment",
+            input: "text",
+            inputLabel: "Enter the amount received from the customer.",
+            showCancelButton: true,
+            inputValidator: (value) => {
+                if (!value) {
+                    return "This field is required !";
+                }
+                if (!validateInputAmount(value)) {
+                    return "The input field contains only numbers and is divisible by 1000 ";
+                }
+                if(total1 > value){
+                    return "The receipt must be larger than the total amount to be paid";
+                }
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+            }
+        });
+    });
+
+    function validateInputAmount(input) {
+        if (isNaN(input)) {
+            return false;
+        }
+
+        if (input % 1000 !== 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    function removeDataProductTable() {
+        dataOrders = [];
+        $("#productOrder").DataTable().destroy();
+        $("#order-details-after").addClass("d-none");
+        $("#order-details-before").removeClass("d-none");
+        orderDateElement.text("");
+        orderTableElement.text("");
+        orderCodeElement.text("");
     }
 });
