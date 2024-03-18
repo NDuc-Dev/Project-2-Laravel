@@ -119,7 +119,14 @@ $(document).ready(function () {
                                 showConfirmButton: false,
                                 timer: 1500,
                             }).then(() => {
-                                location.reload();
+                                var productTable =
+                                    $("#productTable").DataTable();
+                                productTable.ajax.reload();
+
+                                var form =
+                                    document.getElementById("form-validate");
+                                form.reset();
+                                removeImage();
                             });
                         },
                         error: function (xhr, status, error) {
@@ -140,7 +147,7 @@ $(document).ready(function () {
     $.validator.addMethod("regex", function (value, element) {
         return this.optional(element) || /^[a-zA-Z ]+$/.test(value);
     });
-    
+
     $.validator.addMethod("minimumLetters", function (value, element) {
         var lettersCount = value.replace(/\s/g, "").length;
         return lettersCount >= 1;
@@ -210,76 +217,76 @@ $(document).ready(function () {
     });
 
     //lấy data của product và fill vào bảng
-    initializeDataTableProduct(products);
-    function initializeDataTableProduct(data) {
-        $("#productTable").DataTable({
-            data: data,
-            autoWidth: true,
-            responsive: true,
-            columns: [
-                {
-                    data: "product_images",
-                    title: "Image",
-                    render: function (data, type, row) {
-                        if (!data || data.length === 0) {
-                            return "";
-                        }
-                        const firstImagePath = data;
-                        if (firstImagePath) {
-                            return `<img src="${firstImagePath}" alt="${row.product_name}" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;" onerror="this.src='https://via.placeholder.com/50x50';">`;
-                        } else {
-                            return "";
-                        }
-                    },
+    $("#productTable").DataTable({
+        ajax: {
+            url: "get-data-products",
+            dataSrc: "dataProducts",
+        },
+        autoWidth: true,
+        responsive: true,
+        columns: [
+            {
+                data: "product_images",
+                title: "Image",
+                render: function (data, type, row) {
+                    if (!data || data.length === 0) {
+                        return "";
+                    }
+                    const firstImagePath = data;
+                    if (firstImagePath) {
+                        return `<img src="${firstImagePath}" alt="${row.product_name}" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;" onerror="this.src='https://via.placeholder.com/50x50';">`;
+                    } else {
+                        return "";
+                    }
                 },
-                {
-                    data: "product_name",
-                    title: "Name",
+            },
+            {
+                data: "product_name",
+                title: "Name",
+            },
+            {
+                data: "status",
+                title: "Status",
+                render: function (data, type, row) {
+                    if (data == 1) {
+                        return '<label class="badge badge-success">On Sale</label>';
+                    } else if (data == 0) {
+                        return '<label class="badge badge-danger">Inactive</label>';
+                    } else {
+                        return "";
+                    }
                 },
-                {
-                    data: "status",
-                    title: "Status",
-                    render: function (data, type, row) {
-                        if (data == 1) {
-                            return '<label class="badge badge-success">On Sale</label>';
-                        } else if (data == 0) {
-                            return '<label class="badge badge-danger">Inactive</label>';
-                        } else {
-                            return "";
-                        }
-                    },
+            },
+            {
+                data: "status_in_stock",
+                title: "Status In Stock",
+                render: function (data, type, row) {
+                    if (data == 1) {
+                        return '<label class="badge badge-success">In Stock</label>';
+                    } else if (data == 0) {
+                        return '<label class="badge badge-danger">Out Of Stock</label>';
+                    } else {
+                        return "";
+                    }
                 },
-                {
-                    data: "status_in_stock",
-                    title: "Status In Stock",
-                    render: function (data, type, row) {
-                        if (data == 1) {
-                            return '<label class="badge badge-success">In Stock</label>';
-                        } else if (data == 0) {
-                            return '<label class="badge badge-danger">Out Of Stock</label>';
-                        } else {
-                            return "";
-                        }
-                    },
+            },
+            {
+                data: null,
+                title: "Action",
+                render: function (data, type, row) {
+                    return (
+                        '<button class="btn btn-info btn-sm edit-btn py-1" data-id="' +
+                        row.product_id +
+                        '">Update</button>' +
+                        '<span class ="p-1"></span>' +
+                        '<button class="btn btn-danger btn-sm status-btn py-1" data-id="' +
+                        row.product_id +
+                        '">Change Status</button>'
+                    );
                 },
-                {
-                    data: null,
-                    title: "Action",
-                    render: function (data, type, row) {
-                        return (
-                            '<button class="btn btn-info btn-sm edit-btn py-1" data-id="' +
-                            row.product_id +
-                            '">Update</button>' +
-                            '<span class ="p-1"></span>' +
-                            '<button class="btn btn-danger btn-sm status-btn py-1" data-id="' +
-                            row.product_id +
-                            '">Change Status</button>'
-                        );
-                    },
-                },
-            ],
-        });
-    }
+            },
+        ],
+    });
 
     $("#productTable").on("click", ".status-btn", function () {
         var productId = $(this).data("id");
@@ -316,7 +323,8 @@ $(document).ready(function () {
                         showConfirmButton: false,
                         timer: 1000,
                     }).then(() => {
-                        location.reload();
+                        var productTable = $("#productTable").DataTable();
+                        productTable.ajax.reload();
                     });
                 }
             },
@@ -421,6 +429,10 @@ $(document).ready(function () {
     });
 
     $("#remove-image-btn").click(function () {
+        removeImage();
+    });
+
+    function removeImage() {
         $("#image-input").val("");
 
         $("#image-select").css("background-image", "none");
@@ -428,7 +440,7 @@ $(document).ready(function () {
         $("#remove-image-btn").addClass("d-none");
 
         $(".content-before").removeClass("d-none");
-    });
+    }
 
     function showSpinner() {
         $("#container-spinner").removeClass("d-none");

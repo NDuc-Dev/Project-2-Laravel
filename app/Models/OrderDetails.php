@@ -11,10 +11,12 @@ class OrderDetails extends Model
 
     protected $table = 'orderdetails';
 
-    protected $primaryKey = 'order_id';
+    public $timestamps = false;
+
+    protected $primaryKey = 'details_id';
 
     protected $fillable = [
-        'product_size_id', 'product_quantity', 'amount',
+        'order_id','product_size_id', 'quantity', 'amount',
     ];
 
     public function order()

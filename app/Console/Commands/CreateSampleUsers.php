@@ -38,7 +38,7 @@ class CreateSampleUsers extends Command
 
         Users::create([
             'name' => 'Seller',
-            'user_name' => 'saler',
+            'user_name' => 'seller',
             'password' => bcrypt('123456789'),
             'role' => 'seller',
             'email' => 'saler@gmail.com',

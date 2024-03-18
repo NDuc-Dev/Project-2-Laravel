@@ -12,7 +12,7 @@
                                 </div>
                             </div>
                             <div class="col-3">
-                                <div class="icon icon-box-success ">
+                                <div class="icon icon-box-success">
                                     <span class="mdi mdi-arrow-top-right icon-item"></span>
                                 </div>
                             </div>

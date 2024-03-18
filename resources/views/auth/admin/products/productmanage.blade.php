@@ -131,7 +131,6 @@
     </div>
 
     <script>
-        var products = @json($dataProducts);
         var dataCategory = @json($dataCategory);
     </script>
     <script src={{ asset('js/productmanage.js') }}></script>

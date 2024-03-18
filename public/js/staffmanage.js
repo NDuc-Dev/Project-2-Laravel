@@ -6,7 +6,7 @@ $(document).ready(function () {
                 required: true,
                 minlength: 1,
                 regex: true,
-                minimumLetters: true
+                minimumLetters: true,
             },
             email: {
                 required: true,
@@ -18,7 +18,7 @@ $(document).ready(function () {
             },
             user_name: {
                 required: true,
-                regexUserName: true
+                regexUserName: true,
             },
             password: {
                 required: true,
@@ -26,18 +26,18 @@ $(document).ready(function () {
             },
             role: {
                 selectRequired: "",
-            }
+            },
         },
         messages: {
             name: {
                 required: "Vui lòng nhập tên",
                 minlength: "Tên phải ít nhất 1 ký tự",
                 regex: "Tên không được chứa số và kí tự đặc biệt",
-                minimumLetters: "Tên không hợp lệ"
+                minimumLetters: "Tên không hợp lệ",
             },
             email: {
                 required: "Vui lòng nhập email",
-                regexEmail: "Email không hợp lệ"
+                regexEmail: "Email không hợp lệ",
             },
             phone: {
                 required: "Vui lòng nhập số điện thoại",
@@ -45,20 +45,20 @@ $(document).ready(function () {
             },
             user_name: {
                 required: "Vui lòng nhập tên người dùng",
-                regexUserName: "Tên người dùng không hợp lệ, chỉ chứa các kí tự a-Z 0-9 - _ + và độ dài 3-16 kí tự"
+                regexUserName:
+                    "Tên người dùng không hợp lệ, chỉ chứa các kí tự a-Z 0-9 - _ + và độ dài 3-16 kí tự",
             },
             password: {
                 required: "Vui lòng nhập mật khẩu",
                 regexPassword: "Mật khẩu phải chứa ít nhất 6-18 kí tự",
             },
             role: {
-                selectRequired: "Vui lòng chọn vai trò cho người dùng"
-            }
+                selectRequired: "Vui lòng chọn vai trò cho người dùng",
+            },
         },
         errorPlacement: function (error, element) {
             error.insertAfter(element);
-            element.next().addClass(
-                "error text-danger py-2");
+            element.next().addClass("error text-danger py-2");
         },
         success: function (label, element) {
             $(element).next().remove();
@@ -73,59 +73,66 @@ $(document).ready(function () {
                     var username = $("#user_name").val();
                     var token = $('input[name="_token"]').val();
                     $.ajax({
-                        url: 'check-dupplicate-user-name',
+                        url: "check-dupplicate-user-name",
                         method: "POST",
                         data: {
                             _token: token,
-                            username: username
+                            username: username,
                         },
                         success: function (response) {
                             if (response.exists) {
                                 Swal.fire({
                                     title: "Error !",
                                     text: "User name is already exits.",
-                                    icon: "error"
+                                    icon: "error",
                                 });
                             } else {
                                 var formData = $(form).serialize();
                                 showSpinner();
                                 $.ajax({
-                                    type: 'POST',
-                                    url: $(form).attr('action'),
+                                    type: "POST",
+                                    url: $(form).attr("action"),
                                     data: formData,
-                                    dataType: 'json',
+                                    dataType: "json",
                                     success: function (response) {
                                         if (response.success) {
                                             hideSpinner();
                                             Swal.fire({
-                                                title: 'Success',
+                                                title: "Success",
                                                 text: response.message,
-                                                icon: 'success',
+                                                icon: "success",
                                                 showConfirmButton: false,
-                                                timer: 1500
+                                                timer: 1500,
                                             }).then(() => {
-                                                window.location.href = '/manage/staff/staff-management';
+                                                var staffTable =
+                                                    $(
+                                                        "#staffTable"
+                                                    ).DataTable();
+                                                staffTable.ajax.reload();
+                                                var form =
+                                                    document.getElementById(
+                                                        "form-validate"
+                                                    );
+                                                form.reset();
                                             });
-                                        }
-                                        else {
+                                        } else {
                                             hideSpinner();
                                             Swal.fire({
-                                                title: 'Error',
+                                                title: "Error",
                                                 text: response.message,
-                                                icon: 'error',
+                                                icon: "error",
                                                 showConfirmButton: false,
-                                                timer: 2000
+                                                timer: 2000,
                                             });
                                         }
                                     },
                                     error: function (xhr, status, error) {
-                                        // Xử lý lỗi
                                         Swal.fire({
-                                            title: 'Error',
-                                            text: 'An error occurred while create staff information!',
-                                            icon: 'error'
+                                            title: "Error",
+                                            text: "An error occurred while create staff information!",
+                                            icon: "error",
                                         });
-                                    }
+                                    },
                                 });
                             }
                         },
@@ -134,17 +141,17 @@ $(document).ready(function () {
                             Swal.fire({
                                 title: "Error !",
                                 text: "An unexpected error occurred",
-                                icon: "error"
+                                icon: "error",
                             });
-                        }
+                        },
                     });
-                } else { }
+                } else {
+                }
             });
-        }
+        },
     });
 
-
-    $('#form-validate').submit(function (event) {
+    $("#form-validate").submit(function (event) {
         if (!$(this).valid()) {
             Swal.fire({
                 icon: "error",
@@ -170,10 +177,10 @@ $(document).ready(function () {
         return /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/.test(value);
     });
 
-    //phone 
+    //phone
     $.validator.addMethod("regexPhone", function (value, element) {
         return /(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/.test(value);
-    })
+    });
 
     //user name
     $.validator.addMethod("regexUserName", function (value, element) {
@@ -183,112 +190,91 @@ $(document).ready(function () {
     //password
     $.validator.addMethod("regexPassword", function (value, element) {
         return /^[a-zA-Z0-9!@#$%^&*()_+-=<>?]{6,18}$/.test(value);
-    })
+    });
 
     //role
     $.validator.addMethod("selectRequired", function (value, element, arg) {
         return arg !== value;
     });
 
-
-
-    if (staff != null) {
-        initializeDataTable(staff)
-    } else {
-        console.log('Đã có lỗi khi gửi yêu cầu API, hoặc không có dữ liệu trong bảng');
-    }
-
-
-
-
-    // Hàm để khởi tạo DataTable
-    function initializeDataTable(staff) {
-        $('#staffTable').DataTable({
-            data: staff,
-            autoWidth: true,
-            responsive: true,
-            columns: [{
-                data: 'user_id',
-                title: 'ID'
-            },
-            {
-                data: "name",
-                title: 'Name'
-            },
-            {
-                data: "role",
-                title: 'Role'
-            },
-            {
-                data: "email",
-                title: 'Email'
-            },
-            {
-                data: "phone",
-                title: 'Phone'
-            },
+    $("#staffTable").DataTable({
+        ajax: {
+            url: "get-data-staff",
+            dataSrc: "data", // Trường dữ liệu chứa dữ liệu trong phản hồi Ajax
+        },
+        autoWidth: true,
+        responsive: true,
+        columns: [
+            { data: "user_id", title: "ID" },
+            { data: "name", title: "Name" },
+            { data: "role", title: "Role" },
+            { data: "email", title: "Email" },
+            { data: "phone", title: "Phone" },
             {
                 data: "status",
-                title: 'Status',
+                title: "Status",
                 render: function (data, type, row) {
-                    return data == 1 ?
-                        '<label class="badge badge-success py-1">Active</label>' :
-                        '<label class="badge badge-warning py-1">Inactive</label>';
-                }
+                    return parseInt(data) === 1
+                        ? '<label class="badge badge-success py-1">Active</label>'
+                        : '<label class="badge badge-warning py-1">Inactive</label>';
+                },
             },
             {
                 data: null,
-                title: 'Actions',
+                title: "Actions",
                 render: function (data, type, row) {
-                    return '<button class="btn btn-info btn-sm edit-btn py-1" data-id="' +
-                        row.user_id + '">Update</button>' +
+                    return (
+                        '<button class="btn btn-info btn-sm edit-btn py-1" data-id="' +
+                        row.user_id +
+                        '">Update</button>' +
                         '<span class ="p-1"></span>' +
                         '<button class="btn btn-danger btn-sm status-btn py-1" data-id="' +
-                        row.user_id + '">Change Status</button>';
-                }
+                        row.user_id +
+                        '">Change Status</button>'
+                    );
+                },
             },
-            ]
-        });
-    }
+        ],
+    });
 
-    $('#staffTable').on('click', '.status-btn', function () {
-        var userId = $(this).data('id');
+    $("#staffTable").on("click", ".status-btn", function () {
+        var userId = $(this).data("id");
         Swal.fire({
-            title: 'Change Status?',
-            text: 'Are you sure you want to change the status?',
-            icon: 'question',
+            title: "Change Status?",
+            text: "Are you sure you want to change the status?",
+            icon: "question",
             showCancelButton: true,
-            confirmButtonText: 'Yes',
-            cancelButtonText: 'No'
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
         }).then((result) => {
             if (result.isConfirmed) {
                 handleUpdateClickChange(userId);
             }
         });
     });
-    
+
     function handleUpdateClickChange(userId) {
-        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+        var csrfToken = $('meta[name="csrf-token"]').attr("content");
         showSpinner();
         $.ajax({
-            url: '/manage/staffs/change-status-' + userId,
-            method: 'POST',
+            url: "/manage/staffs/change-status-" + userId,
+            method: "POST",
             headers: {
-                'X-CSRF-TOKEN': csrfToken,
+                "X-CSRF-TOKEN": csrfToken,
             },
             success: function (response) {
                 if (response.success) {
                     hideSpinner();
                     Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
+                        icon: "success",
+                        title: "Success",
                         text: response.messages,
                         showConfirmButton: false,
-                        timer: 1000
+                        timer: 1000,
                     }).then(() => {
-                        location.reload();
-                    });;
-
+                        var staffTable = $("#staffTable").DataTable();
+                        staffTable.ajax.reload();
+                    });
                 }
             },
             error: function (xhr, status, error) {
@@ -300,35 +286,33 @@ $(document).ready(function () {
                     hideSpinner();
                 }
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: errorMessage
+                    icon: "error",
+                    title: "Error",
+                    text: errorMessage,
                 });
-            }
+            },
         });
     }
-    $('#staffTable').on('click', '.edit-btn', function () {
-        var userId = $(this).data('id');
+    $("#staffTable").on("click", ".edit-btn", function () {
+        var userId = $(this).data("id");
         handleUpdateClickUpdate(userId);
     });
-
-
-
 
     function handleUpdateClickUpdate(userId) {
         showSpinner();
         $.ajax({
-            url: '/manage/staffs/update-staff-' + userId,
-            method: 'GET',
+            url: "/manage/staffs/update-staff-" + userId,
+            method: "GET",
             success: function (response) {
                 if (response.error) {
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: response.error
+                        icon: "error",
+                        title: "Error",
+                        text: response.error,
                     });
                 } else {
-                    window.location.href = '/manage/staff/get-update-staff-' + userId;
+                    window.location.href =
+                        "/manage/staff/get-update-staff-" + userId;
                 }
             },
             error: function (xhr, status, error) {
@@ -339,22 +323,20 @@ $(document).ready(function () {
                     errorMessage = error;
                     hideSpinner();
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: errorMessage
+                        icon: "error",
+                        title: "Error",
+                        text: errorMessage,
                     });
                 }
-            }
+            },
         });
     }
 
     function showSpinner() {
-        $('#container-spinner').removeClass('d-none');
+        $("#container-spinner").removeClass("d-none");
     }
 
     function hideSpinner() {
-        $('#container-spinner').addClass('d-none');
+        $("#container-spinner").addClass("d-none");
     }
-
 });
-

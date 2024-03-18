@@ -18,6 +18,7 @@
                     <div class="table-responsive">
                         <table class="table table-hover" id="staffTable">
                             <thead>
+
                             </thead>
                             <tbody>
                             </tbody>
@@ -88,8 +89,5 @@
             </div>
         </div>
     </div>
-    <script>
-        var staff = @json($data);
-    </script>
     <script src="{{ asset('js/staffmanage.js') }}"></script>
 @endsection

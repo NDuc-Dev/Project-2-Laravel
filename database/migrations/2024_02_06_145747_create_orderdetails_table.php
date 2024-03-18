@@ -12,11 +12,11 @@ class CreateOrderDetailsTable extends Migration
     public function up(): void
     {
         Schema::create('orderdetails', function (Blueprint $table) {
+            $table->id('details_id');
             $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('product_size_id');
             $table->foreign('order_id')->references('order_id')->on('orders')->onDelete('cascade');
             $table->foreign('product_size_id')->references('product_size_id')->on('productsizes')->onDelete('cascade');
-            $table->primary(['order_id', 'product_size_id']);
             $table->integer('quantity');
             $table->decimal('amount');
         });

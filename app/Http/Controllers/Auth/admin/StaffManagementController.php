@@ -26,8 +26,12 @@ class StaffManagementController extends Controller
     
     public function getStaffManagement()
     {
+        return view('auth.admin.staffs.staffmanage');
+    }
+
+    public function getDataStaff(){
         $data = Users::where('role', '!=', 'admin')->get();
-        return view('auth.admin.staffs.staffmanage', compact('data'));
+        return response()->json(['data' => $data]);
     }
 
 
@@ -66,7 +70,7 @@ class StaffManagementController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
-            \Log::error('Error creating user: ' . $e->getMessage());
+            // \Log::error('Error creating user: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Create User failed']);
 
         }
@@ -134,7 +138,7 @@ class StaffManagementController extends Controller
             return response()->json(['success' => true, 'messages' => "Change Status success"]);
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Error: ' . $e->getMessage());
+            // \Log::error('Error: ' . $e->getMessage());
             return back()->withInput()->with('error', 'Failed to change');
         }
     }

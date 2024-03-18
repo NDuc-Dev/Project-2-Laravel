@@ -3,6 +3,12 @@ $(document).ready(function () {
     var orderTableElement = $("#order-table");
     var orderCodeElement = $("#order-code");
     var dataOrders = [];
+    var totalNoformat = 0;
+    var orderCode = "";
+    var orderTable = "";
+    var orderDate = "";
+    var csrfToken = $('meta[name="csrf-token"]').attr("content");
+    var formattedTime = "";
 
     //sử dụng bloodhound tạo index cho search
     var suggestions = new Bloodhound({
@@ -70,7 +76,7 @@ $(document).ready(function () {
             tableSearch.clear();
             tableSearch.draw();
             dataresult = [];
-            $(".dataTables_empty").text("There are no matches");
+            $("#result").find(".dataTables_empty").text("There are no matches");
         }
         if (searchValue == "") {
             tableSearch.destroy();
@@ -229,13 +235,15 @@ $(document).ready(function () {
                             for (var i = 0; i < productSize.length; i++) {
                                 if (productSize[i].size_id == sizeId) {
                                     unit_price = productSize[i].unit_price;
+                                    product_size_id =
+                                        productSize[i].product_size_id;
                                 }
                             }
                             var rowDataProduct = {
                                 product_name:
                                     rowData.product_name + " " + subSize,
                                 size: sizeId,
-                                unit_name: rowData.unit_name,
+                                product_size_id: product_size_id,
                                 unit_price: unit_price,
                                 quantity: quantity,
                                 amount: unit_price * quantity,
@@ -266,13 +274,7 @@ $(document).ready(function () {
                                     ) {
                                         total += dataOrders[i].amount;
                                     }
-                                    totalFormat = formatCurrency(total);
-                                    var totalElement = $("#total");
-                                    totalElement.text(
-                                        "Total : " +
-                                            formatCurrency(total) +
-                                            " VND"
-                                    );
+                                    formatTotal(checkTotal(dataOrders));
                                 } else {
                                     addDataToTable(rowDataProduct);
                                 }
@@ -337,7 +339,8 @@ $(document).ready(function () {
             table.clear();
             table.rows.add(dataOrders).draw();
         }
-        checkTotal(dataOrders);
+
+        formatTotal(checkTotal(dataOrders));
     }
 
     function findDuplicateProduct(dataOrders, rowDataProducts) {
@@ -353,19 +356,7 @@ $(document).ready(function () {
     }
 
     function generateOrderInfo() {
-        if (orderCodeElement.text() === "") {
-            var csrfToken = $('meta[name="csrf-token"]').attr("content");
-            $.ajax({
-                url: `generate-unique-order-id`,
-                method: "GET",
-                headers: {
-                    "X-CSRF-TOKEN": csrfToken,
-                },
-                success: function (response) {
-                    orderCodeElement.text(response);
-                },
-            });
-        }
+        var csrfToken = $('meta[name="csrf-token"]').attr("content");
         if (orderTableElement.text() === "") {
             $.ajax({
                 url: `generate-table-id`,
@@ -375,6 +366,7 @@ $(document).ready(function () {
                 },
                 success: function (response) {
                     orderTableElement.text(response);
+                    orderTable = response;
                 },
             });
         }
@@ -386,14 +378,18 @@ $(document).ready(function () {
             var MM = currentDate.getMonth() + 1;
             var yyyy = currentDate.getFullYear().toString();
             var hh = currentDate.getHours();
-            var mm = currentDate.getMinutes();
+            var ii = currentDate.getMinutes();
+            var ss = currentDate.getSeconds();
 
             dd = dd < 10 ? "0" + dd : dd;
-            mm = mm < 10 ? "0" + mm : mm;
+            ii = ii < 10 ? "0" + ii : ii;
+            MM = MM < 10 ? "0" + MM : MM;
+            ss = ss < 10 ? "0" + ss : ss;
 
-            var formattedTime =
-                hh + ":" + mm + " " + dd + "/" + MM + "/" + yyyy;
+            formattedTime = hh + ":" + ii + " " + dd + "/" + MM + "/" + yyyy;
             orderDateElement.text(formattedTime);
+            orderDate =
+                yyyy + "-" + MM + "-" + dd + " " + hh + ":" + ii + ":" + ss;
         }
         $("#order-details-after").removeClass("d-none");
         $("#order-details-before").addClass("d-none");
@@ -456,7 +452,7 @@ $(document).ready(function () {
                     .data(rowDataProduct)
                     .draw();
 
-                checkTotal(dataOrders);
+                formatTotal(checkTotal(dataOrders));
             }
         });
 
@@ -496,7 +492,7 @@ $(document).ready(function () {
                     if (dataOrders.length == 0) {
                         removeDataProductTable();
                     }
-                    checkTotal(dataOrders);
+                    formatTotal(checkTotal(dataOrders));
                 }
             });
         });
@@ -505,14 +501,18 @@ $(document).ready(function () {
         });
     });
 
+    function formatTotal(total) {
+        totalFormat = formatCurrency(total);
+        var totalElement = $("#total");
+        totalElement.text(totalFormat);
+    }
+
     function checkTotal(dOrder) {
         var total = 0;
         for (var i = 0; i < dOrder.length; i++) {
             total += dOrder[i].amount;
         }
-        totalFormat = formatCurrency(total);
-        var totalElement = $("#total");
-        totalElement.text(totalFormat);
+        return total;
     }
 
     $("#order-details-after").on("click", "#cancel-order-btn", function () {
@@ -529,11 +529,7 @@ $(document).ready(function () {
     });
 
     $("#order-details-after").on("click", "#submit-order-btn", function () {
-        console.log(dataOrders);
-        console.log(orderTableElement.text());
-        console.log(orderCodeElement.text());
-        var total1 = $("#total").text();
-
+        var Total = checkTotal(dataOrders);
         Swal.fire({
             title: "Payment",
             input: "text",
@@ -546,12 +542,81 @@ $(document).ready(function () {
                 if (!validateInputAmount(value)) {
                     return "The input field contains only numbers and is divisible by 1000 ";
                 }
-                if(total1 > value){
+                if (Total > value) {
                     return "The receipt must be larger than the total amount to be paid";
                 }
             },
         }).then((result) => {
             if (result.isConfirmed) {
+                const receivedAmount = result.value;
+                console.log(dataOrders);
+                var csrfToken = $('meta[name="csrf-token"]').attr("content");
+                $.ajax({
+                    url: "create-order",
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": csrfToken,
+                    },
+                    data: {
+                        products: dataOrders,
+                        orderDate,
+                        orderTable,
+                        formattedTime,
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            receipt_path = response.receipt_path;
+                            Swal.fire({
+                                title: "Success",
+                                icon: "success",
+                                text: "Create Order Successfully !",
+                                showConfirmButton: false,
+                                timer: 1000,
+                            }).then(() => {
+                                Swal.fire({
+                                    title: "Return",
+                                    icon: "info",
+                                    text:
+                                        "Return the customer " +
+                                        (receivedAmount - Total) +
+                                        " VND",
+                                    showConfirmButton: true,
+                                }).then((result1) => {
+                                    if (result1.isConfirmed) {
+                                        fetch(receipt_path)
+                                            .then((response1) =>
+                                                response1.blob()
+                                            )
+                                            .then((blob) => {
+                                                const reader = new FileReader();
+                                                reader.onload = function () {
+                                                    const base64data =
+                                                        reader.result;
+                                                    Swal.fire({
+                                                        title: "RECEIPT",
+                                                        html:
+                                                            '<div style="height: 70vh;"><embed width="100%" height="100%" src="' +
+                                                            base64data +
+                                                            '" type="application/pdf"></div>',
+                                                        showCloseButton: false,
+                                                        showConfirmButton: true,
+                                                        allowOutsideClick: true,
+                                                    });
+                                                };
+                                                reader.readAsDataURL(blob);
+                                            })
+                                            .catch((error) => {
+                                                console.error(
+                                                    "Error loading PDF:",
+                                                    error
+                                                );
+                                            });
+                                    }
+                                });
+                            });
+                        }
+                    },
+                });
             }
         });
     });

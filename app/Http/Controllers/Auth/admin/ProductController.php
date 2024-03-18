@@ -19,10 +19,14 @@ class ProductController extends Controller
 
     public function getProduct()
     {
-        $dataProducts = Products::all();
         $dataGroupCategory = GroupCategory::all();
         $dataCategory = Categories::all();
-        return view('auth.admin.products.productmanage', compact('dataProducts', 'dataGroupCategory', 'dataCategory'));
+        return view('auth.admin.products.productmanage', compact( 'dataGroupCategory', 'dataCategory'));
+    }
+
+    public function getDataProduct(){
+        $dataProducts = Products::all();
+        return response()->json(['dataProducts' => $dataProducts]);
     }
 
     public function createProducts(Request $request)
@@ -124,7 +128,7 @@ class ProductController extends Controller
             return response()->json(['success' => true, 'messages' => "Change Status success"]);
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Error: ' . $e->getMessage());
+            // \Log::error('Error: ' . $e->getMessage());
             return back()->withInput()->with('error', 'Failed to change');
         }
     }

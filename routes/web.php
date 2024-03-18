@@ -31,6 +31,8 @@ Route::group(['prefix' => 'manage'], function () {
 
     Route::group(['prefix' => 'staffs'], function () {
 
+        Route::GET('/get-data-staff', [StaffManagementController::class, 'getDataStaff'])->name('admin.getDataStaff');
+
         Route::GET('/staff-management', [StaffManagementController::class, 'getStaffManagement'])->name('admin.staffManagement');
 
         Route::POST('/check-dupplicate-user-name', [StaffManagementController::class, 'checkUserName'])->name('admin.checkUName');
@@ -47,6 +49,8 @@ Route::group(['prefix' => 'manage'], function () {
     });
 
     Route::group(['prefix' => 'products'], function () {
+
+        Route::GET('/get-data-products',[ProductController::class, 'getDataProduct'])->name('admin.getDataProduct');
 
         Route::GET('/product-cagtegories-management', [ProductController::class, 'getProduct'])->name('admin.productManagement');
 
@@ -65,13 +69,18 @@ Route::group(['prefix' => 'seller'], function () {
 
     Route::group(['prefix' => 'orders'], function () {
 
-        Route::get('/orders-manage', [OrderManageController::class, 'getOrderManage'])->name('seller.orderManage');
+        Route::GET('/orders-manage', [OrderManageController::class, 'getOrderManage'])->name('seller.orderManage');
 
-        Route::get('/get-data-product-size', [OrderManageController::class, 'getDataProductSize'])->name('seller.getDataProductSize');
+        Route::GET('/get-data-product-size', [OrderManageController::class, 'getDataProductSize'])->name('seller.getDataProductSize');
 
-        Route::get('/generate-unique-order-id',[OrderManageController::class, 'generateUniqueOrderId'])->name('seller.generateUniqueOrderId');
+        Route::GET('/generate-table-id',[OrderManageController::class, 'generateTableId'])->name('seller.generateTableId');
 
-        Route::get('/generate-table-id',[OrderManageController::class, 'generateTableId'])->name('seller.generateTableId');
+        Route::POST('/create-order',[OrderManageController::class, 'createOrder'])->name('seller.createOrder');
+
+        Route::GET('/check-invoice', [OrderManageController::class, 'invoice']);
+
+        Route::GET('/test', [OrderManageController::class, 'testNgu']);
+
 
     });
 })->middleware('checRole, seller');

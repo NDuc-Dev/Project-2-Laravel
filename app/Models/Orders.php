@@ -11,15 +11,25 @@ class Orders extends Model
 
     protected $table = 'Orders';
 
+    public $timestamps = false;
+
     protected $primaryKey = 'order_id';
 
     protected $fillable = [
         'order_date',
         'order_type',
         'order_by',
+        'delivery_address',
+        'customer_phone',
         'total',
         'order_status',
-        'table_id'
+        'table_id',
+        'prepared_at',
+        'prepared_by',
+        'delivery_at',
+        'delivery_by',
+        'complete_at',
+        'receipt_path'
     ];
 
     public function user()
