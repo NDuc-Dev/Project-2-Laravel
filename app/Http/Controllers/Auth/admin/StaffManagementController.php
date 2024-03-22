@@ -163,9 +163,6 @@ class StaffManagementController extends Controller
     {
         try {
             DB::beginTransaction();
-
-            // $newPassword = Str::random(6);
-
             $password = Str::random(3);
             $password .= rand(100, 999);
             $newPassword = str_shuffle($password);

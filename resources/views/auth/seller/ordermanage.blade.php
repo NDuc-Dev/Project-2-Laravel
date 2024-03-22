@@ -68,7 +68,7 @@
                                             </div>
                                         </div>
                                         <div class="table-responsive">
-                                            <table class="table table-hover m-md-0" id="productOrder">
+                                            <table class="table m-md-0" id="productOrder">
                                                 <thead>
                                                 </thead>
                                                 <tbody>
@@ -84,11 +84,12 @@
                                         </div>
                                     </div>
                                     <div class=" mt-2 p-0 row">
-                                        <button class="btn btn-inverse-primary btn-md" id="submit-order-btn" style="flex: auto" type="button">
-                                            Create  
+                                        <button class="btn btn-inverse-primary btn-md" id="submit-order-btn"
+                                            style="flex: auto" type="button">
+                                            Create
                                         </button>
-                                        <button class="btn btn-inverse-danger btn-md mt-2" id="cancel-order-btn" style="flex: auto"
-                                            type="button">
+                                        <button class="btn btn-inverse-danger btn-md mt-2" id="cancel-order-btn"
+                                            style="flex: auto" type="button">
                                             Cancel
                                         </button>
                                     </div>
@@ -135,9 +136,9 @@
 
             <div class="card mb-3">
                 <div class="card-body">
-                    <h4 class="card-title">Order in pending</h4>
+                    <h4 class="card-title">Order pending</h4>
                     <div class="table-responsive">
-                        <table class="table table-hover" id="staffTable">
+                        <table class="table table-hover"  id="orderPendingTable">
                             <thead>
                             </thead>
                             <tbody>
@@ -148,11 +149,10 @@
             </div>
         </div>
     </div>
-    <script src="{{ asset('js/ordermanage.js') }}"></script>
-    <script src="{{ asset('js/test.js') }}"></script>
 
+
+    <script src="{{ asset('js/ordermanage.js') }}"></script>
     <script>
         var products = @json($products);
-        console.log(products);
     </script>
 @endsection

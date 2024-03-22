@@ -200,7 +200,7 @@ $(document).ready(function () {
     $("#staffTable").DataTable({
         ajax: {
             url: "get-data-staff",
-            dataSrc: "data", // Trường dữ liệu chứa dữ liệu trong phản hồi Ajax
+            dataSrc: "data",
         },
         autoWidth: true,
         responsive: true,

@@ -28,8 +28,16 @@ class OrderManageController extends Controller
 
     public function getOrderManage()
     {
-        $products = Products::all();
+        $products = Products::where('status', 1)
+            ->where('status_in_stock', 1)
+            ->get();
         return view('auth.seller.ordermanage', compact('products'));
+    }
+
+    public function getOrderListData()
+    {
+        $data = Orders::where('order_status', '!=', 4)->get();
+        return response()->json(['data' => $data]);
     }
 
     public function getDataProductSize(Request $request)
@@ -102,6 +110,7 @@ class OrderManageController extends Controller
                 OrderDetails::create([
                     'order_id' => $order_id,
                     'product_size_id' => $product['product_size_id'],
+                    'product_name' => $product['product_name'],
                     'quantity' => $product['quantity'],
                     'amount' => $product['amount']
                 ]);
@@ -112,7 +121,7 @@ class OrderManageController extends Controller
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }
 
-        return response()->json(['success' => true,'receipt_path' => $order->receipt_path, 'messages' => "Create order success"]);
+        return response()->json(['success' => true, 'receipt_path' => $order->receipt_path, 'messages' => "Create order success"]);
     }
 
     public function CreateInvoice($count, $orderProducts, $orderDate, $orderTable, $orderCode, $Total)
@@ -182,7 +191,7 @@ class OrderManageController extends Controller
         $pdf->Cell(0, 7, iconv("UTF-8", "ISO-8859-1", "customerserrviceNDCCoffee@gmail.com "), '', 0, 'C');
         $pdf->Ln(9);
         $pdfContent = $pdf->Output('S');
-        $fileName = 'receipt_' . 'id_'. $orderCode . '.pdf';
+        $fileName = 'receipt_' . 'id_' . $orderCode . '.pdf';
         Storage::disk('public')->put('receipt/' . $fileName, $pdfContent);
         return Storage::url('receipt/' . $fileName);
     }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\auth\admin\ProductController;
 use App\Http\Controllers\auth\admin\StaffManagementController;
 use App\Http\Controllers\auth\admin\AdminController;
+use App\Http\Controllers\auth\bartender\PrepareOrderController;
 use App\Http\Controllers\auth\seller\OrderManageController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
@@ -25,11 +26,11 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::GET('/home', [HomeController::class, 'index'])->name('home');
 
-Route::group(['prefix' => 'manage'], function () {
+Route::GROUP(['prefix' => 'manage'], function () {
 
-    Route::group(['prefix' => 'staffs'], function () {
+    Route::GROUP(['prefix' => 'staffs'], function () {
 
         Route::GET('/get-data-staff', [StaffManagementController::class, 'getDataStaff'])->name('admin.getDataStaff');
 
@@ -45,12 +46,12 @@ Route::group(['prefix' => 'manage'], function () {
 
         Route::PUT('/put-update-staff-{id}', [StaffManagementController::class, 'putUpdateStaff'])->name('admin.putUpdateStaff');
 
-        Route::match(['GET', 'POST'], '/change-status-{id}', [StaffManagementController::class, 'changeStatus'])->name('admin.changeStatus');
+        Route::MATCH(['GET', 'POST'], '/change-status-{id}', [StaffManagementController::class, 'changeStatus'])->name('admin.changeStatus');
     });
 
-    Route::group(['prefix' => 'products'], function () {
+    Route::GROUP(['prefix' => 'products'], function () {
 
-        Route::GET('/get-data-products',[ProductController::class, 'getDataProduct'])->name('admin.getDataProduct');
+        Route::GET('/get-data-products', [ProductController::class, 'getDataProduct'])->name('admin.getDataProduct');
 
         Route::GET('/product-cagtegories-management', [ProductController::class, 'getProduct'])->name('admin.productManagement');
 
@@ -65,22 +66,32 @@ Route::group(['prefix' => 'manage'], function () {
 })->middleware('checRole, seller');
 
 
-Route::group(['prefix' => 'seller'], function () {
+Route::GROUP(['prefix' => 'seller'], function () {
 
-    Route::group(['prefix' => 'orders'], function () {
+    Route::GROUP(['prefix' => 'orders'], function () {
 
         Route::GET('/orders-manage', [OrderManageController::class, 'getOrderManage'])->name('seller.orderManage');
 
-        Route::GET('/get-data-product-size', [OrderManageController::class, 'getDataProductSize'])->name('seller.getDataProductSize');
+        Route::GET('/get-data-product-size-{id}', [OrderManageController::class, 'getDataProductSize'])->name('seller.getDataProductSize');
 
-        Route::GET('/generate-table-id',[OrderManageController::class, 'generateTableId'])->name('seller.generateTableId');
+        Route::GET('/generate-table-id', [OrderManageController::class, 'generateTableId'])->name('seller.generateTableId');
 
-        Route::POST('/create-order',[OrderManageController::class, 'createOrder'])->name('seller.createOrder');
+        Route::POST('/create-order', [OrderManageController::class, 'createOrder'])->name('seller.createOrder');
 
-        Route::GET('/check-invoice', [OrderManageController::class, 'invoice']);
-
-        Route::GET('/test', [OrderManageController::class, 'testNgu']);
-
+        Route::GET('/get-data-order-inprogress', [OrderManageController::class, 'getOrderListData']);
 
     });
 })->middleware('checRole, seller');
+
+Route::GROUP(['prefix' => 'bartender'], function () {
+
+    Route::GROUP(['prefix' => 'orders'], function () {
+
+        Route::GET('/get-data-order-pending', [PrepareOrderController::class, 'getOrderPending']);
+
+        Route::GET('/recrive-order', [PrepareOrderController::class, 'getReceiveOrder'])->name('bartender.getReceiveOrder');
+
+        Route::GET('/get-data-order-details-{id}',[PrepareOrderController::class, 'getDataOrderDetails']);
+
+    });
+})->middleware('checRole, bartender');

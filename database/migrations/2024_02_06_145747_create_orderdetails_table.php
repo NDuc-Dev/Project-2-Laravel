@@ -19,6 +19,7 @@ class CreateOrderDetailsTable extends Migration
             $table->foreign('product_size_id')->references('product_size_id')->on('productsizes')->onDelete('cascade');
             $table->integer('quantity');
             $table->decimal('amount');
+            $table->string('product_name', 300);
         });
     }
 

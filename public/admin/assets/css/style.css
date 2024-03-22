@@ -10406,7 +10406,7 @@ textarea.is-invalid.tt-hint {
   background-color: transparent;
   border: 0; }
   .dropdown-item:hover, .dropdown-item:focus {
-    color: #1e2125;
+    color: #024fc2;
     background-color: #13151b; }
   .dropdown-item.active, .dropdown-item:active {
     color: #fff;

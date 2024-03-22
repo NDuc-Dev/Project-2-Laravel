@@ -89,28 +89,39 @@
                     </a>
                 </li>
             @endif
+
             @if (Auth::user()->role == 'seller')
-                
-            <li class="nav-item menu-items">
-                <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false"
-                    aria-controls="ui-basic">
-                    <span class="menu-icon">
-                        <i class="mdi mdi-laptop"></i>
-                    </span>
-                    <span class="menu-title">Orders</span>
-                    <i class="menu-arrow"></i>
-                </a>
-                <div class="collapse" id="ui-basic">
-                    <ul class="nav flex-column sub-menu">
-                        <li class="nav-item"> <a class="nav-link" href="{{ route('seller.orderManage')}}">New</a></li>
-                        <li class="nav-item"> <a class="nav-link" href="#">2</a>
-                        </li>
-                        <li class="nav-item"> <a class="nav-link"
-                                href="#">3</a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
+                <li class="nav-item menu-items">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false"
+                        aria-controls="ui-basic">
+                        <span class="menu-icon">
+                            <i class="mdi mdi-laptop"></i>
+                        </span>
+                        <span class="menu-title">Orders</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="collapse" id="ui-basic">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item"> <a class="nav-link" href="{{ route('seller.orderManage') }}">New</a>
+                            </li>
+                            <li class="nav-item"> <a class="nav-link" href="#">2</a>
+                            </li>
+                            <li class="nav-item"> <a class="nav-link" href="#">3</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            @endif
+
+            @if (Auth::user()->role == 'bartender')
+                <li class="nav-item menu-items">
+                    <a class="nav-link" href="{{ route('bartender.getReceiveOrder') }}">
+                        <span class="menu-icon">
+                            <i class="mdi mdi-laptop"></i>
+                        </span>
+                        <span class="menu-title">Receive Order</span>
+                    </a>
+                </li>
             @endif
         @endif
     </ul>
