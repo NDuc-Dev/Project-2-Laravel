@@ -312,7 +312,7 @@ $(document).ready(function () {
                     });
                 } else {
                     window.location.href =
-                        "/manage/staff/get-update-staff-" + userId;
+                        "/manage/staffs/update-staff-" + userId;
                 }
             },
             error: function (xhr, status, error) {

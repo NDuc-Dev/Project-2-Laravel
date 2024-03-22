@@ -73,7 +73,7 @@
                                             <select id="role" name="role" class="form-control">
                                                 <option value="" selected>--Choose a Role--</option>
                                                 <option value="bartender">Bartender</option>
-                                                <option value="saler">Saler</option>
+                                                <option value="seller">Seller</option>
                                             </select>
                                         </div>
                                         <button type="submit" class="btn btn-outline-primary me-2"

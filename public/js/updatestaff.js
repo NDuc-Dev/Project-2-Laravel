@@ -70,7 +70,7 @@ $(document).ready(function () {
                                     showConfirmButton: false,
                                     timer: 1500
                                 }).then(() => {
-                                    window.location.href = '/manage/staff/staff-management';
+                                    window.location.href = '/manage/staffs/staff-management';
                                 });
                             }
                             else{
@@ -157,7 +157,7 @@ $(document).ready(function () {
         var csrfToken = $('meta[name="csrf-token"]').attr('content');
         showSpinner();
         $.ajax({
-            url: '/manage/staff/reset-password-' + userId,
+            url: '/manage/staffs/reset-password-' + userId,
             method: 'POST',
             headers: {
                 'X-CSRF-TOKEN': csrfToken,
