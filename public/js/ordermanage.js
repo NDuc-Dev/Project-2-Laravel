@@ -216,13 +216,13 @@ $(document).ready(function () {
         });
     });
 
-   
     $(document).on("click", ".dropdown-item", function () {
         var table = $("#result").DataTable();
         var rowIdx = table.cell($(this).closest("td, li")).index().row;
         var rowData = table.row(rowIdx).data();
         var productId = rowData.product_id;
-        dataId = $(this).data("id");
+        datasizeId = $(this).data("id");
+        dataSize = $(this).text();
         $.ajax({
             url: `get-data-product-size-{id}`,
             method: "GET",
@@ -238,12 +238,13 @@ $(document).ready(function () {
                     console.log(response);
                     for (var i = 0; i < productSizes.length; i++) {
                         if (
-                            productSizes[i].size_id == dataId &&
+                            productSizes[i].size_id == datasizeId &&
                             productSizes[i].product_id == productId
                         ) {
                             var matches = productSizes[i];
                             var rowDataProduct = {
-                                product_name: rowData.product_name,
+                                product_name:
+                                    rowData.product_name + " " + dataSize,
                                 size: matches.size_id,
                                 product_size_id: matches.product_size_id,
                                 unit_price: matches.unit_price,
@@ -304,7 +305,6 @@ $(document).ready(function () {
         searching: false,
         columns: [
             { data: "product_name", title: "Product" },
-            // { data: "unit_price", title: "Unit Price" },
             { data: "quantity", title: "Quantity" },
             { data: "amount", title: "Amount" },
         ],
@@ -334,10 +334,10 @@ $(document).ready(function () {
                         render: function (data, type, row) {
                             var html = '<div class="d-flex">';
                             html +=
-                                '<i class="fa-solid fa-minus px-2 border mx-2 btn btn-outline-primary mb-1"></i>';
+                                '<button class="fa-solid fa-minus px-2 border mx-2 btn btn-outline-primary mb-1"></button>';
                             html += '<div class="mt-1">' + data + "</div>";
                             html +=
-                                '<i class="fa-solid fa-plus px-2 border mx-2 btn btn-outline-primary mb-1"></i>';
+                                '<button class="fa-solid fa-plus px-2 border mx-2 btn btn-outline-primary mb-1"></button>';
                             html += "</div>";
                             return html;
                         },
@@ -441,29 +441,38 @@ $(document).ready(function () {
         var rowData = table.row(rowIdx).data(); // Lấy dữ liệu của dòng được click
 
         var quantity = rowData.quantity;
-        if ($(this).hasClass("fa-plus")) {
+        var amount = rowData.amount;
+        var unit_price = rowData.unit_price;
+        if ($(this).hasClass("fa-plus") && quantity < 10) {
             quantity++;
-        } else {
+            amount = quantity * unit_price;
+        } else if ($(this).hasClass("fa-minus") && quantity > 1) {
             if (quantity > 1) {
                 quantity--;
+                amount = quantity * unit_price;
             } else if (quantity == 1) {
             }
         }
-        
-        // Cập nhật giá trị quantity trong dữ liệu và cập nhật lại bảng
+
         rowData.quantity = quantity;
+        rowData.amount = amount;
         table.row(rowIdx).data(rowData).draw(false);
-        
+
         formatTotal(checkTotal(dataOrders));
         // Cập nhật lại tổng tiền
     });
 
     $("#productOrder").on("click", ".btn-delete-product", function () {
         var table = $("#productOrder").DataTable();
-        var rowIdx = table.cell($(this).closest("td, li")).index().row; // Lấy chỉ số dòng của ô chứa nút được click
-        var rowData = table.row(rowIdx).data(); // Lấy dữ liệu của dòng được click
+        var rowIdx = table.cell($(this).closest("td, li")).index().row;
+        var rowData = table.row(rowIdx).data();
         console.log(rowData);
-
+        table.row(rowIdx).remove().draw();
+        dataOrders.splice(rowIdx, 1);
+        if (dataOrders.length == 0) {
+            table.destroy();
+        }
+        console.log(dataOrders);
         // Cập nhật lại tổng tiền
         formatTotal(checkTotal(dataOrders));
     });
@@ -551,7 +560,6 @@ $(document).ready(function () {
                                     var orderPendingTable =
                                         $("#orderPendingTable").DataTable();
                                     orderPendingTable.ajax.reload();
-                                    window.open(receipt_path);
                                     removeDataProductTable();
                                 });
                             });
@@ -584,7 +592,7 @@ $(document).ready(function () {
         formattedTime = "";
     }
 
-    $("#orderPendingTable").DataTable({
+    var orderPending = $("#orderPendingTable").DataTable({
         ajax: {
             url: "get-data-order-inprogress",
             dataSrc: "data",
@@ -644,4 +652,8 @@ $(document).ready(function () {
             // },
         ],
     });
+
+    setInterval(function() {
+        orderPending.ajax.reload();
+    }, 30000);
 });

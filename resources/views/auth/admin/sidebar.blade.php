@@ -117,9 +117,17 @@
                 <li class="nav-item menu-items">
                     <a class="nav-link" href="{{ route('bartender.getReceiveOrder') }}">
                         <span class="menu-icon">
-                            <i class="mdi mdi-laptop"></i>
+                            <i class="fa-solid fa-bars"></i>
                         </span>
                         <span class="menu-title">Receive Order</span>
+                    </a>
+                </li>
+                <li class="nav-item menu-items">
+                    <a class="nav-link" href="{{ route('') }}">
+                        <span class="menu-icon">
+                            <i class="fa-solid fa-mug-hot"></i>
+                        </span>
+                        <span class="menu-title">Products</span>
                     </a>
                 </li>
             @endif

@@ -93,5 +93,9 @@ Route::GROUP(['prefix' => 'bartender'], function () {
 
         Route::GET('/get-data-order-details-{id}',[PrepareOrderController::class, 'getDataOrderDetails']);
 
+        Route::GET('/check-order-inprogress',[PrepareOrderController::class, 'checkOrderInprocessByBartender']);
+
+        Route::POST('/change-status-order-to-ready-{id}',[PrepareOrderController::class,'changeOrderToReadyStatus']);
+
     });
 })->middleware('checRole, bartender');

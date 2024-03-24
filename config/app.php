@@ -186,5 +186,6 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
+    'timezone' => 'Asia/Ho_Chi_Minh',
 
 ];
