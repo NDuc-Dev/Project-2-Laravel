@@ -32,7 +32,7 @@
                 <div class="card-body">
                     <h4 class="card-title">Create New Order</h4>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-5">
                             <div class="form-group mt-3 ms-2 me-2"id="scrollable-dropdown-menu">
                                 <label for="search-input">Search Product</label>
                                 <input type="text" id="search-input" name="search-input" class="typeahead"
@@ -50,7 +50,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6 mt-4">
+                        <div class="col-md-7 mt-4">
                             <div class="card bg-dark">
                                 <div id='order-details-after' class="card-body d-none">
                                     {{-- <h4 class="card-title">Order</h4> --}}

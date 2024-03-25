@@ -4,6 +4,7 @@ use App\Http\Controllers\auth\admin\ProductController;
 use App\Http\Controllers\auth\admin\StaffManagementController;
 use App\Http\Controllers\auth\admin\AdminController;
 use App\Http\Controllers\auth\bartender\PrepareOrderController;
+use App\Http\Controllers\auth\bartender\ProductStockController;
 use App\Http\Controllers\auth\seller\OrderManageController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
@@ -80,6 +81,8 @@ Route::GROUP(['prefix' => 'seller'], function () {
 
         Route::GET('/get-data-order-inprogress', [OrderManageController::class, 'getOrderListData']);
 
+        Route::GET('/get-all-data-products',[OrderManageController::class, 'getDataProducts']);
+
     });
 })->middleware('checRole, seller');
 
@@ -97,5 +100,9 @@ Route::GROUP(['prefix' => 'bartender'], function () {
 
         Route::POST('/change-status-order-to-ready-{id}',[PrepareOrderController::class,'changeOrderToReadyStatus']);
 
+    });
+
+    Route::GROUP(['prefix' => 'product'],function(){
+        Route::GET('/get-product-stock', [ProductStockController::class, 'getProductStock'])->name('bartender.getProductStock');
     });
 })->middleware('checRole, bartender');

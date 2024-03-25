@@ -195,4 +195,9 @@ class OrderManageController extends Controller
         Storage::disk('public')->put('receipt/' . $fileName, $pdfContent);
         return Storage::url('receipt/' . $fileName);
     }
+
+    public function getDataProducts(){
+        $data = Products::all();
+        return response()->json($data);
+    }
 }

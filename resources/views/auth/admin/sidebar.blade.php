@@ -123,7 +123,7 @@
                     </a>
                 </li>
                 <li class="nav-item menu-items">
-                    <a class="nav-link" href="{{ route('') }}">
+                    <a class="nav-link" href="{{ route('bartender.getProductStock') }}">
                         <span class="menu-icon">
                             <i class="fa-solid fa-mug-hot"></i>
                         </span>
