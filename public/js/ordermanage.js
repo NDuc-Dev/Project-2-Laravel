@@ -655,5 +655,5 @@ $(document).ready(function () {
 
     setInterval(function() {
         orderPending.ajax.reload();
-    }, 30000);
+    }, 10000);
 });

@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\auth\admin\ProductController;
 use App\Http\Controllers\auth\admin\StaffManagementController;
-use App\Http\Controllers\auth\admin\AdminController;
 use App\Http\Controllers\auth\bartender\PrepareOrderController;
 use App\Http\Controllers\auth\bartender\ProductStockController;
 use App\Http\Controllers\auth\seller\OrderManageController;
@@ -22,7 +21,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('loading_spinner');
+    return view('test');
+});
+
+Route::get('/a', function () {
+    return view('logintest');
 });
 
 Auth::routes();
@@ -104,5 +107,9 @@ Route::GROUP(['prefix' => 'bartender'], function () {
 
     Route::GROUP(['prefix' => 'product'],function(){
         Route::GET('/get-product-stock', [ProductStockController::class, 'getProductStock'])->name('bartender.getProductStock');
+
+        Route::GET('/get-data-products', [ProductStockController::class, 'getDataProduct']);
+
+        Route::POST('/change-status-instock-{id}', [ProductStockController:: class, 'changeStatusInstock']);
     });
 })->middleware('checRole, bartender');

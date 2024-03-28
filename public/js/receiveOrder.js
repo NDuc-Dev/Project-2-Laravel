@@ -11,12 +11,10 @@ $(document).ready(function () {
                 "X-CSRF-TOKEN": csrfToken,
             },
             success: function (response) {
-                console.log(response);
                 if (response.success) {
                     renderOrderProcessngTable(response.data, response.orderId);
                     orderInprogress = true;
                     orderInprogressData = response.order;
-                    console.log(orderInprogressData);
                 } else {
                 }
             },

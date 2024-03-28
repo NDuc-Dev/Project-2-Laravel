@@ -21,5 +21,5 @@
     </div>
 </div>
 
-<script></script>
+<script  src="{{ asset('js/productstock.js') }}"></script>
 @endsection
