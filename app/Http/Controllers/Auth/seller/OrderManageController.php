@@ -188,7 +188,7 @@ class OrderManageController extends Controller
         $pdf->SetFont('Arial', 'B', 9);
         $pdf->Cell(0, 7, iconv("UTF-8", "ISO-8859-1", "** Share your comments with us **"), '', 0, 'C');
         $pdf->Ln(5);
-        $pdf->Cell(0, 7, iconv("UTF-8", "ISO-8859-1", "customerserrviceNDCCoffee@gmail.com "), '', 0, 'C');
+        $pdf->Cell(0, 7, iconv("UTF-8", "ISO-8859-1", "serviceNDCCoffee@gmail.com "), '', 0, 'C');
         $pdf->Ln(9);
         $pdfContent = $pdf->Output('S');
         $fileName = 'receipt_' . 'id_' . $orderCode . '.pdf';

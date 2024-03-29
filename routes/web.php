@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\auth\admin\CategoryController;
 use App\Http\Controllers\auth\admin\ProductController;
 use App\Http\Controllers\auth\admin\StaffManagementController;
 use App\Http\Controllers\auth\bartender\PrepareOrderController;
@@ -66,6 +67,17 @@ Route::GROUP(['prefix' => 'manage'], function () {
         Route::GET('/update-product-{id}', [ProductController::class, 'getUpdateProduct'])->name('admin.getupdateProduct');
 
         Route::PUT('/put-update-product-{id}', [ProductController::class, 'putUpdateProduct'])->name('admin.putUpdateProduct');
+    });
+
+    Route::GROUP(['prefix' => 'categories'], function () {
+
+        Route::GET('/get-category', [CategoryController::class, 'getCategories'])->name('admin.getCategories');
+
+        Route::GET('/get-data-category', [CategoryController::class, 'getDataCategories'])->name('admin.getDataCategories');
+
+        Route::GET('/get-data-products-{category}', [CategoryController::class, 'getDataProduct'])->name('admin.category.getDataProduct');
+
+
     });
 })->middleware('checRole, seller');
 

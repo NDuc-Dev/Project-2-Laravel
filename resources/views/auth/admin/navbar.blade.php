@@ -22,7 +22,6 @@
 
             <ul class="navbar-nav navbar-nav-right">
                 @guest
-
                     @if (Route::has('login'))
                         <li class="nav-item d-none d-lg-block">
                             <a href="{{ route('login') }}" class="nav-link">{{ __('Sign In') }}</a>

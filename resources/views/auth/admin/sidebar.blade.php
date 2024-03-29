@@ -83,9 +83,17 @@
                 <li class="nav-item menu-items">
                     <a class="nav-link" href="{{ route('admin.productManagement') }}">
                         <span class="menu-icon">
-                            <i class="fa-solid fa-regular fa-list"></i>
+                            <i class="fa-solid fa-mug-hot"></i>
                         </span>
                         <span class="menu-title">Products</span>
+                    </a>
+                </li>
+                <li class="nav-item menu-items">
+                    <a class="nav-link" href="{{ route('admin.getCategories') }}">
+                        <span class="menu-icon">
+                            <i class="fa-solid fa-regular fa-list"></i>
+                        </span>
+                        <span class="menu-title">Category</span>
                     </a>
                 </li>
             @endif

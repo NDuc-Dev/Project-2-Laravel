@@ -466,7 +466,6 @@ $(document).ready(function () {
         var table = $("#productOrder").DataTable();
         var rowIdx = table.cell($(this).closest("td, li")).index().row;
         var rowData = table.row(rowIdx).data();
-        console.log(rowData);
         table.row(rowIdx).remove().draw();
         dataOrders.splice(rowIdx, 1);
         if (dataOrders.length == 0) {
