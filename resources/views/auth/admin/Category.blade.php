@@ -33,8 +33,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form id="form-validate" method="POST" action="{{ route('admin.createProduct') }}"
-                                    enctype="multipart/form-data">
+                                <form id="form-validate" method="POST" action="{{ route('admin.createCategory') }}">
                                     @csrf
                                     <div class="form-group">
                                         <label for="category_name">{{ __('Category Name') }}</label>
@@ -52,8 +51,8 @@
                                             class="col-md-4 col-form-label text-md-start">{{ __('Category group') }}</label>
                                         <select id="categorySelect" name="categorySelect" class="form-control">
                                             <option value="" selected>--Choose a Category--</option>
-                                            <option value="1" selected>Drink</option>
-                                            <option value="2" selected>Food</option>
+                                            <option value="1" >Drink</option>
+                                            <option value="2" >Food</option>
                                         </select>
                                     </div>
                                     <button type="submit" class="btn btn-outline-primary me-2">Submit</button>

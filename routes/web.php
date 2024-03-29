@@ -25,6 +25,10 @@ Route::get('/', function () {
     return view('test');
 });
 
+Route::get('/home', function () {
+    return view('home');
+});
+
 Route::get('/a', function () {
     return view('logintest');
 });
@@ -77,6 +81,7 @@ Route::GROUP(['prefix' => 'manage'], function () {
 
         Route::GET('/get-data-products-{category}', [CategoryController::class, 'getDataProduct'])->name('admin.category.getDataProduct');
 
+        Route::POST('/create-category', [CategoryController::class, 'createCategory'])->name('admin.createCategory');
 
     });
 })->middleware('checRole, seller');

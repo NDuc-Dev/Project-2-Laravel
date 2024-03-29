@@ -126,6 +126,8 @@ $(document).ready(function () {
                                 var form =
                                     document.getElementById("form-validate");
                                 form.reset();
+                                $(".food-size").addClass("d-none");
+                                $(".drink-size").addClass("d-none");
                                 removeImage();
                             });
                         },
