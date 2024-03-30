@@ -23,4 +23,9 @@ class Sizes extends Model
     {
         return $this->hasMany(ProductSizes::class, 'size_id', 'size_id');
     }
+
+    public function products()
+    {
+        return $this->belongsToMany(Products::class, 'productsizes','size_id', 'product_id')->withPivot('unit_price');
+    }
 }

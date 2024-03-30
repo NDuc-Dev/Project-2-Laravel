@@ -7,6 +7,7 @@ use App\Http\Controllers\auth\bartender\PrepareOrderController;
 use App\Http\Controllers\auth\bartender\ProductStockController;
 use App\Http\Controllers\auth\seller\OrderManageController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MenuController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -25,17 +26,13 @@ Route::get('/', function () {
     return view('test');
 });
 
-Route::get('/home', function () {
-    return view('home');
-});
-
-Route::get('/a', function () {
-    return view('logintest');
-});
 
 Auth::routes();
 
-Route::GET('/home', [HomeController::class, 'index'])->name('home');
+Route::GET('/home', [HomeController::class, 'index'])->name('home')->withoutMiddleware(['auth']);
+
+Route::GET('/menu', [MenuController::class, 'index'])->name('menu')->withoutMiddleware(['auth']);
+
 
 Route::GROUP(['prefix' => 'manage'], function () {
 

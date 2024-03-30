@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
     <div class="container">
-        <a class="navbar-brand" href="index.html">NDC<small>Coffee</small></a>
+        <a class="navbar-brand" href="{{ route('home') }}">NDC<small>Coffee</small></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav"
             aria-expanded="false" aria-label="Toggle navigation">
             <span class="oi oi-menu">
@@ -8,11 +8,11 @@
         </button>
         <div class="collapse navbar-collapse" id="ftco-nav">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item active">
-                    <a href="#" class="nav-link">Home</a>
+                <li class="nav-item">
+                    <a href="{{ route('home') }}" class="nav-link">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">Menu</a>
+                    <a href="{{ route('menu') }}" class="nav-link">Menu</a>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link">About Us</a>
@@ -48,7 +48,6 @@
                                 <img class="img-xs rounded-circle" src="/admin/assets/images/faces/face15.jpg"
                                     alt="" style="width: 30px; height: 30px;">
                                 <p class="px-2 mb-0 d-none d-sm-block navbar-profile-name">{{ Auth::user()->name }}</p>
-                                {{-- <i class="mdi mdi-menu-down d-none d-sm-block"></i> --}}
                                 <i class="fa-solid fa-caret-down d-none d-sm-block ms-1"></i>
                             </div>
                         </a>
