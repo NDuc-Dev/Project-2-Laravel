@@ -164,7 +164,7 @@
                         <p class="mb-4">Far far away, behind the word mountains, far from the countries Vokalia and
                             Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the
                             coast of the Semantics, a large language ocean.</p>
-                        <p><a href="#" class="btn btn-primary btn-outline-primary px-4 py-3">View Full Menu</a></p>
+                        <p><a href="{{ route('menu')}}" class="btn btn-primary btn-outline-primary px-4 py-3">View Full Menu</a></p>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -278,96 +278,44 @@
 								<div class="tab-pane fade active show" id="v-pills-2" role="tabpanel"
 									aria-labelledby="v-pills-2-tab">
 									<div class="row">
-										<div class="col-md-4 text-center">
-											<div class="menu-wrap">
-												<a href="#" class="menu-img img mb-4"
-													style="background-image:url({{ asset('guest/images/drink-1.jpg') }});"></a>
-												<div class="text">
-													<h3><a href="#">Lemonade Juice</a></h3>
-													<p>Far far away, behind the word mountains, far from the countries
-														Vokalia and Consonantia.</p>
-													<p class="price"><span>29.000 VND</span></p>
-													<p><a href="#" class="btn btn-primary btn-outline-primary">Add to
-															cart</a></p>
-												</div>
-											</div>
-										</div>
-										<div class="col-md-4 text-center">
-											<div class="menu-wrap">
-												<a href="#" class="menu-img img mb-4"
-													style="background-image: url({{ asset('guest/images/drink-2.jpg') }})"></a>
-												<div class="text">
-													<h3><a href="#">Pineapple Juice</a></h3>
-													<p>Far far away, behind the word mountains, far from the countries
-														Vokalia and Consonantia.</p>
-													<p class="price"><span>29.000 VND</span></p>
-													<p><a href="#" class="btn btn-primary btn-outline-primary">Add to
-															cart</a></p>
-												</div>
-											</div>
-										</div>
-										<div class="col-md-4 text-center">
-											<div class="menu-wrap">
-												<a href="#" class="menu-img img mb-4"
-													style="background-image:url({{ asset('guest/images/drink-3.jpg') }})"></a>
-												<div class="text">
-													<h3><a href="#">Soda Drinks</a></h3>
-													<p>Far far away, behind the word mountains, far from the countries
-														Vokalia and Consonantia.</p>
-													<p class="price"><span>29.000 VND</span></p>
-													<p><a href="#" class="btn btn-primary btn-outline-primary">Add to
-															cart</a></p>
-												</div>
-											</div>
-										</div>
+										@foreach ($drinkProducts as $product)
+                                            <div class="col-md-4 text-center">
+                                                <div class="menu-wrap">
+                                                    <a href="#" class="menu-img img mb-4"
+                                                        style="background-image: url({{ $product->product_images }});"></a>
+                                                    <div class="text">
+                                                        <h3><a href="#">{{ $product->product_name }}</a></h3>
+                                                        {{-- <p>{{ $product->descriptions}}</p> --}}
+                                                        <p>{{ $product->descriptions }}</p>
+                                                        <p class="price"><span>{{ $product->unit_price }} VND</span></p>
+                                                        <p><a href="#" class="btn btn-primary btn-outline-primary">Add
+                                                                to cart</a></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
 									</div>
 								</div>
 
 								<div class="tab-pane fade" id="v-pills-3" role="tabpanel"
 									aria-labelledby="v-pills-3-tab">
 									<div class="row">
-										<div class="col-md-4 text-center">
-											<div class="menu-wrap">
-												<a href="#" class="menu-img img mb-4"
-													style="background-image: url({{ asset('guest/images/dessert-1.jpg') }});"></a>
-												<div class="text">
-													<h3><a href="#">Hot Cake Honey</a></h3>
-													<p>Far far away, behind the word mountains, far from the countries
-														Vokalia and Consonantia.</p>
-													<p class="price"><span>29.000 VND</span></p>
-													<p><a href="#" class="btn btn-primary btn-outline-primary">Add to
-															cart</a></p>
-												</div>
-											</div>
-										</div>
-										<div class="col-md-4 text-center">
-											<div class="menu-wrap">
-												<a href="#" class="menu-img img mb-4"
-													style="background-image:url({{ asset('guest/images/dessert-2.jpg') }})"></a>
-												<div class="text">
-													<h3><a href="#">Hot Cake Honey</a></h3>
-													<p>Far far away, behind the word mountains, far from the countries
-														Vokalia and Consonantia.</p>
-													<p class="price"><span>29.000 VND</span></p>
-													<p><a href="#" class="btn btn-primary btn-outline-primary">Add to
-															cart</a></p>
-												</div>
-											</div>
-										</div>
-										<div class="col-md-4 text-center">
-											<div class="menu-wrap">
-												<a href="#" class="menu-img img mb-4"
-													style="background-image: url({{ asset('guest/images/dessert-3.jpg') }})"></a>
-												<div class="text">
-													<h3><a href="#">Hot Cake Honey</a></h3>
-													<p>Far far away, behind the word mountains, far from the countries
-														Vokalia and Consonantia.</p>
-													<p class="price"><span>29.000 VND</span></p>
-													<p><a href="#" class="btn btn-primary btn-outline-primary">Add to
-															cart</a></p>
-												</div>
-											</div>
-										</div>
+										@foreach ($foodProducts as $product)
+                                        <div class="col-md-4 text-center">
+                                            <div class="menu-wrap">
+                                                <a href="#" class="menu-img img mb-4"
+                                                    style="background-image: url({{ $product->product_images }});"></a>
+                                                <div class="text">
+                                                    <h3><a href="#">{{ $product->product_name }}</a></h3>
+                                                    {{-- <p>{{ $product->descriptions}}</p> --}}
+                                                    <p>{{ $product->descriptions }}</p>
+                                                    <p class="price"><span>{{ $product->unit_price }} VND</span></p>
+                                                    <p><a href="#" class="btn btn-primary btn-outline-primary">Add
+                                                            to cart</a></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
 									</div>
 								</div>
 							</div>

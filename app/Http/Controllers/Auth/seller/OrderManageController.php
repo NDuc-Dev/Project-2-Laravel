@@ -45,7 +45,7 @@ class OrderManageController extends Controller
         $product_id = $request->input('product_id');
 
         $productSize = ProductSizes::where('product_id', $product_id)->get();
-
+ 
         if ($productSize) {
             return response()->json(['success' => true, 'productSize' => $productSize]);
         } else {

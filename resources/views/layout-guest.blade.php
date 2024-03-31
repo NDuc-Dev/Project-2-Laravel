@@ -66,6 +66,7 @@
     <script src="{{ asset('js/misc1.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/popper.min.js') }}"></script>
+    <script src="{{asset('js/checksize.js')}}"></script>
 </body>
 
 </html>

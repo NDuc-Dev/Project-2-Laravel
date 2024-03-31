@@ -15,7 +15,7 @@
                     <a href="{{ route('menu') }}" class="nav-link">Menu</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">About Us</a>
+                    <a href="{{route('about')}}" class="nav-link">About Us</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown"

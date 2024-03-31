@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AboutController;
 use App\Http\Controllers\auth\admin\CategoryController;
 use App\Http\Controllers\auth\admin\ProductController;
 use App\Http\Controllers\auth\admin\StaffManagementController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\auth\bartender\ProductStockController;
 use App\Http\Controllers\auth\seller\OrderManageController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\ProductDetailsController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -22,16 +24,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('test');
-});
-
 
 Auth::routes();
 
 Route::GET('/home', [HomeController::class, 'index'])->name('home')->withoutMiddleware(['auth']);
 
 Route::GET('/menu', [MenuController::class, 'index'])->name('menu')->withoutMiddleware(['auth']);
+
+Route::GET('/about', [AboutController::class, 'index'])->name('about')->withoutMiddleware(['auth']);
+
+Route::GET('/product-details-{id}', [ProductDetailsController::class, 'index'])->name('productDetails')->withoutMiddleware(['auth']);
 
 
 Route::GROUP(['prefix' => 'manage'], function () {
@@ -79,7 +81,6 @@ Route::GROUP(['prefix' => 'manage'], function () {
         Route::GET('/get-data-products-{category}', [CategoryController::class, 'getDataProduct'])->name('admin.category.getDataProduct');
 
         Route::POST('/create-category', [CategoryController::class, 'createCategory'])->name('admin.createCategory');
-
     });
 })->middleware('checRole, seller');
 
@@ -98,8 +99,7 @@ Route::GROUP(['prefix' => 'seller'], function () {
 
         Route::GET('/get-data-order-inprogress', [OrderManageController::class, 'getOrderListData']);
 
-        Route::GET('/get-all-data-products',[OrderManageController::class, 'getDataProducts']);
-
+        Route::GET('/get-all-data-products', [OrderManageController::class, 'getDataProducts']);
     });
 })->middleware('checRole, seller');
 
@@ -111,19 +111,18 @@ Route::GROUP(['prefix' => 'bartender'], function () {
 
         Route::GET('/recrive-order', [PrepareOrderController::class, 'getReceiveOrder'])->name('bartender.getReceiveOrder');
 
-        Route::GET('/get-data-order-details-{id}',[PrepareOrderController::class, 'getDataOrderDetails']);
+        Route::GET('/get-data-order-details-{id}', [PrepareOrderController::class, 'getDataOrderDetails']);
 
-        Route::GET('/check-order-inprogress',[PrepareOrderController::class, 'checkOrderInprocessByBartender']);
+        Route::GET('/check-order-inprogress', [PrepareOrderController::class, 'checkOrderInprocessByBartender']);
 
-        Route::POST('/change-status-order-to-ready-{id}',[PrepareOrderController::class,'changeOrderToReadyStatus']);
-
+        Route::POST('/change-status-order-to-ready-{id}', [PrepareOrderController::class, 'changeOrderToReadyStatus']);
     });
 
-    Route::GROUP(['prefix' => 'product'],function(){
+    Route::GROUP(['prefix' => 'product'], function () {
         Route::GET('/get-product-stock', [ProductStockController::class, 'getProductStock'])->name('bartender.getProductStock');
 
         Route::GET('/get-data-products', [ProductStockController::class, 'getDataProduct']);
 
-        Route::POST('/change-status-instock-{id}', [ProductStockController:: class, 'changeStatusInstock']);
+        Route::POST('/change-status-instock-{id}', [ProductStockController::class, 'changeStatusInstock']);
     });
 })->middleware('checRole, bartender');

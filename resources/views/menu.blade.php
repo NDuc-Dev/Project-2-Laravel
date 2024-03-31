@@ -90,101 +90,53 @@
                                                         {{-- <p>{{ $product->descriptions}}</p> --}}
                                                         <p>{{ $product->descriptions }}</p>
                                                         <p class="price"><span>{{ $product->unit_price }} VND</span></p>
-                                                        <p><a href="#" class="btn btn-primary btn-outline-primary">Add
+                                                        {{-- <p><button data-toggle="modal" data-target="#form-focus"
+                                                                class="btn btn-primary btn-outline-primary">Add
+                                                                to cart</button></p> --}}
+                                                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                            data-target="#exampleModal">
+                                                            Launch demo modal
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                        {{-- <div class="modal fade" id="form-focus" tabindex="-1" role="dialog"
+                                            aria-labelledby="form-focus" aria-hidden="true" id="dialog">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div> --}}
+                                    </div>
+
+                                </div>
+
+                                <div class="tab-pane fade" id="v-pills-3" role="tabpanel" aria-labelledby="v-pills-3-tab">
+                                    <div class="row">
+                                        @foreach ($foodProducts as $product)
+                                            <div class="col-md-4 text-center">
+                                                <div class="menu-wrap">
+                                                    <a href="#" class="menu-img img mb-4"
+                                                        style="background-image: url({{ $product->product_images }});"></a>
+                                                    <div class="text">
+                                                        <h3><a href="#">{{ $product->product_name }}</a></h3>
+                                                        {{-- <p>{{ $product->descriptions}}</p> --}}
+                                                        <p>{{ $product->descriptions }}</p>
+                                                        <p class="price"><span>{{ $product->unit_price }} VND</span>
+                                                        </p>
+                                                        <p><a href="" class="btn btn-primary btn-outline-primary">Add
                                                                 to cart</a></p>
                                                     </div>
                                                 </div>
                                             </div>
                                         @endforeach
-                                    </div>
-                                </div>
-
-                                <div class="tab-pane fade" id="v-pills-3" role="tabpanel" aria-labelledby="v-pills-3-tab">
-                                    <div class="row">
-                                        <div class="col-md-4 text-center">
-                                            <div class="menu-wrap">
-                                                <a href="#" class="menu-img img mb-4"
-                                                    style="background-image: url({{ asset('guest/images/dessert-1.jpg') }});"></a>
-                                                <div class="text">
-                                                    <h3><a href="#">Hot Cake Honey</a></h3>
-                                                    <p>Far far away, behind the word mountains, far from the countries
-                                                        Vokalia and Consonantia.</p>
-                                                    <p class="price"><span>$2.90</span></p>
-                                                    <p><a href="#" class="btn btn-primary btn-outline-primary">Add
-                                                            to cart</a></p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 text-center">
-                                            <div class="menu-wrap">
-                                                <a href="#" class="menu-img img mb-4"
-                                                    style="background-image: url(images/dessert-2.jpg);"></a>
-                                                <div class="text">
-                                                    <h3><a href="#">Hot Cake Honey</a></h3>
-                                                    <p>Far far away, behind the word mountains, far from the countries
-                                                        Vokalia and Consonantia.</p>
-                                                    <p class="price"><span>$2.90</span></p>
-                                                    <p><a href="#" class="btn btn-primary btn-outline-primary">Add
-                                                            to cart</a></p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 text-center">
-                                            <div class="menu-wrap">
-                                                <a href="#" class="menu-img img mb-4"
-                                                    style="background-image: url(images/dessert-3.jpg);"></a>
-                                                <div class="text">
-                                                    <h3><a href="#">Hot Cake Honey</a></h3>
-                                                    <p>Far far away, behind the word mountains, far from the countries
-                                                        Vokalia and Consonantia.</p>
-                                                    <p class="price"><span>$2.90</span></p>
-                                                    <p><a href="#" class="btn btn-primary btn-outline-primary">Add
-                                                            to cart</a></p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 text-center">
-                                            <div class="menu-wrap">
-                                                <a href="#" class="menu-img img mb-4"
-                                                    style="background-image: url(images/dessert-4.jpg);"></a>
-                                                <div class="text">
-                                                    <h3><a href="#">Hot Cake Honey</a></h3>
-                                                    <p>Far far away, behind the word mountains, far from the countries
-                                                        Vokalia and Consonantia.</p>
-                                                    <p class="price"><span>$2.90</span></p>
-                                                    <p><a href="#" class="btn btn-primary btn-outline-primary">Add
-                                                            to cart</a></p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 text-center">
-                                            <div class="menu-wrap">
-                                                <a href="#" class="menu-img img mb-4"
-                                                    style="background-image: url(images/dessert-5.jpg);"></a>
-                                                <div class="text">
-                                                    <h3><a href="#">Hot Cake Honey</a></h3>
-                                                    <p>Far far away, behind the word mountains, far from the countries
-                                                        Vokalia and Consonantia.</p>
-                                                    <p class="price"><span>$2.90</span></p>
-                                                    <p><a href="#" class="btn btn-primary btn-outline-primary">Add
-                                                            to cart</a></p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 text-center">
-                                            <div class="menu-wrap">
-                                                <a href="#" class="menu-img img mb-4"
-                                                    style="background-image: url(images/dessert-6.jpg);"></a>
-                                                <div class="text">
-                                                    <h3><a href="#">Hot Cake Honey</a></h3>
-                                                    <p>Far far away, behind the word mountains, far from the countries
-                                                        Vokalia and Consonantia.</p>
-                                                    <p class="price"><span>$2.90</span></p>
-                                                    <p><a href="#" class="btn btn-primary btn-outline-primary">Add
-                                                            to cart</a></p>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -194,4 +146,21 @@
             </div>
         </div>
     </section>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
