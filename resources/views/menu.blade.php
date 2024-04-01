@@ -174,23 +174,23 @@
                                     <div class="w-100"></div>
                                     <div class="input-group col-md-7 d-flex mb-3">
                                         <span class="input-group-btn mr-2">
-                                            <button type="button" class="quantity-left-minus btn" data-type="minus"
+                                            <button type="button" class="quantity-left-minus btn drink-minus" data-type="minus"
                                                 data-field="">
                                                 <i class="icon-minus"></i>
                                             </button>
                                         </span>
-                                        <input type="text" id="quantity" name="quantity"
+                                        <input type="text" id="quantitydrink" name="quantitydrink"
                                             class="form-control input-number" value="1" min="1"
-                                            max="100">
+                                            max="10">
                                         <span class="input-group-btn ml-2">
-                                            <button type="button" class="quantity-right-plus btn" data-type="plus"
+                                            <button type="button" class="quantity-right-plus btn drink-plus" data-type="plus"
                                                 data-field="">
                                                 <i class="icon-plus"></i>
                                             </button>
                                         </span>
                                     </div>
                                 </div>
-                                <p><a href="#" class="btn btn-primary py-3 px-5">Add to Cart</a></p>
+                                <p><a href="#" id="add-to-cart-drink" class="btn btn-primary py-3 px-5">Add to Cart</a></p>
                             </div>
                         </div>
                     </div>
@@ -223,23 +223,23 @@
                                     <div class="w-100"></div>
                                     <div class="input-group col-md-7 d-flex mb-3">
                                         <span class="input-group-btn mr-2">
-                                            <button type="button" class="quantity-left-minus btn" data-type="minus"
+                                            <button type="button" class="quantity-left-minus btn food-minus" data-type="minus"
                                                 data-field="">
                                                 <i class="icon-minus"></i>
                                             </button>
                                         </span>
-                                        <input type="text" id="quantity" name="quantity"
+                                        <input type="text" id="quantityfood" name="quantityfood"
                                             class="form-control input-number" value="1" min="1"
-                                            max="100">
+                                            max="10">
                                         <span class="input-group-btn ml-2">
-                                            <button type="button" class="quantity-right-plus btn" data-type="plus"
+                                            <button type="button" class="quantity-right-plus btn food-plus" data-type="plus"
                                                 data-field="">
                                                 <i class="icon-plus"></i>
                                             </button>
                                         </span>
                                     </div>
                                 </div>
-                                <p><a href="" class="btn btn-primary py-3 px-5">Add to Cart</a></p>
+                                <p><a href=""  id="add-to-cart-food" class="btn btn-primary py-3 px-5">Add to Cart</a></p>
                             </div>
                         </div>
                     </div>

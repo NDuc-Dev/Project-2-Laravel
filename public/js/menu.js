@@ -111,4 +111,72 @@ document.addEventListener("DOMContentLoaded", function () {
             // sizeSelect.dispatchEvent(new Event("change"));
         });
     });
+
+    var inputQuantityfood = document.getElementById("quantityfood");
+    var inputQuantitydrink = document.getElementById("quantitydrink");
+    var btnMinusDrink = document.querySelector(".drink-minus");
+    var btnPlusDrink = document.querySelector(".drink-plus");
+    var btnMinusFood = document.querySelector(".food-minus");
+    var btnPlusFood = document.querySelector(".food-plus");
+
+    // Bắt sự kiện khi người dùng nhấn nút minus
+
+    btnMinusFood.addEventListener("click", function () {
+        var currentValue = parseInt(inputQuantityfood.value);
+        if (!isNaN(currentValue) && currentValue > 1) {
+            inputQuantityfood.value = currentValue - 1;
+        }
+    });
+
+    // Bắt sự kiện khi người dùng nhấn nút plus
+    btnPlusFood.addEventListener("click", function () {
+        var currentValue = parseInt(inputQuantityfood.value);
+        if (
+            !isNaN(currentValue) &&
+            currentValue < parseInt(inputQuantityfood.max)
+        ) {
+            inputQuantityfood.value = currentValue + 1;
+        }
+    });
+
+    btnMinusDrink.addEventListener("click", function () {
+        var currentValue = parseInt(inputQuantity.value);
+        if (!isNaN(currentValue) && currentValue > 1) {
+            inputQuantity.value = currentValue - 1;
+        }
+    });
+
+    // Bắt sự kiện khi người dùng nhấn nút plus
+    btnPlusDrink.addEventListener("click", function () {
+        var currentValue = parseInt(inputQuantitydrink.value);
+        if (
+            !isNaN(currentValue) &&
+            currentValue < parseInt(inputQuantitydrink.max)
+        ) {
+            inputQuantitydrink.value = currentValue + 1;
+        }
+    });
+
+    inputQuantitydrink.addEventListener("input", function () {
+        var value = inputQuantitydrink.value;
+        if (
+            isNaN(value) ||
+            parseInt(value) < parseInt(inputQuantitydrink.min)
+        ) {
+            inputQuantitydrink.value = inputQuantitydrink.min;
+        }
+        if (parseInt(value) > parseInt(inputQuantitydrink.max)) {
+            inputQuantitydrink.value = inputQuantitydrink.max;
+        }
+    });
+
+    inputQuantityfood.addEventListener("input", function () {
+        var value = inputQuantityfood.value;
+        if (isNaN(value) || parseInt(value) < parseInt(inputQuantityfood.min)) {
+            inputQuantityfood.value = inputQuantityfood.min;
+        }
+        if (parseInt(value) > parseInt(inputQuantityfood.max)) {
+            inputQuantityfood.value = inputQuantityfood.max;
+        }
+    });
 });

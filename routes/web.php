@@ -7,6 +7,7 @@ use App\Http\Controllers\auth\admin\StaffManagementController;
 use App\Http\Controllers\auth\bartender\PrepareOrderController;
 use App\Http\Controllers\auth\bartender\ProductStockController;
 use App\Http\Controllers\auth\seller\OrderManageController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ProductDetailsController;
@@ -38,6 +39,8 @@ Route::GET('/product-details-{id}', [ProductDetailsController::class, 'index'])-
 Route::GET('/get-product-food-{id}', [MenuController::class, 'getProductfood'])->name('getProductfood')->withoutMiddleware(['auth']);
 
 Route::GET('/get-product-drink-{id}', [MenuController::class, 'getProductdrink'])->name('getProductdrink')->withoutMiddleware(['auth']);
+
+Route::GET('/cart', [CartController::class, 'index'])->name('cart')->withoutMiddleware(['auth']);
 
 
 Route::GROUP(['prefix' => 'manage'], function () {
