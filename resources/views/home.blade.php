@@ -325,5 +325,5 @@
 			</div>
 		</div>
 	</section>
-
+<script src="{{asset('js/home.js')}}"></script>
 @endsection
