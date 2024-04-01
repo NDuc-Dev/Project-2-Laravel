@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
@@ -41,33 +42,27 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        Auth::logout(); // Đăng xuất người dùng
-
-        // Thực hiện các thao tác khác nếu cần
-        // Ví dụ: Xóa thông tin đăng nhập khác, xóa cookie, ...
-
-        return redirect('/login'); // Chuyển hướng về trang chủ hoặc trang khác sau khi đăng xuất
+        Auth::logout(); 
+        return redirect('/login'); 
     }
 
     public function login(Request $request): RedirectResponse
     {
         try {
-            // Validate dữ liệu từ form đăng nhập
             $this->validateLogin($request);
 
-            // Thực hiện đăng nhập
             $credentials = $request->only('user_name', 'password');
             if (Auth::attempt($credentials)) {
-                // Đăng nhập thành công
+                $userId = Auth::id();
+                session(["user_cart_$userId" => []]);
                 return redirect()->intended('/home');
             }
 
             // Đăng nhập thất bại
             return redirect()->route('login')->with('error', 'Invalid email or password');
         } catch (ValidationException $e) {
-            // Nếu có lỗi validation, chuyển hướng với thông báo lỗi
             return redirect()->route('login')
                 ->withErrors($e->validator)
                 ->withInput();

@@ -1,4 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
+    var inputQuantityfood = document.getElementById("quantityfood");
+    var inputQuantitydrink = document.getElementById("quantitydrink");
+    var btnMinusDrink = document.querySelector(".drink-minus");
+    var btnPlusDrink = document.querySelector(".drink-plus");
+    var btnMinusFood = document.querySelector(".food-minus");
+    var btnPlusFood = document.querySelector(".food-plus");
     var addToCartButtonsfood = document.querySelectorAll("#add-to-cart-food");
     var addToCartButtonsdrink = document.querySelectorAll("#add-to-cart-drink");
     addToCartButtonsfood.forEach(function (button) {
@@ -12,6 +18,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         try {
                             var response = JSON.parse(xhr.responseText);
                             var product = response.product;
+                            document
+                                .querySelector("#product-id-food")
+                                .setAttribute("value", product.product_id);
                             document
                                 .querySelector("#href-img-food")
                                 .setAttribute("href", product.product_images);
@@ -43,6 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
             xhr.send();
         });
     });
+    
     addToCartButtonsdrink.forEach(function (button) {
         var prices;
         button.addEventListener("click", function () {
@@ -56,7 +66,9 @@ document.addEventListener("DOMContentLoaded", function () {
                             var response = JSON.parse(xhr.responseText);
                             var product = response.product;
                             prices = response.prices;
-
+                            document
+                                .querySelector("#product-id-drink")
+                                .setAttribute("value", product.product_id);
                             document
                                 .querySelector("#href-img-drink")
                                 .setAttribute("href", product.product_images);
@@ -112,15 +124,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    var inputQuantityfood = document.getElementById("quantityfood");
-    var inputQuantitydrink = document.getElementById("quantitydrink");
-    var btnMinusDrink = document.querySelector(".drink-minus");
-    var btnPlusDrink = document.querySelector(".drink-plus");
-    var btnMinusFood = document.querySelector(".food-minus");
-    var btnPlusFood = document.querySelector(".food-plus");
-
-    // Bắt sự kiện khi người dùng nhấn nút minus
-
     btnMinusFood.addEventListener("click", function () {
         var currentValue = parseInt(inputQuantityfood.value);
         if (!isNaN(currentValue) && currentValue > 1) {
@@ -128,7 +131,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Bắt sự kiện khi người dùng nhấn nút plus
     btnPlusFood.addEventListener("click", function () {
         var currentValue = parseInt(inputQuantityfood.value);
         if (
@@ -146,7 +148,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Bắt sự kiện khi người dùng nhấn nút plus
     btnPlusDrink.addEventListener("click", function () {
         var currentValue = parseInt(inputQuantitydrink.value);
         if (
@@ -179,4 +180,33 @@ document.addEventListener("DOMContentLoaded", function () {
             inputQuantityfood.value = inputQuantityfood.max;
         }
     });
+
+    document.getElementById('submit-add-to-cart-drink').addEventListener('click', function (event) {
+        event.preventDefault();
+        var csrfToken = document.getElementById('csrf-token').value;
+        var productId = document.getElementById('product-id-drink').value;
+        var sizeId = document.getElementById('sizeSelect').value;
+        var quantity = document.getElementById('quantitydrink').value;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', "/add-to-cart", true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                console.log(xhr.responseText);
+                var closeButton = document.querySelector('[data-dismiss="modal"]');
+                if (closeButton) {
+                    closeButton.click();
+                }
+            } else {
+                console.error('Error:', xhr.responseText);
+            }
+        };
+        xhr.send(JSON.stringify({
+            product_id: productId,
+            size_id: sizeId,
+            quantity: quantity
+        }));
+    });
+
 });

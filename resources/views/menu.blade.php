@@ -144,6 +144,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
+                <input type="hidden" id="product-id-drink" value="">
                 <div class="modal-body">
                     <div class="container mt-3">
                         <div class="row">
@@ -190,7 +191,7 @@
                                         </span>
                                     </div>
                                 </div>
-                                <p><a href="#" id="add-to-cart-drink" class="btn btn-primary py-3 px-5">Add to Cart</a></p>
+                                <p><a href="#" id="submit-add-to-cart-drink" class="btn btn-primary py-3 px-5">Add to Cart</a></p>
                             </div>
                         </div>
                     </div>
@@ -208,6 +209,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
+                <input type="hidden" id="product-id-food" value="">
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
@@ -239,7 +241,7 @@
                                         </span>
                                     </div>
                                 </div>
-                                <p><a href=""  id="add-to-cart-food" class="btn btn-primary py-3 px-5">Add to Cart</a></p>
+                                <p><a href=""  id="submit-add-to-cart-food" class="btn btn-primary py-3 px-5">Add to Cart</a></p>
                             </div>
                         </div>
                     </div>
@@ -248,4 +250,7 @@
         </div>
     </div>
     <script src="{{ asset('js/menu.js') }}"></script>
+    <script>
+           var cart = {!! json_encode(Session::get('cart')) !!};
+    </script>
 @endsection

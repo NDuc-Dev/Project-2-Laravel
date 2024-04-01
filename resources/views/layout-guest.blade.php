@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <input type="hidden" name="_token" id="csrf-token" value="{{ csrf_token() }}">
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">

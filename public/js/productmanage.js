@@ -9,7 +9,7 @@ $(document).ready(function () {
                 minimumLetters: true,
             },
             descriptions: {
-                regex: true,
+                required: true,
             },
             image_input: {
                 required: true,

@@ -42,6 +42,8 @@ Route::GET('/get-product-drink-{id}', [MenuController::class, 'getProductdrink']
 
 Route::GET('/cart', [CartController::class, 'index'])->name('cart')->withoutMiddleware(['auth']);
 
+Route::POST('/add-to-cart', [CartController::class, 'addToCart'])->withoutMiddleware(['auth']);
+
 
 Route::GROUP(['prefix' => 'manage'], function () {
 
