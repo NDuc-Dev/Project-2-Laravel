@@ -75,7 +75,6 @@
                             </div>
                         </div>
                         <div class="col-md-12 d-flex align-items-center">
-
                             <div class="tab-content ftco-animate" id="v-pills-tabContent">
                                 <div class="tab-pane fade active show" id="v-pills-2" role="tabpanel"
                                     aria-labelledby="v-pills-2-tab">
@@ -87,37 +86,21 @@
                                                         style="background-image: url({{ $product->product_images }});"></a>
                                                     <div class="text">
                                                         <h3><a href="#">{{ $product->product_name }}</a></h3>
-                                                        {{-- <p>{{ $product->descriptions}}</p> --}}
                                                         <p>{{ $product->descriptions }}</p>
                                                         <p class="price"><span>{{ $product->unit_price }} VND</span></p>
-                                                        {{-- <p><button data-toggle="modal" data-target="#form-focus"
-                                                                class="btn btn-primary btn-outline-primary">Add
-                                                                to cart</button></p> --}}
-                                                        <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                            data-target="#exampleModal">
-                                                            Launch demo modal
-                                                        </button>
+                                                        <p><button type="button"
+                                                                class="btn btn-primary btn-outline-primary"
+                                                                data-toggle="modal" data-target="#productModaldrink"
+                                                                data-id="{{ $product->product_id }}" id="add-to-cart-drink">
+                                                                Add To Cart
+                                                            </button>
+                                                        </p>
                                                     </div>
                                                 </div>
                                             </div>
                                         @endforeach
-                                        {{-- <div class="modal fade" id="form-focus" tabindex="-1" role="dialog"
-                                            aria-labelledby="form-focus" aria-hidden="true" id="dialog">
-                                            <div class="modal-dialog modal-dialog-centered">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                                                        <button type="button" class="close" data-dismiss="modal"
-                                                            aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div> --}}
                                     </div>
-
                                 </div>
-
                                 <div class="tab-pane fade" id="v-pills-3" role="tabpanel" aria-labelledby="v-pills-3-tab">
                                     <div class="row">
                                         @foreach ($foodProducts as $product)
@@ -127,12 +110,17 @@
                                                         style="background-image: url({{ $product->product_images }});"></a>
                                                     <div class="text">
                                                         <h3><a href="#">{{ $product->product_name }}</a></h3>
-                                                        {{-- <p>{{ $product->descriptions}}</p> --}}
                                                         <p>{{ $product->descriptions }}</p>
                                                         <p class="price"><span>{{ $product->unit_price }} VND</span>
                                                         </p>
-                                                        <p><a href="" class="btn btn-primary btn-outline-primary">Add
-                                                                to cart</a></p>
+                                                        <p><button type="button"
+                                                                class="btn btn-primary btn-outline-primary"
+                                                                id="add-to-cart-food" data-toggle="modal"
+                                                                data-target="#productModalfood"
+                                                                data-id="{{ $product->product_id }}">
+                                                                Add To Cart
+                                                            </button>
+                                                        </p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -146,21 +134,118 @@
             </div>
         </div>
     </section>
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="productModaldrink" tabindex="-1" aria-labelledby="productModaldrinkLabel"
+        aria-hidden="true" style="top: 50px;">
         <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
+            <div class="modal-content" style="background-color: #000;">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="">Product</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
-                    ...
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <div class="container mt-3">
+                        <div class="row">
+                            <div class="col-lg-6 mb-5 ftco-animate">
+                                <a href="" class="image-popup" id="href-img-drink">
+                                    <img src="" class="img-fluid" id="img-drink" alt="">
+                                </a>
+                            </div>
+                            <div class="col-lg-6 product-details pl-md-5 ftco-animate">
+                                <h3 id="product-name-drink"></h3>
+                                <p class="price">
+                                    <span id="priceSpandrink"></span>
+                                </p>
+                                <p id="product-descriptions-drink"></p>
+                                <div class="row mt-4">
+                                    <div class="col-md-7">
+                                        <div class="form-group d-flex">
+                                            <div class="select-wrap">
+                                                <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+                                                <select name="" id="sizeSelect" class="form-control">
+                                                    <option value="1" selected>S</option>
+                                                    <option value="2">M</option>
+                                                    <option value="3">L</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="w-100"></div>
+                                    <div class="input-group col-md-7 d-flex mb-3">
+                                        <span class="input-group-btn mr-2">
+                                            <button type="button" class="quantity-left-minus btn" data-type="minus"
+                                                data-field="">
+                                                <i class="icon-minus"></i>
+                                            </button>
+                                        </span>
+                                        <input type="text" id="quantity" name="quantity"
+                                            class="form-control input-number" value="1" min="1"
+                                            max="100">
+                                        <span class="input-group-btn ml-2">
+                                            <button type="button" class="quantity-right-plus btn" data-type="plus"
+                                                data-field="">
+                                                <i class="icon-plus"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <p><a href="#" class="btn btn-primary py-3 px-5">Add to Cart</a></p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    <div class="modal fade" id="productModalfood" tabindex="-1" aria-labelledby="productModalfoodLabel"
+        aria-hidden="true" style="top: 50px;">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" style="background-color: #000;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="">Product</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-6 mb-5 ftco-animate">
+                                <a href="" class="image-popup" id="href-img-food"><img src=""
+                                        class="img-fluid" id="img-food" alt=""></a>
+                            </div>
+                            <div class="col-lg-6 product-details pl-md-5 ftco-animate">
+                                <h3 id="product-name-food"></h3>
+                                <p class="price"><span id="priceSpanfood"></span></p>
+                                <p id="product-descriptions-food"></p>
+                                <div class="row mt-4">
+                                    <div class="w-100"></div>
+                                    <div class="input-group col-md-7 d-flex mb-3">
+                                        <span class="input-group-btn mr-2">
+                                            <button type="button" class="quantity-left-minus btn" data-type="minus"
+                                                data-field="">
+                                                <i class="icon-minus"></i>
+                                            </button>
+                                        </span>
+                                        <input type="text" id="quantity" name="quantity"
+                                            class="form-control input-number" value="1" min="1"
+                                            max="100">
+                                        <span class="input-group-btn ml-2">
+                                            <button type="button" class="quantity-right-plus btn" data-type="plus"
+                                                data-field="">
+                                                <i class="icon-plus"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <p><a href="" class="btn btn-primary py-3 px-5">Add to Cart</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ asset('js/menu.js') }}"></script>
 @endsection

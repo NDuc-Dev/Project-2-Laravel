@@ -35,6 +35,10 @@ Route::GET('/about', [AboutController::class, 'index'])->name('about')->withoutM
 
 Route::GET('/product-details-{id}', [ProductDetailsController::class, 'index'])->name('productDetails')->withoutMiddleware(['auth']);
 
+Route::GET('/get-product-food-{id}', [MenuController::class, 'getProductfood'])->name('getProductfood')->withoutMiddleware(['auth']);
+
+Route::GET('/get-product-drink-{id}', [MenuController::class, 'getProductdrink'])->name('getProductdrink')->withoutMiddleware(['auth']);
+
 
 Route::GROUP(['prefix' => 'manage'], function () {
 

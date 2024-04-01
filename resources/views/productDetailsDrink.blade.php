@@ -67,4 +67,5 @@
     <script>
         var prices = @json($prices);
     </script>
+    <script src="{{ asset('js/checksize.js') }}"></script>
 @endsection
