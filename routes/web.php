@@ -25,7 +25,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
 Auth::routes();
 
 Route::GET('/home', [HomeController::class, 'index'])->name('home')->withoutMiddleware(['auth']);
@@ -40,9 +39,14 @@ Route::GET('/get-product-food-{id}', [MenuController::class, 'getProductfood'])-
 
 Route::GET('/get-product-drink-{id}', [MenuController::class, 'getProductdrink'])->name('getProductdrink')->withoutMiddleware(['auth']);
 
-Route::GET('/cart', [CartController::class, 'index'])->name('cart')->withoutMiddleware(['auth']);
-
 Route::POST('/add-to-cart', [CartController::class, 'addToCart'])->withoutMiddleware(['auth']);
+
+Route::GET('/cart', [CartController::class, 'showCart'])->name('cart')->withoutMiddleware(['auth']);
+
+Route::GET('/get-user-cart',[CartController::class, 'checkAuthCart'])->withoutMiddleware(['auth']);
+
+Route::DELETE('/remove-form-cart-{productIdAndSizeId}',[CartController::class, 'removeFromCart'])->withoutMiddleware(['auth']);
+
 
 
 Route::GROUP(['prefix' => 'manage'], function () {

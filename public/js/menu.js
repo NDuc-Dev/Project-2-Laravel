@@ -194,7 +194,35 @@ document.addEventListener("DOMContentLoaded", function () {
         xhr.onload = function () {
             if (xhr.status === 200) {
                 console.log(xhr.responseText);
-                var closeButton = document.querySelector('[data-dismiss="modal"]');
+                var closeButton = document.getElementById('close-drink');
+                if (closeButton) {
+                    closeButton.click();
+                }
+            } else {
+                console.error('Error:', xhr.responseText);
+            }
+        };
+        xhr.send(JSON.stringify({
+            product_id: productId,
+            size_id: sizeId,
+            quantity: quantity
+        }));
+    });
+
+    document.getElementById('submit-add-to-cart-food').addEventListener('click', function (event) {
+        event.preventDefault();
+        var csrfToken = document.getElementById('csrf-token').value;
+        var productId = document.getElementById('product-id-food').value;
+        var sizeId = 4;
+        var quantity = document.getElementById('quantityfood').value;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', "/add-to-cart", true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                console.log(xhr.responseText);
+                var closeButton = document.getElementById('close-food');
                 if (closeButton) {
                     closeButton.click();
                 }

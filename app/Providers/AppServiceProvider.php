@@ -5,7 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
-
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+    
     }
 
     /**
@@ -48,5 +48,8 @@ class AppServiceProvider extends ServiceProvider
         Validator::extend('selectRequired', function ($attribute, $value, $parameters, $validator) {
             return $value !== '--Choose a Role--';
         });
+        if(config('app.env') === 'production') {
+            URL::forceScheme('https');
+        }
     }
 }

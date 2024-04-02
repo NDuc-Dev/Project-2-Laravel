@@ -51,7 +51,7 @@
         </div>
     </section>
     <section class="ftco-menu mb-5 pb-5">
-        <div class="container">
+        <div class="container-fluid">
             <div class="row justify-content-center mb-5">
                 <div class="col-md-7 heading-section text-center ftco-animate">
                     <span class="subheading">Discover</span>
@@ -61,7 +61,7 @@
                 </div>
             </div>
             <div class="row d-md-flex">
-                <div class="col-lg-12 ftco-animate p-md-5">
+                <div class="col-lg-12 ftco-animate menu-tabs">
                     <div class="row">
                         <div class="col-md-12 nav-link-wrap mb-5">
                             <div class="nav ftco-animate nav-pills justify-content-center" id="v-pills-tab" role="tablist"
@@ -140,7 +140,7 @@
             <div class="modal-content" style="background-color: #000;">
                 <div class="modal-header">
                     <h5 class="modal-title" id="">Product</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" id="close-drink" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -205,7 +205,7 @@
             <div class="modal-content" style="background-color: #000;">
                 <div class="modal-header">
                     <h5 class="modal-title" id="">Product</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" id="close-food" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
