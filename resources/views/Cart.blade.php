@@ -94,15 +94,11 @@
                             <span id="total"></span>
                         </p>
                     </div>
-                    <p class="text-center"><a href="checkout.html" class="btn btn-primary py-3 px-4">Checkout</a>
+                    <p class="text-center"><a href="{{route('checkout')}}" class="btn btn-primary py-3 px-4">Checkout</a>
                     </p>
                 </div>
             </div>
         </div>
     </section>
     <script src="{{ asset('js/cart.js') }}"></script>
-    <script>
-        var sessionData = {!! json_encode(session()->all()) !!};
-        console.log(sessionData);
-    </script>
 @endsection

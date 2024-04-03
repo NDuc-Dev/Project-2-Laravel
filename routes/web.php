@@ -8,6 +8,7 @@ use App\Http\Controllers\auth\bartender\PrepareOrderController;
 use App\Http\Controllers\auth\bartender\ProductStockController;
 use App\Http\Controllers\auth\seller\OrderManageController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckOutController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ProductDetailsController;
@@ -48,6 +49,12 @@ Route::GET('/get-user-cart', [CartController::class, 'checkAuthCart'])->withoutM
 Route::DELETE('/remove-form-cart-{productIdAndSizeId}', [CartController::class, 'removeFromCart'])->withoutMiddleware(['auth']);
 
 Route::POST('/change-quantity-product-cart-{productIdAndSizeId}-{quantity}', [CartController::class, 'changeQuantity'])->withoutMiddleware(['auth']);
+
+Route::GET('/checkout', [CheckOutController::class, 'Index'])->name('checkout')->withoutMiddleware(['auth']);
+
+Route::GET('/check-total-amount-in-cart', [CheckOutController::class, 'GetTotalPay'])->name('GetTotalPay')->withoutMiddleware(['auth']);
+
+Route::POST('/vnpay-payment',[CheckOutController::class,'vnpay_payment'])->name('vnpay-payment')->withoutMiddleware(['auth']);
 
 
 
