@@ -8,6 +8,7 @@ use App\Models\Sizes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use SebastianBergmann\Type\FalseType;
 
 class CartController extends Controller
 {
@@ -107,7 +108,9 @@ class CartController extends Controller
                 unset($cartItems[$productIdAndSizeId]);
                 Session::put("user_cart_$userId", $cartItems);
 
-                return response()->json(['success' => true, 'message' => 'Product removed from cart successfully', 'status'=> 200]);
+                return response()->json(['success' => true, 'message' => 'Product removed from cart successfully', 'status' => 200]);
+            } else {
+                return response()->json(['success' => false, 'status' => 404]);
             }
         } else {
             $cartItems = Session::get('guest_cart', []);
@@ -115,10 +118,33 @@ class CartController extends Controller
                 unset($cartItems[$productIdAndSizeId]);
                 Session::put("guest_cart", $cartItems);
 
-                return response()->json(['success' => true, 'message' => 'Product removed from cart successfully', 'status'=> 200]);
+                return response()->json(['success' => true, 'message' => 'Product removed from cart successfully', 'status' => 200]);
+            } else {
+                return response()->json(['success' => false, 'status' => 404]);
             }
         }
+    }
 
-        return response()->json(['success' => false, 'message' => 'Product not found in cart']);
+    public function changeQuantity($productIdAndSizeId, $newQuantity)
+    {
+        if (Auth::check()) {
+            $userId = Auth::id();
+            $cartItems = Session::get("user_cart_$userId", []);
+
+            if (array_key_exists($productIdAndSizeId, $cartItems)) {
+                $cartItems[$productIdAndSizeId]['quantity'] = $newQuantity;
+                Session::put("user_cart_$userId", $cartItems);
+
+                return response()->json(['success' => true, 'message' => 'Change quantity from cart successfully', 'status' => 200]);
+            }
+        } else {
+            $cartItems = Session::get('guest_cart', []);
+            if (array_key_exists($productIdAndSizeId, $cartItems)) {
+                $cartItems[$productIdAndSizeId]['quantity'] = $newQuantity;
+                Session::put("guest_cart", $cartItems);
+
+                return response()->json(['success' => true, 'message' => 'Change quantity from cart successfully', 'status' => 200]);
+            }
+        }
     }
 }

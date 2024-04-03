@@ -64,6 +64,7 @@
                                             <div class="input-group mb-3">
                                                 <input type="textr" name="quantity"
                                                     class="quantity form-control input-number"
+                                                    data-productIdAndSizeId="{{ $productIdAndSizeId }}"
                                                     data-product-price="{{ $item['productSize'] }}"
                                                     value="{{ $item['quantity'] }}" min="1" max="10">
                                             </div>
@@ -93,7 +94,7 @@
                             <span id="total"></span>
                         </p>
                     </div>
-                    <p class="text-center"><a href="checkout.html" class="btn btn-primary py-3 px-4">Proceed to Checkout</a>
+                    <p class="text-center"><a href="checkout.html" class="btn btn-primary py-3 px-4">Checkout</a>
                     </p>
                 </div>
             </div>

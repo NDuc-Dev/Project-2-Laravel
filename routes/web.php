@@ -43,13 +43,15 @@ Route::POST('/add-to-cart', [CartController::class, 'addToCart'])->withoutMiddle
 
 Route::GET('/cart', [CartController::class, 'showCart'])->name('cart')->withoutMiddleware(['auth']);
 
-Route::GET('/get-user-cart',[CartController::class, 'checkAuthCart'])->withoutMiddleware(['auth']);
+Route::GET('/get-user-cart', [CartController::class, 'checkAuthCart'])->withoutMiddleware(['auth']);
 
-Route::DELETE('/remove-form-cart-{productIdAndSizeId}',[CartController::class, 'removeFromCart'])->withoutMiddleware(['auth']);
+Route::DELETE('/remove-form-cart-{productIdAndSizeId}', [CartController::class, 'removeFromCart'])->withoutMiddleware(['auth']);
+
+Route::POST('/change-quantity-product-cart-{productIdAndSizeId}-{quantity}', [CartController::class, 'changeQuantity'])->withoutMiddleware(['auth']);
 
 
 
-Route::GROUP(['prefix' => 'manage'], function () {
+Route::GROUP(['middleware'=>'isAdmin','prefix' => 'manage'], function () {
 
     Route::GROUP(['prefix' => 'staffs'], function () {
 
@@ -95,7 +97,7 @@ Route::GROUP(['prefix' => 'manage'], function () {
 
         Route::POST('/create-category', [CategoryController::class, 'createCategory'])->name('admin.createCategory');
     });
-})->middleware('checRole, seller');
+});
 
 
 Route::GROUP(['prefix' => 'seller'], function () {
@@ -114,7 +116,7 @@ Route::GROUP(['prefix' => 'seller'], function () {
 
         Route::GET('/get-all-data-products', [OrderManageController::class, 'getDataProducts']);
     });
-})->middleware('checRole, seller');
+});
 
 Route::GROUP(['prefix' => 'bartender'], function () {
 
@@ -138,4 +140,4 @@ Route::GROUP(['prefix' => 'bartender'], function () {
 
         Route::POST('/change-status-instock-{id}', [ProductStockController::class, 'changeStatusInstock']);
     });
-})->middleware('checRole, bartender');
+});

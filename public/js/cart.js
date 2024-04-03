@@ -12,16 +12,58 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         input.addEventListener("blur", function () {
             if (input.value.trim() === "" || parseInt(input.value) === 0) {
-                input.value = "1";
+                var quantity = input.value = 1;
+                var productIdAndSizeIdInput = input.getAttribute(
+                    "data-productIdAndSizeId"
+                );
+                updateQuantity(productIdAndSizeIdInput, quantity);
                 updateTotal(input);
+            } else {
+                var productIdAndSizeIdInput = input.getAttribute(
+                    "data-productIdAndSizeId"
+                );
+                console.log(productIdAndSizeIdInput);
+                updateQuantity(productIdAndSizeIdInput, input.value);
             }
         });
     });
 
+    function updateQuantity(productIdAndSizeId, quantity) {
+        var xhr = new XMLHttpRequest();
+        xhr.open(
+            "POST",
+            "change-quantity-product-cart-" +
+                productIdAndSizeId +
+                "-" +
+                quantity,
+            true
+        );
+        xhr.setRequestHeader(
+            "X-CSRF-TOKEN",
+            document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute("content")
+        );
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                var response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                    console.log(response.message);
+                } else {
+                    console.error("Error:", response.message);
+                }
+            } else {
+                console.error("Error:", xhr.statusText);
+            }
+        };
+        xhr.send();
+    }
+
     function updateTotal(input) {
         var quantity = parseInt(input.value);
         if (input.value === "") {
-            quantity = 0;
+            quantity = 1;
         }
         if (quantity > 10) {
             quantity = 10;
@@ -48,7 +90,6 @@ document.addEventListener("DOMContentLoaded", function () {
             var productIdAndSizeId = button.getAttribute(
                 "data-productIdAndSizeId"
             );
-            console.log("click" + productIdAndSizeId);
             removeProduct(productIdAndSizeId);
         });
     });

@@ -19,10 +19,6 @@ class StaffManagementController extends Controller
 
     protected $redirectTo = '/home';
 
-    public function __construct()
-    {
-        $this->middleware('checkRole:admin,admin');
-    }
     
     public function getStaffManagement()
     {

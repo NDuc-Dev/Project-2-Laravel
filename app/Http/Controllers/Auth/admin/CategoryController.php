@@ -11,10 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('checkRole:admin,admin');
-    }
+  
 
     public function getCategories()
     {
