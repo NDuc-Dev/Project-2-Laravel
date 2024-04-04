@@ -24,49 +24,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-xl-12 ftco-animate">
-                    <form action="#" id="form-validate" class="billing-form ftco-bg-dark p-3 p-md-5">
-                        <h3 class="mb-4 billing-heading">Billing Details </h3>
-                        <small>Please note: Our online ordering service is only available for orders within the inner
-                            districts of Hanoi. Please provide complete and accurate delivery information. In case of any
-                            issues, we will not be held responsible.
-                        </small>
-                        <div class="row align-items-end">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="name">Name</label>
-                                    <input type="text" id="name" name="name" class="form-control" placeholder="Name">
-                                </div>
-                            </div>
-                            <div class="w-100"></div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="address">Delivery Address</label>
-                                    <input type="text" id="address" name="address" class="form-control" placeholder="House number and street name">
-                                </div>
-                            </div>
-                            <div class="w-100"></div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="phone">Phone</label>
-                                    <input type="text" id="phone" name="phone" class="form-control" placeholder="Phone number">
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="email">Email Address</label>
-                                    <small>
-                                        Please fill in this field if you wish to receive information about the invoice.
-                                    </small>
-                                    <input type="text" id="email" name="email" class="form-control" placeholder="Email Address">
-                                </div>
-                            </div>
-                            <div class="w-100"></div>
-                        </div>
-                    </form>
 
-
-
-                    <div class="row mt-5 pt-3 d-flex">
+                    <div class="row pt-3 d-flex">
                         <div class="col-md-12 d-flex">
                             <div class="cart-detail cart-total ftco-bg-dark p-3 p-md-4">
                                 <h3 class="billing-heading mb-4">Cart Informations</h3>
@@ -128,17 +87,62 @@
                                     <span>Total</span>
                                     <span id="total"></span>
                                 </p>
-                                <p>
-                                    <form action="{{route('vnpay-payment')}}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="totalAmt" id="totalAmt" value="">
-                                        <button type="submit" name="redirect" class="btn btn-primary py-3 px-4">Payment via vnpay</button>
-                                    </form>
-                                </p>
                             </div>
                         </div>
                     </div>
-                </div> <!-- .col-md-8 -->
+
+                    <form action="{{ route('vnpay-payment') }}" id="form-validate" method="POST"
+                        class="billing-form ftco-bg-dark mt-5 p-3 p-md-5">
+                        @csrf
+                        <h3 class="mb-4 billing-heading">Billing Details </h3>
+                        <small>Please note: Our online ordering service is only available for orders within the inner
+                            districts of Hanoi. Please provide complete and accurate delivery information. In case of any
+                            issues, we will not be held responsible.
+                        </small>
+                        <div class="row align-items-end">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" id="name" name="name" class="form-control"
+                                        placeholder="Name">
+                                </div>
+                            </div>
+                            <div class="w-100"></div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="address">Delivery Address</label>
+                                    <input type="text" id="address" name="address" class="form-control"
+                                        placeholder="House number and street name">
+                                </div>
+                            </div>
+                            <div class="w-100"></div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="phone">Phone</label>
+                                    <input type="text" id="phone" name="phone" class="form-control"
+                                        placeholder="Phone number">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="email">Email Address</label>
+                                    <small>
+                                        Please fill in this field if you wish to receive information about the invoice.
+                                    </small>
+                                    <input type="text" id="email" name="email" class="form-control"
+                                        placeholder="Email Address">
+                                </div>
+                            </div>
+                            <div class="w-100"></div>
+
+                        </div>
+                        <p>
+                            <button type="submit" id="place-order-btn" name="redirect" class="btn btn-primary py-3 px-4">Payment via
+                                vnpay</button>
+                        </p>
+                    </form>
+
+                </div>
 
             </div>
         </div>

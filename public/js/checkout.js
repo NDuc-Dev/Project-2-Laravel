@@ -75,26 +75,9 @@ $(document).ready(function () {
     });
 
 
-    $('#place-order-btn').click(function(event) {
-        event.preventDefault(); // Ngăn chặn hành động mặc định của nút
-
-        if ($('#form-validate').valid()) {
-            console.log("true");
-            var formData = $('#form-validate').serialize();
-
-            $.ajax({
-                url: 'check-total-amount-in-cart',
-                type: 'GET',
-                success: function(response) {
-                    var total = parseInt(response.totalAmt);
-                },
-                error: function(xhr) {
-                    console.log(xhr.responseText);
-                }
-            });
-        } else {
-            // Form không hợp lệ, bạn có thể thực hiện xử lý thông báo lỗi ở đây
-            console.log('Form is invalid');
+    $('#form-validate').on('submit', function(e) {
+        if (!$(this).valid()) {
+            e.preventDefault();
         }
     });
 });
