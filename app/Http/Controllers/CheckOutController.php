@@ -39,7 +39,8 @@ class CheckOutController extends Controller
                 list($productId, $sizeId) = explode('_', $productIdAndSizeId);
                 $product = Products::find($productId);
                 $size = Sizes::find($sizeId);
-                $productSize = ProductSizes::where('product_id', $productId)->where('size_id', $sizeId)->value('unit_price');;
+                $productSize = ProductSizes::where('product_id', $productId)->where('size_id', $sizeId)->value('unit_price');
+                ;
                 $cartItems[$productIdAndSizeId]['product'] = $product;
                 $cartItems[$productIdAndSizeId]['size'] = $size;
                 $cartItems[$productIdAndSizeId]['productSize'] = $productSize;
@@ -177,12 +178,10 @@ class CheckOutController extends Controller
             }
         }
 
-        // return response()->json(['cartItems' => $cartItems, 'order_date' => $order_date, 'productArray' => $productArray, 'product_size_name' => $product_size_name]);
-
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
         $vnp_Returnurl = "http://127.0.0.1:8000/checkout";
-        $vnp_TmnCode = "FMEADEWD"; //Mã website tại VNPAY 
-        $vnp_HashSecret = "DZQHAIYPMMVOHYIIQTJZKBROQFTOFUBT"; //Chuỗi bí mật
+        $vnp_TmnCode = "0JF2F1I2";
+        $vnp_HashSecret = "JLZQHLJNLEXCEZKMPXIGNLCNZKYTQFTO";
 
         $vnp_TxnRef = $order_id;
         $vnp_OrderInfo = 'Thanh Toán Test';
@@ -248,6 +247,17 @@ class CheckOutController extends Controller
             echo json_encode($returnData);
         }
         // vui lòng tham khảo thêm tại code demo
+    }
+
+    public function clearCart()
+    {
+        if (Auth::check()){
+            $userId = Auth::id();
+            Session::forget("user_cart_$userId");
+        } else {
+            Session::forget("guest_cart");
+        }
+        return response()->json(['message' => 'Cart cleared successfully']);
     }
 
     public function CreateInvoice($count, $orderProducts, $orderDate, $orderCode, $Total)

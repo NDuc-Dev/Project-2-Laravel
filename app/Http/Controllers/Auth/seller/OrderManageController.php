@@ -34,6 +34,14 @@ class OrderManageController extends Controller
         return view('auth.seller.ordermanage', compact('products'));
     }
 
+    public function getDataProductsActive()
+    {
+        $products = Products::where('status', 1)
+        ->where('status_in_stock', 1)
+        ->get();
+        return response()->json(['products' => $products]);
+    }
+
     public function getOrderListData()
     {
         $data = Orders::where('order_status', '!=', 4)->get();

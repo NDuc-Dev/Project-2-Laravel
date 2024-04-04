@@ -137,7 +137,8 @@
 
                         </div>
                         <p>
-                            <button type="submit" id="place-order-btn" name="redirect" class="btn btn-primary py-3 px-4">Payment via
+                            <button type="submit" id="place-order-btn" name="redirect"
+                                class="btn btn-primary py-3 px-4">Payment via
                                 vnpay</button>
                         </p>
                     </form>
@@ -148,4 +149,39 @@
         </div>
     </section>
     <script src="{{ asset('js/checkout.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const responseCode = urlParams.get('vnp_ResponseCode');
+            var csrfToken = $('meta[name="csrf-token"]').attr("content");
+            if (responseCode) {
+                if (responseCode !== null && responseCode === '00') {
+                    Swal.fire({
+                        title: "Success",
+                        text: 'Payment Successfully',
+                        icon: "success",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    $.ajax({
+                        url: 'clear-cart', // Địa chỉ của tác vụ Laravel để xóa giỏ hàng
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        success: function(response) {
+                            // console.log(response.message);
+                            window.location.href = '/cart';
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error); // Xử lý lỗi nếu có
+                        }
+                    });
+                } else {
+                    alert('Payment failed!');
+                }
+            }
+            // Kiểm tra giá trị của tham số vnp_ResponseCode
+        });
+    </script>
 @endsection

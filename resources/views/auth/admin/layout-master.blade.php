@@ -98,8 +98,6 @@
         <!-- endinject -->
         <!-- Custom js for this page -->
         <script src="/admin/assets/js/dashboard.js"></script>
-        <script src="{{ asset('js/typeahead.bundle.min.js') }}"></script>
-        <script src="{{ asset('js/bloodhound.min.js') }}"></script>
 
 
         <!-- End custom js for this page -->

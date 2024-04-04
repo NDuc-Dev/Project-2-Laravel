@@ -33,11 +33,11 @@
                     <h4 class="card-title">Create New Order</h4>
                     <div class="row">
                         <div class="col-md-5">
-                            <div class="form-group mt-3 ms-2 me-2"id="scrollable-dropdown-menu">
+                            {{-- <div class="form-group mt-3 ms-2 me-2"id="scrollable-dropdown-menu">
                                 <label for="search-input">Search Product</label>
                                 <input type="text" id="search-input" name="search-input" class="typeahead"
                                     spellcheck="false" autocomplete="off" placeholder="Search products">
-                            </div>
+                            </div> --}}
                             <div class="card-body p-1">
                                 <h4 class="card-title">Result</h4>
                                 <div class="table-responsive">

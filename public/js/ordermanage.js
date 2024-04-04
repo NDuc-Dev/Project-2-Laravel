@@ -7,156 +7,75 @@ $(document).ready(function () {
     var csrfToken = $('meta[name="csrf-token"]').attr("content");
     var formattedTime = "";
     var dataresult = [];
+    //hàm khởi tạo bảng product khi trang được tải
 
-    //sử dụng bloodhound tạo index cho search
-    var suggestions = new Bloodhound({
-        datumTokenizer: Bloodhound.tokenizers.obj.whitespace("product_name"),
-        queryTokenizer: Bloodhound.tokenizers.whitespace,
-        local: products,
-    });
-    suggestions.initialize();
-
-    //tạo thanh search sử dụng typeahead
-    $(".typeahead").typeahead(
-        {
-            minLength: 1,
-            limit: 10,
-            // hint: true,
-            highlight: true,
+    var resutlTable = $("#result").DataTable({
+        ajax: {
+            url: "get-data-products-active",
+            dataSrc: "products",
         },
-        {
-            name: "suggestions",
-            displayKey: "product_name",
-            templates: {
-                empty: [
-                    '<div class="list-group search-results-dropdown d-none"><div class="list-group-item">Không có kết quả phù hợp.</div></div>',
-                ],
-                header: [
-                    '<div class="ms-2 mt-0 list-group search-results-dropdown d-none"> Product',
-                ],
-                suggestion: function (data) {
-                    changeSearchResults(data);
-                    var status =
-                        data.status_in_stock == 1
-                            ? '<label class="badge badge-success">On Sale</label>'
-                            : '<label class="badge badge-danger">Sold Out</label>';
-                    var details = `<div class="product-dropdown d-flex align-items-center d-none" style="border-top:1px solid #2c2e33;" data-product-id="${data.product_id}">
-            <img src="${data.product_images}" width="50" height="50" style="border-radius: 5px;">
-            <div class="product-inf ms-2 me-auto">
-                <div id="product_name" name="product_name" >${data.product_name}</div>
-                <p >Category: ${data.product_category}</p>
-            </div>
-            <div class="product-status ms-2 me-3">
-            ${status}
-            </div>
-        </div>`;
-                    return details;
+        layout: {
+            topStart: 'info',
+            bottom: 'paging',
+            bottomStart: null,
+            bottomEnd: null
+        },
+        scrollY: "250px",
+        ordering: false,
+        paging: true,
+        lengthChange: false,
+        // autoWidth: true,
+        limit: 10,
+        responsive: true,
+        searching: true,
+        language: {
+            search: "", // Tùy chỉnh văn bản gợi ý trong thanh tìm kiếm
+            searchPlaceholder: "Search Product" // Tùy chỉnh placeholder cho thanh tìm kiếm
+        },
+        columns: [
+            {
+                data: "product_images",
+                title: "Image",
+                render: function (data, type, row) {
+                    if (!data || data.length === 0) {
+                        return "";
+                    }
+                    const firstImagePath = data;
+                    if (firstImagePath) {
+                        return `<img src="${firstImagePath}" alt="${row.product_name}" style="width: 50px; height: 50px; object-fit: cover; border-radius:5px" onerror="this.src='https://via.placeholder.com/50x50';">`;
+                    } else {
+                        return "";
+                    }
                 },
             },
-            source: suggestions.ttAdapter(),
-        }
-    );
-
-    //kiểm tra kết quả liên tục khi nhập query
-    $(".typeahead").on("input", function () {
-        // Lấy giá trị hiện tại của thanh search
-        var searchValue = $(this).val();
-        var tableSearch = $("#result").DataTable();
-        //nếu xuất hiện thay đổi giá trị trên thanh search mà giá trị query của phần tử đầu tiên không thay đổi, tức là không thấy sản phẩm cho lần query này
-        if (
-            (dataresult.length != 0 &&
-                dataresult[0]._query != searchValue &&
-                searchValue != "") ||
-            (dataresult.length == 0 && searchValue != "")
-        ) {
-            tableSearch.clear();
-            tableSearch.draw();
-            dataresult = [];
-            $("#result").find(".dataTables_empty").text("There are no matches");
-        }
-        if (searchValue == "") {
-            tableSearch.destroy();
-            dataresult = [];
-            initializeDataTableProduct(products);
-        }
+            {
+                data: "product_name",
+                title: "Product",
+            },
+            {
+                data: "unit",
+                title: "",
+                render: function (data, type, row) {
+                    if (data == "Piece/Pack") {
+                        return '<i class="fa-solid fa-plus btn btn-outline-success p-2 px-4" id="food-product"></i>';
+                    } else if (data == "Cup") {
+                        return (
+                            '<button class="btn btn-outline-success fa-solid fa-plus p-2 px-4" id="drink-product" type="button" id="dropdownMenuIconButton1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+                            "</button>" +
+                            '<div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton1" style="min-width: 0 !important;">' +
+                            '<h6 class="dropdown-header">Size</h6>' +
+                            '<div class="dropdown-item" id="size" data-id="1" >S</div>' +
+                            '<div class="dropdown-item" id="size" data-id="2" >M</div>' +
+                            '<div class="dropdown-item" id="size" data-id="3" >L</div>' +
+                            "</div>"
+                        );
+                    } else {
+                        return "";
+                    }
+                },
+            },
+        ],
     });
-
-    //kiểm tra dữ liệu từ các lần query trước khi push dữ liệu vào mảng, xem có sự trùng lặp hay không
-    function changeSearchResults(data) {
-        if (dataresult.length == 0) {
-            dataresult.push(data);
-        } else {
-            if (data._query === dataresult[0]._query) {
-                dataresult.push(data);
-            } else {
-                dataresult.length = 0;
-                dataresult.push(data);
-            }
-        }
-        var table = $("#result").DataTable();
-        table.clear();
-        table.rows.add(dataresult).draw();
-    }
-
-    //hàm khởi tạo bảng product khi trang được tải
-    initializeDataTableProduct(products);
-
-    function initializeDataTableProduct(data) {
-        $("#result").DataTable({
-            data: data,
-            scrollY: "250px",
-            ordering: false,
-            paging: true,
-            lengthChange: false,
-            // autoWidth: true,
-            limit: 10,
-            responsive: true,
-            searching: false,
-            columns: [
-                {
-                    data: "product_images",
-                    title: "Image",
-                    render: function (data, type, row) {
-                        if (!data || data.length === 0) {
-                            return "";
-                        }
-                        const firstImagePath = data;
-                        if (firstImagePath) {
-                            return `<img src="${firstImagePath}" alt="${row.product_name}" style="width: 50px; height: 50px; object-fit: cover; border-radius:5px" onerror="this.src='https://via.placeholder.com/50x50';">`;
-                        } else {
-                            return "";
-                        }
-                    },
-                },
-                {
-                    data: "product_name",
-                    title: "Product",
-                },
-                {
-                    data: "unit",
-                    title: "",
-                    render: function (data, type, row) {
-                        if (data == "Piece/Pack") {
-                            return '<i class="fa-solid fa-plus btn btn-outline-success p-2 px-4" id="food-product"></i>';
-                        } else if (data == "Cup") {
-                            return (
-                                '<button class="btn btn-outline-success fa-solid fa-plus p-2 px-4" id="drink-product" type="button" id="dropdownMenuIconButton1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
-                                "</button>" +
-                                '<div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton1" style="min-width: 0 !important;">' +
-                                '<h6 class="dropdown-header">Size</h6>' +
-                                '<div class="dropdown-item" id="size" data-id="1" >S</div>' +
-                                '<div class="dropdown-item" id="size" data-id="2" >M</div>' +
-                                '<div class="dropdown-item" id="size" data-id="3" >L</div>' +
-                                "</div>"
-                            );
-                        } else {
-                            return "";
-                        }
-                    },
-                },
-            ],
-        });
-    }
 
     $("#result").on("click", "#food-product", function () {
         var table = $("#result").DataTable();
@@ -652,7 +571,8 @@ $(document).ready(function () {
         ],
     });
 
-    setInterval(function() {
+    setInterval(function () {
         orderPending.ajax.reload();
+        resutlTable.ajax.reload();
     }, 10000);
 });

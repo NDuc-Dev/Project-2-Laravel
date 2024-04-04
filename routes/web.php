@@ -56,6 +56,8 @@ Route::GET('/check-total-amount-in-cart', [CheckOutController::class, 'GetTotalP
 
 Route::POST('/vnpay-payment',[CheckOutController::class,'vnpay_payment'])->name('vnpay-payment')->withoutMiddleware(['auth']);
 
+Route::POST('/clear-cart',[CheckOutController::class,'clearCart'])->name('clearCart')->withoutMiddleware(['auth']);
+
 
 
 Route::GROUP(['middleware'=>'isAdmin','prefix' => 'manage'], function () {
@@ -122,6 +124,9 @@ Route::GROUP(['prefix' => 'seller'], function () {
         Route::GET('/get-data-order-inprogress', [OrderManageController::class, 'getOrderListData']);
 
         Route::GET('/get-all-data-products', [OrderManageController::class, 'getDataProducts']);
+
+        Route::GET('/get-data-products-active', [OrderManageController::class, 'getDataProductsActive']);
+
     });
 });
 
