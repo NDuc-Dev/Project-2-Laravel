@@ -50,6 +50,11 @@ class CheckOutController extends Controller
         return view('CheckOut', ['cartItems' => $cartItems]);
     }
 
+    public function changePaymentStatus(Request $request){
+        $order = Orders::find($request->input('orderId'));
+        $order->payment_status = 1;
+        $order->save();
+    }
 
     public function GetTotalPay()
     {
@@ -91,7 +96,6 @@ class CheckOutController extends Controller
                 list($productId, $sizeId) = explode('_', $productIdAndSizeId);
                 $productSizeprice = ProductSizes::where('product_id', $productId)->where('size_id', $sizeId)->value('unit_price');
                 $productSizeId = ProductSizes::where('product_id', $productId)->where('size_id', $sizeId)->value('product_size_id');
-                // $cartItems[$productIdAndSizeId]['quantity'] = $item['quantity'];
                 $total = $productSizeprice * $item['quantity'];
                 $productname = Products::where('product_id', $productId)->value('product_name');
                 $size_name = Sizes::where('size_id', $sizeId)->value('size_name');

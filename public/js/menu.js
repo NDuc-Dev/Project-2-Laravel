@@ -198,6 +198,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (closeButton) {
                     closeButton.click();
                 }
+                var cartItemCount = JSON.parse(xhr.responseText).totalItems;
+                document.getElementById("cartItemCount").innerHTML = "<small>" + cartItemCount + "</small>";
             } else {
                 console.error('Error:', xhr.responseText);
             }
@@ -221,11 +223,13 @@ document.addEventListener("DOMContentLoaded", function () {
         xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
         xhr.onload = function () {
             if (xhr.status === 200) {
-                console.log(xhr.responseText);
+                // console.log(xhr.responseText);
                 var closeButton = document.getElementById('close-food');
                 if (closeButton) {
                     closeButton.click();
                 }
+                var cartItemCount = JSON.parse(xhr.responseText).totalItems;
+                document.getElementById("cartItemCount").innerHTML = "<small>" + cartItemCount + "</small>";
             } else {
                 console.error('Error:', xhr.responseText);
             }

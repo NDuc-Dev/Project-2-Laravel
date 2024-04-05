@@ -26,10 +26,10 @@ class Orders extends Model
         'table_id',
         'prepared_at',
         'prepared_by',
-        'delivery_at',
-        'delivery_by',
+        'delivery_code',
         'complete_at',
-        'receipt_path'
+        'receipt_path',
+        'payment_status'
     ];
 
     public function user()

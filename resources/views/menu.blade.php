@@ -74,19 +74,17 @@
                                     aria-controls="v-pills-3" aria-selected="false">Foods</a>
                             </div>
                         </div>
-                        <div class="col-md-12 d-flex align-items-center">
+                        <div class="col-md-12 align-items-center">
                             <div class="tab-content ftco-animate" id="v-pills-tabContent">
-                                <div class="tab-pane fade active show" id="v-pills-2" role="tabpanel"
-                                    aria-labelledby="v-pills-2-tab">
+                                <div class="tab-pane fade active show" id="v-pills-2" role="tabpanel" aria-labelledby="v-pills-2-tab">
                                     <div class="row">
                                         @foreach ($drinkProducts as $product)
                                             <div class="col-md-4 text-center">
                                                 <div class="menu-wrap">
-                                                    <a href="#" class="menu-img img mb-4"
-                                                        style="background-image: url({{ $product->product_images }});"></a>
+                                                    <a href="{{ route('productDetails', ['id' => $product->product_id]) }}" class="menu-img img mb-4" style="background-image: url({{ $product->product_images }});"></a>
                                                     <div class="text">
-                                                        <h3><a href="#">{{ $product->product_name }}</a></h3>
-                                                        <p>{{ $product->descriptions }}</p>
+                                                        <h3><a href="{{ route('productDetails', ['id' => $product->product_id]) }}">{{ $product->product_name }}</a></h3>
+                                                        {{-- <p>{{ $product->descriptions }}</p> --}}
                                                         <p class="price"><span>{{ $product->unit_price }} VND</span></p>
                                                         <p><button type="button"
                                                                 class="btn btn-primary btn-outline-primary"
@@ -101,23 +99,21 @@
                                         @endforeach
                                     </div>
                                 </div>
+
                                 <div class="tab-pane fade" id="v-pills-3" role="tabpanel" aria-labelledby="v-pills-3-tab">
                                     <div class="row">
                                         @foreach ($foodProducts as $product)
                                             <div class="col-md-4 text-center">
                                                 <div class="menu-wrap">
-                                                    <a href="#" class="menu-img img mb-4"
-                                                        style="background-image: url({{ $product->product_images }});"></a>
+                                                    <a href="{{ route('productDetails', ['id' => $product->product_id]) }}" class="menu-img img mb-4" style="background-image: url({{ $product->product_images }});"></a>
                                                     <div class="text">
-                                                        <h3><a href="#">{{ $product->product_name }}</a></h3>
-                                                        <p>{{ $product->descriptions }}</p>
-                                                        <p class="price"><span>{{ $product->unit_price }} VND</span>
-                                                        </p>
+                                                        <h3><a href="{{ route('productDetails', ['id' => $product->product_id]) }}">{{ $product->product_name }}</a></h3>
+                                                        {{-- <p>{{ $product->descriptions }}</p> --}}
+                                                        <p class="price"><span>{{ $product->unit_price }} VND</span></p>
                                                         <p><button type="button"
                                                                 class="btn btn-primary btn-outline-primary"
-                                                                id="add-to-cart-food" data-toggle="modal"
-                                                                data-target="#productModalfood"
-                                                                data-id="{{ $product->product_id }}">
+                                                                data-toggle="modal" data-target="#productModalfood"
+                                                                data-id="{{ $product->product_id }}" id="add-to-cart-food">
                                                                 Add To Cart
                                                             </button>
                                                         </p>

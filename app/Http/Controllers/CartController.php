@@ -48,8 +48,12 @@ class CartController extends Controller
             }
             $request->session()->put('guest_cart', $cart);
         }
+        $totalItems = 0;
+        foreach ($cart as $item) {
+            $totalItems += 1;
+        }
 
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'totalItems' => $totalItems]);
     }
 
     public function showCart()

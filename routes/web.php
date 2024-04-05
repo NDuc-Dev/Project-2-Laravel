@@ -58,6 +58,8 @@ Route::POST('/vnpay-payment',[CheckOutController::class,'vnpay_payment'])->name(
 
 Route::POST('/clear-cart',[CheckOutController::class,'clearCart'])->name('clearCart')->withoutMiddleware(['auth']);
 
+Route::POST('/change-status-payment', [CheckOutController::class, 'changePaymentStatus'])->name('changePaymentStatus')->withoutMiddleware(['auth']);
+
 
 
 Route::GROUP(['middleware'=>'isAdmin','prefix' => 'manage'], function () {

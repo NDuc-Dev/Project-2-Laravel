@@ -15,13 +15,33 @@
                     <a href="{{ route('menu') }}" class="nav-link">Menu</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{route('about')}}" class="nav-link">About Us</a>
+                    <a href="{{ route('about') }}" class="nav-link">About Us</a>
                 </li>
                 <li class="nav-item cart">
-                    <a href="{{ route('cart')}}" class="nav-link">
+                    <a href="{{ route('cart') }}" class="nav-link">
                         <span class="icon icon-shopping_cart"></span>
-                        <span class="bag d-flex justify-content-center align-items-center">
-                            <small>1</small>
+                        <span class="bag d-flex justify-content-center align-items-center" id="cartItemCount">
+                            <small>
+                                @php
+                                    if (Auth::check()) {
+                                        $userId = Auth::id();
+                                        $cartItems = session("user_cart_$userId");
+                                        $totalQuantity = 0;
+                                        foreach ($cartItems as $item) {
+                                            $totalQuantity += 1;
+                                        }
+                                        echo $totalQuantity;
+                                    } else {
+                                        $totalQuantity = 0;
+                                        $cartItems = session('guest_cart');
+                                        if ($cartItems) {
+                                            foreach ($cartItems as $item) {
+                                                $totalQuantity += 1;
+                                            }
+                                        }
+                                        echo $totalQuantity;
+                                    }
+                                @endphp</small>
                         </span>
                     </a>
                 </li>

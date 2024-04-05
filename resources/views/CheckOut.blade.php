@@ -153,24 +153,24 @@
         $(document).ready(function() {
             const urlParams = new URLSearchParams(window.location.search);
             const responseCode = urlParams.get('vnp_ResponseCode');
+            const orderId = urlParams.get('vnp_TxnRef');
             var csrfToken = $('meta[name="csrf-token"]').attr("content");
             if (responseCode) {
                 if (responseCode !== null && responseCode === '00') {
                     Swal.fire({
-                        title: "Success",
+                        title: "SUCCESS",
                         text: 'Payment Successfully',
                         icon: "success",
                         showConfirmButton: false,
-                        timer: 1500
+                        timer: 2000
                     });
                     $.ajax({
-                        url: 'clear-cart', // Địa chỉ của tác vụ Laravel để xóa giỏ hàng
+                        url: 'clear-cart',
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': csrfToken
                         },
                         success: function(response) {
-                            // console.log(response.message);
                             window.location.href = '/cart';
                         },
                         error: function(xhr, status, error) {
@@ -178,7 +178,13 @@
                         }
                     });
                 } else {
-                    alert('Payment failed!');
+                    Swal.fire({
+                        title: "ERROR",
+                        text: 'Payment failed',
+                        icon: "error",
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
                 }
             }
             // Kiểm tra giá trị của tham số vnp_ResponseCode

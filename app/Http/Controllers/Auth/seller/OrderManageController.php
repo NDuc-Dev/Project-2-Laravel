@@ -107,6 +107,8 @@ class OrderManageController extends Controller
                 'total' => $total_amount,
                 'table_id' => $request->input('orderTable'),
                 'order_status' => 0,
+                'payment_status' => 1,
+
             ]);
             $order_id = $order->order_id;
             $order->receipt_path = asset($this->CreateInvoice($count, $products, $request->input('formattedTime'), $request->input('orderTable'), $order_id, $total_amount));
