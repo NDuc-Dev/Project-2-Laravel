@@ -12,6 +12,7 @@ use App\PDF\InvoicePdf;
 use FPDF;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -42,10 +43,25 @@ class OrderManageController extends Controller
         return response()->json(['products' => $products]);
     }
 
-    public function getOrderListData()
+    public function getOrdersReady()
     {
-        $data = Orders::where('order_status', '!=', 4)->get();
+        $data = Orders::where('order_status', '=', 2)->get();
         return response()->json(['data' => $data]);
+    }
+
+    public function getOrdersDelivering()
+    {
+        $data = Orders::where('order_status', '=', 3)->get();
+        return response()->json(['data' => $data]);
+    }
+
+    public function CompleteOrder($order_id)
+    {
+        $order = Orders::find($order_id);
+        $order->order_status = 4;
+        $order->success_at = Carbon::now();
+        $order->save();
+        return response()->json(['success' => true, "status" => 200]);
     }
 
     public function getDataProductSize(Request $request)

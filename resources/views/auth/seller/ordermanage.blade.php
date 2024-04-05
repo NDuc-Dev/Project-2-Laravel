@@ -1,10 +1,6 @@
 @extends('auth.admin.layout-master')
 @section('content')
     <style>
-        .twitter-typeahead {
-            display: block !important;
-        }
-
         .product-dropdown>.dropdown-divider {
             border-top: 1px solid #2c2e33;
         }
@@ -21,132 +17,159 @@
         <div class="content-wrapper">
             <div class="page-header">
                 <h3 class="page-title"> Orders Management </h3>
-                {{-- <nav aria-label="breadcrumb">
-              <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Tables</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Basic tables</li>
-              </ol>
-            </nav> --}}
             </div>
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h4 class="card-title">Create New Order</h4>
-                    <div class="row">
-                        <div class="col-md-5">
-                            {{-- <div class="form-group mt-3 ms-2 me-2"id="scrollable-dropdown-menu">
-                                <label for="search-input">Search Product</label>
-                                <input type="text" id="search-input" name="search-input" class="typeahead"
-                                    spellcheck="false" autocomplete="off" placeholder="Search products">
-                            </div> --}}
-                            <div class="card-body p-1">
-                                <h4 class="card-title">Result</h4>
-                                <div class="table-responsive">
-                                    <table class="table table-hover" id="result">
-                                        <thead>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-7 mt-4">
-                            <div class="card bg-dark">
-                                <div id='order-details-after' class="card-body d-none">
-                                    {{-- <h4 class="card-title">Order</h4> --}}
-                                    <div class="order-details ">
-                                        <div class="row">
-                                            <div class="col-lg-5">
-                                                <p class="text-light">Code: <span id="order-code"></span></p>
-                                                <p class="text-light">Table: <span id="order-table"></span></p>
-                                            </div>
-                                            <div class="col-lg-7">
-                                                <p id="order-code" class="text-light">Staff:
-                                                    {{ Auth::user()->name }}
-                                                </p>
-                                                <p id="order-date" class="text-light"></p>
-                                            </div>
-                                        </div>
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="create-order-tab" data-bs-toggle="tab" data-bs-target="#create-order" type="button"
+                        role="tab" aria-controls="create-order" aria-selected="true">Create New</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="order-ready-tab" data-bs-toggle="tab" data-bs-target="#order-ready" type="button"
+                        role="tab" aria-controls="order-ready" aria-selected="false">Ready</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="delivery-order-tab" data-bs-toggle="tab" data-bs-target="#delivery-order" type="button"
+                        role="tab" aria-controls="contact" aria-selected="false">Delivering</button>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="create-order" role="tabpanel" aria-labelledby="create-order-tab">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h4 class="card-title">Create New Order</h4>
+                        </br>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="card-body p-1">
+                                        <h4 class="card-title">Products</h4>
                                         <div class="table-responsive">
-                                            <table class="table m-md-0" id="productOrder">
+                                            <table class="table table-hover" id="result">
                                                 <thead>
                                                 </thead>
                                                 <tbody>
                                                 </tbody>
                                             </table>
-                                            <div class="row mt-4 mx-0">
-                                                <div class="col-lg-7 ms-auto p-0">
-                                                </div>
-                                                <div class="col-lg-5 ms-auto p-0">
-                                                    <h6>Total: <span id="total"></span> VND</h6>
-                                                </div>
-                                            </div>
                                         </div>
-                                    </div>
-                                    <div class=" mt-2 p-0 row">
-                                        <button class="btn btn-inverse-primary btn-md" id="submit-order-btn"
-                                            style="flex: auto" type="button">
-                                            Create
-                                        </button>
-                                        <button class="btn btn-inverse-danger btn-md mt-2" id="cancel-order-btn"
-                                            style="flex: auto" type="button">
-                                            Cancel
-                                        </button>
                                     </div>
                                 </div>
-
-                                <div id='order-details-before' class="card-body">
-                                    {{-- <h4 class="card-title">Order</h4> --}}
-                                    <div class="order-details-before">
-                                        <div class="row">
-                                            <div class="col-5">
-                                                <p id="" class="text-light">Code: </p>
-                                                <p id="" class="text-light">Table: </p>
+                                <div class="col-md-7 mt-4">
+                                    <div class="card bg-dark">
+                                        <div id='order-details-after' class="card-body d-none">
+                                            {{-- <h4 class="card-title">Order</h4> --}}
+                                            <div class="order-details ">
+                                                <div class="row">
+                                                    <div class="col-lg-5">
+                                                        <p class="text-light">Code: <span id="order-code"></span></p>
+                                                        <p class="text-light">Table: <span id="order-table"></span></p>
+                                                    </div>
+                                                    <div class="col-lg-7">
+                                                        <p id="order-code" class="text-light">Staff:
+                                                            {{ Auth::user()->name }}
+                                                        </p>
+                                                        <p id="order-date" class="text-light"></p>
+                                                    </div>
+                                                </div>
+                                                <div class="table-responsive">
+                                                    <table class="table m-md-0" id="productOrder">
+                                                        <thead>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                    <div class="row mt-4 mx-0">
+                                                        <div class="col-lg-7 ms-auto p-0">
+                                                        </div>
+                                                        <div class="col-lg-5 ms-auto p-0">
+                                                            <h6>Total: <span id="total"></span> VND</h6>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="col-7">
-                                                <p id="" class="text-light">Staff:
-                                                    {{ Auth::user()->name }}
-                                                </p>
-                                                <p id="" class="text-light">Date: </p>
+                                            <div class=" mt-2 p-0 row">
+                                                <button class="btn btn-inverse-primary btn-md" id="submit-order-btn"
+                                                    style="flex: auto" type="button">
+                                                    Create
+                                                </button>
+                                                <button class="btn btn-inverse-danger btn-md mt-2" id="cancel-order-btn"
+                                                    style="flex: auto" type="button">
+                                                    Cancel
+                                                </button>
                                             </div>
                                         </div>
-                                        <div class="table-responsive">
-                                            <table class="table table-hover m-md-0" id="productOrderBefore">
-                                                <thead>
-                                                </thead>
-                                                <tbody>
-                                                </tbody>
-                                            </table>
-                                            <div class="row mt-4 mx-0">
-                                                <div class="col-md-7 ms-auto p-0">
+
+                                        <div id='order-details-before' class="card-body">
+                                            {{-- <h4 class="card-title">Order</h4> --}}
+                                            <div class="order-details-before">
+                                                <div class="row">
+                                                    <div class="col-5">
+                                                        <p id="" class="text-light">Code: </p>
+                                                        <p id="" class="text-light">Table: </p>
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <p id="" class="text-light">Staff:
+                                                            {{ Auth::user()->name }}
+                                                        </p>
+                                                        <p id="" class="text-light">Date: </p>
+                                                    </div>
                                                 </div>
-                                                <div class="col-md-5 ms-auto p-0">
-                                                    <h6 id="total">ToTal:</h6>
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover m-md-0" id="productOrderBefore">
+                                                        <thead>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                    <div class="row mt-4 mx-0">
+                                                        <div class="col-md-7 ms-auto p-0">
+                                                        </div>
+                                                        <div class="col-md-5 ms-auto p-0">
+                                                            <h6 id="total">ToTal:</h6>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
-
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="order-ready" role="tabpanel" aria-labelledby="order-ready-tab">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h4 class="card-title">Order Ready</h4>
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="orderReadyTable">
+                                    <thead>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="delivery-order" role="tabpanel" aria-labelledby="delivery-order-tab">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h4 class="card-title">Order Delivering</h4>
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="orderDelivery">
+                                    <thead>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h4 class="card-title">Order pending</h4>
-                    <div class="table-responsive">
-                        <table class="table table-hover"  id="orderPendingTable">
-                            <thead>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+
+
         </div>
     </div>
 

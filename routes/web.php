@@ -123,11 +123,15 @@ Route::GROUP(['prefix' => 'seller'], function () {
 
         Route::POST('/create-order', [OrderManageController::class, 'createOrder'])->name('seller.createOrder');
 
-        Route::GET('/get-data-order-inprogress', [OrderManageController::class, 'getOrderListData']);
+        Route::GET('/get-data-order-ready', [OrderManageController::class, 'getOrdersReady']);
+
+        Route::GET('/get-data-order-delivering', [OrderManageController::class, 'getOrdersDelivering']);
 
         Route::GET('/get-all-data-products', [OrderManageController::class, 'getDataProducts']);
 
         Route::GET('/get-data-products-active', [OrderManageController::class, 'getDataProductsActive']);
+
+        Route::POST('/complete-order-{order_id}', [OrderManageController::class, 'CompleteOrder']);
 
     });
 });

@@ -6,19 +6,11 @@ $(document).ready(function () {
     var orderDate = "";
     var csrfToken = $('meta[name="csrf-token"]').attr("content");
     var formattedTime = "";
-    var dataresult = [];
-    //hàm khởi tạo bảng product khi trang được tải
 
     var resutlTable = $("#result").DataTable({
         ajax: {
             url: "get-data-products-active",
             dataSrc: "products",
-        },
-        layout: {
-            topStart: 'info',
-            bottom: 'paging',
-            bottomStart: null,
-            bottomEnd: null
         },
         scrollY: "250px",
         ordering: false,
@@ -30,7 +22,7 @@ $(document).ready(function () {
         searching: true,
         language: {
             search: "", // Tùy chỉnh văn bản gợi ý trong thanh tìm kiếm
-            searchPlaceholder: "Search Product" // Tùy chỉnh placeholder cho thanh tìm kiếm
+            searchPlaceholder: "Search Product", // Tùy chỉnh placeholder cho thanh tìm kiếm
         },
         columns: [
             {
@@ -353,7 +345,6 @@ $(document).ready(function () {
         element.text("Welcome to NDC Coffee");
     }
 
-    //test
     $("#productOrder").on("click", ".fa-plus, .fa-minus", function () {
         var table = $("#productOrder").DataTable();
         var rowIdx = table.cell($(this).closest("td, li")).index().row; // Lấy chỉ số dòng của ô chứa nút được click
@@ -510,17 +501,17 @@ $(document).ready(function () {
         formattedTime = "";
     }
 
-    var orderPending = $("#orderPendingTable").DataTable({
+    var orderPending = $("#orderReadyTable").DataTable({
         ajax: {
-            url: "get-data-order-inprogress",
+            url: "get-data-order-ready",
             dataSrc: "data",
         },
         ordering: false,
         paging: true,
         lengthChange: false,
-        limit: 10,
         responsive: true,
-        searching: false,
+        limit: 10,
+        searching: true,
         autoWidth: true,
         responsive: true,
         columns: [
@@ -537,42 +528,96 @@ $(document).ready(function () {
             { data: "order_date", title: "Order Date" },
             { data: "table_id", title: "Order Table" },
             {
-                data: "order_status",
-                title: "Status",
+                data: "order_type",
+                title: "Actions",
                 render: function (data, type, row) {
-                    if (data == 0) {
-                        return '<label class="badge badge-danger py-1">Pending</label>';
-                    } else if (data == 1) {
-                        return '<label class="badge badge-warning py-1">Inprogress</label>';
-                    } else if (data == 2) {
-                        return '<label class="badge badge-primary py-1">Ready</label>';
-                    } else if (data == 3) {
-                        return '<label class="badge badge-success py-1">Delivering</label>';
-                    } else {
-                        return "";
+                    if (data == 1) {
+                        return (
+                            '<button class="btn btn-outline-success btn-sm py-1" id="complete-btn" data-id="' +
+                            row.order_id +
+                            '">Complete Order</button>'
+                        );
+                    } else if (data == 0) {
+                        return (
+                            '<button class="btn btn-outline-warning btn-sm py-1" id="delivery-btn" data-id="' +
+                            row.order_id +
+                            '">Delivery</button>'
+                        );
                     }
                 },
             },
-            // {
-            //     data: null,
-            //     title: "Actions",
-            //     render: function (data, type, row) {
-            //         return (
-            //             '<button class="btn btn-info btn-sm edit-btn py-1" data-id="' +
-            //             row.user_id +
-            //             '">Update</button>' +
-            //             '<span class ="p-1"></span>' +
-            //             '<button class="btn btn-danger btn-sm status-btn py-1" data-id="' +
-            //             row.user_id +
-            //             '">Change Status</button>'
-            //         );
-            //     },
-            // },
         ],
+    });
+
+    var orderDeli = $("#orderDelivery").DataTable({
+        ajax: {
+            url: "get-data-order-delivering",
+            dataSrc: "data",
+        },
+        ordering: false,
+        paging: true,
+        lengthChange: false,
+        limit: 10,
+        responsive: true,
+        searching: true,
+        autoWidth: true,
+        responsive: true,
+        columns: [
+            { data: "order_id", title: "ID" },
+            {
+                data: "order_type",
+                title: "Type",
+                render: function (data, type, row) {
+                    return parseInt(data) === 1
+                        ? '<div class="text-info py-1">Direct</div>'
+                        : '<div class="text-success py-1">Online</div>';
+                },
+            },
+            { data: "delivery_at", title: "Order Date" },
+            {
+                data: "null",
+                title: "Actions",
+                render: function (data, type, row) {
+                    return (
+                        '<button class="btn btn-outline-success btn-sm complete-deli-btn py-1" data-id="' +
+                        row.user_id +
+                        '">Complete Order</button>'
+                    );
+                },
+            },
+        ],
+    });
+
+    $("#orderReadyTable").on("click", "#complete-btn", function () {
+        var orderId = $(this).data("id");
+        console.log("Order ID:", orderId);
+        $.ajax({
+            url: `complete-order-` + orderId,
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+            },
+            data: {
+                order_id: orderId,
+            },
+            success: function (response) {
+                if (response.success) {
+                    swal.fire({
+                        icon: "success",
+                        title: "SUCCESS",
+                        text: "Order Completed",
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                } else {
+                }
+            },
+        });
     });
 
     setInterval(function () {
         orderPending.ajax.reload();
         resutlTable.ajax.reload();
+        orderDeli.ajax.reload();
     }, 10000);
 });
