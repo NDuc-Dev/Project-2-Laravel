@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Users;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -44,24 +45,28 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout(); 
-        return redirect('/login'); 
+        Auth::logout();
+        return redirect('/login');
     }
 
-    public function login(Request $request): RedirectResponse
+    public function login(Request $request)
     {
         try {
             $this->validateLogin($request);
-
             $credentials = $request->only('user_name', 'password');
-            if (Auth::attempt($credentials)) {
+
+            // Thêm kiểm tra trạng thái của người dùng vào điều kiện đăng nhập
+            $user = Users::where('user_name', $credentials['user_name'])->first();
+            if (!$user) {
+                return response()->json(['success' => false, 'message' => "Invalid User Name or Password, Please re-enter"]);
+            } else if ($user->status == 0) {
+                return response()->json(['success' => false, 'message' => "Your Account is not actived"]);
+            } else if (Auth::attempt($credentials)) {
                 $userId = Auth::id();
                 session(["user_cart_$userId" => []]);
-                return redirect()->intended('/home');
+                return response()->json(['success' => true, 'message' => "Welcome $user->user_name"]);
             }
-
-            // Đăng nhập thất bại
-            return redirect()->route('login')->with('error', 'Invalid email or password');
+            return response()->json(['success' => false, 'message' => "Invalid User Name or Password, Please re-enter"]);
         } catch (ValidationException $e) {
             return redirect()->route('login')
                 ->withErrors($e->validator)

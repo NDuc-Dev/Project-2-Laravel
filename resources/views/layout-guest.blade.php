@@ -15,19 +15,19 @@
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:400,700" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Great+Vibes" rel="stylesheet">
-    <link rel="stylesheet" href="guest/css/open-iconic-bootstrap.min.css">
-    <link rel="stylesheet" href="guest/css/animate.css">
-    <link rel="stylesheet" href="guest/css/owl.carousel.min.css">
-    <link rel="stylesheet" href="guest/css/owl.theme.default.min.css">
-    <link rel="stylesheet" href="guest/css/magnific-popup.css">
-    <link rel="stylesheet" href="guest/css/aos.css">
-    <link rel="stylesheet" href="guest/css/ionicons.min.css">
-    <link rel="stylesheet" href="guest/css/bootstrap-datepicker.css">
-    <link rel="stylesheet" href="guest/css/jquery.timepicker.css">
-    <link rel="stylesheet" href="guest/css/flaticon.css">
-    <link rel="stylesheet" href="guest/css/icomoon.css">
-    <link rel="stylesheet" href="guest/css/style.css">
-    <link rel="stylesheet" href="guest/css/leaflet.css">
+    <link rel="stylesheet" href="{{asset('guest/css/open-iconic-bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{asset('guest/css/animate.css')}}">
+    <link rel="stylesheet" href="{{asset('guest/css/owl.carousel.min.css')}}">
+    <link rel="stylesheet" href="{{asset('guest/css/owl.theme.default.min.css')}}">
+    <link rel="stylesheet" href="{{asset('guest/css/magnific-popup.css')}}">
+    <link rel="stylesheet" href="{{asset('guest/css/aos.css')}}">
+    <link rel="stylesheet" href="{{asset('guest/css/ionicons.min.css')}}">
+    <link rel="stylesheet" href="{{asset('guest/css/bootstrap-datepicker.css')}}">
+    <link rel="stylesheet" href="{{asset('guest/css/jquery.timepicker.css')}}">
+    <link rel="stylesheet" href="{{asset('guest/css/flaticon.css')}}">
+    <link rel="stylesheet" href="{{asset('guest/css/icomoon.css')}}">
+    <link rel="stylesheet" href="{{asset('guest/css/style.css')}}">
+    <link rel="stylesheet" href="{{asset('guest/css/leaflet.css')}}">
 
     {{-- script --}}
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

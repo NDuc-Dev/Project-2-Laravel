@@ -6,6 +6,7 @@ use App\Http\Controllers\auth\admin\ProductController;
 use App\Http\Controllers\auth\admin\StaffManagementController;
 use App\Http\Controllers\auth\bartender\PrepareOrderController;
 use App\Http\Controllers\auth\bartender\ProductStockController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\auth\seller\OrderManageController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckOutController;
@@ -65,6 +66,10 @@ Route::GET('/test-mail', [HomeController::class, 'testMail'])->withoutMiddleware
 Route::GET('/mail', [HomeController::class, 'mail'])->withoutMiddleware(['auth']);
 
 Route::POST('/send-mail', [CheckOutController::class, 'sendEmail'])->withoutMiddleware(['auth']);
+
+Route::POST('/check-dupplicate-info-guest', [RegisterController::class, 'checkExistInfo']);
+
+Route::Get('/actived/{user}/{token}', [RegisterController::class, 'activedAccount'])->name('actived_account');
 
 
 

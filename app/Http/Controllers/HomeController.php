@@ -64,6 +64,6 @@ class HomeController extends Controller
     }
 
     public function mail(){
-        return view('emails.receiptmail');
+        return view('activated');
     }
 }

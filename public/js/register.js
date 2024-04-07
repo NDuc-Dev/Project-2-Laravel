@@ -76,7 +76,7 @@ $(document).ready(function () {
                     var email = $("#email").val();
                     var token = $('input[name="_token"]').val();
                     $.ajax({
-                        url: "check-dupplicate-info",
+                        url: "check-dupplicate-info-guest",
                         method: "POST",
                         data: {
                             _token: token,
@@ -88,12 +88,11 @@ $(document).ready(function () {
                             if (response.exists) {
                                 Swal.fire({
                                     title: "Error !",
-                                    text: response.mesage,
+                                    text: response.message,
                                     icon: "error",
                                 });
                             } else {
                                 var formData = $(form).serialize();
-                                showSpinner();
                                 $.ajax({
                                     type: "POST",
                                     url: $(form).attr("action"),
@@ -101,7 +100,6 @@ $(document).ready(function () {
                                     dataType: "json",
                                     success: function (response) {
                                         if (response.success) {
-                                            hideSpinner();
                                             Swal.fire({
                                                 title: "Success",
                                                 text: response.message,
@@ -111,7 +109,6 @@ $(document).ready(function () {
                                             });
                                             window.location.href = "/login";
                                         } else {
-                                            hideSpinner();
                                             Swal.fire({
                                                 title: "Error",
                                                 text: response.message,

@@ -5,8 +5,12 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Users;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Foundation\Auth\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
 
 class RegisterController extends Controller
 {
@@ -35,10 +39,10 @@ class RegisterController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('guest');
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('guest');
+    // }
 
     /**
      * Get a validator for an incoming registration request.
@@ -46,7 +50,7 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    
+
     protected function validator(array $data)
     {
         return Validator::make($data, [
@@ -66,14 +70,61 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return Users::create([
-            'name' => $data['name'],
-            'user_name' => $data['user_name'],
-            'password' => Hash::make($data['password']),
-            'role' => 'guest',
-            'email' => $data['email'],
-            'phone' => $data['phone'],
-            'status' => 1,
-        ]);
+        try {
+            $user = Users::create([
+                'name' => $data['name'],
+                'user_name' => $data['user_name'],
+                'password' => Hash::make($data['password']),
+                'token' => Str::random(20, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'),
+                'role' => 'guest',
+                'email' => $data['email'],
+                'phone' => $data['phone'],
+                'status' => 0,
+            ]);
+
+            if ($user) {
+                Mail::send('emails.active_account', compact('user'), function ($email) use ($user) {
+                    $email->subject('NDC COFFEE - Confirm registration and activate your account.');
+                    $email->to($user->email, $user->name);
+                });
+            }
+
+            return response()->json(['status' => 'success', 'message' => 'User created successfully'], 201);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+
+    public function checkExistInfo(Request $request)
+    {
+        $username = $request->input('username');
+        $phone = $request->input('phone');
+        $mail = $request->input('email');
+        $user_name = Users::where('user_name', $username)->first();
+        $phone_num = Users::where('phone', $phone)->first();
+        $email = Users::where('email', $mail)->first();
+
+        if ($user_name) {
+            return response()->json(['exists' => true, 'message' => "User Name is already exist !"]);
+        } else if ($phone_num) {
+            return response()->json(['exists' => true, 'message' => "Phone Number is already exist !"]);
+        } else if ($email) {
+            return response()->json(['exists' => true, 'message' => "Email is already exist !"]);
+        } else {
+            return response()->json(['exists' => false]);
+        }
+    }
+
+    public function activedAccount(Users $user, $token)
+    {
+        if ($user->token === $token) {
+            $user->status = 1;
+            $user->save();
+            return view('activated');
+        } else {
+
+        }
+        // dd($user);
     }
 }
