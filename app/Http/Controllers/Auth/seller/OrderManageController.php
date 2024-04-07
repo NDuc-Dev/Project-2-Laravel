@@ -26,20 +26,16 @@ class OrderManageController extends Controller
         $this->middleware('checkRole:seller,seller');
     }
 
-
     public function getOrderManage()
     {
-        $products = Products::where('status', 1)
-            ->where('status_in_stock', 1)
-            ->get();
-        return view('auth.seller.ordermanage', compact('products'));
+        return view('auth.seller.ordermanage');
     }
 
     public function getDataProductsActive()
     {
         $products = Products::where('status', 1)
-        ->where('status_in_stock', 1)
-        ->get();
+            ->where('status_in_stock', 1)
+            ->get();
         return response()->json(['products' => $products]);
     }
 
@@ -55,13 +51,54 @@ class OrderManageController extends Controller
         return response()->json(['data' => $data]);
     }
 
-    public function CompleteOrder($order_id)
+    public function deliveryOrder(Request $request)
     {
-        $order = Orders::find($order_id);
-        $order->order_status = 4;
-        $order->success_at = Carbon::now();
-        $order->save();
-        return response()->json(['success' => true, "status" => 200]);
+        try {
+            DB::beginTransaction();
+
+            $order_id = $request->input('order_id');
+            $delivery_code = $request->input('delivery_code');
+            if (is_null($order_id) || is_null($delivery_code)) {
+                throw new \Exception("Order ID and delivery code cannot be null.");
+            }
+
+            Orders::where('id', $order_id)->update([
+                'order_status' => 3,
+                'delivery_code' => $delivery_code,
+            ]);
+
+            DB::commit();
+
+            return response()->json(['success' => true, "status" => 200]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, "status" => 500, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function completeOrder(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $order_id = $request->input('order_id');
+            Orders::where('order_id', $order_id)->update([
+                'order_status' => 4,
+                'success_at' => Carbon::now(),
+            ]);
+            $order = Orders::find($order_id);
+            if ($order->order_type != 0) {
+                $table_id = $order->table_id;
+                $table = Tables::find($table_id);
+                $table->table_status = 1;
+                $table->save();
+            }
+            DB::commit();
+
+            return response()->json(['success' => true, "status" => 200]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, "status" => 500, 'message' => $e->getMessage()]);
+        }
     }
 
     public function getDataProductSize(Request $request)
@@ -69,13 +106,14 @@ class OrderManageController extends Controller
         $product_id = $request->input('product_id');
 
         $productSize = ProductSizes::where('product_id', $product_id)->get();
- 
+
         if ($productSize) {
             return response()->json(['success' => true, 'productSize' => $productSize]);
         } else {
             return response()->json(['success' => false, 'message' => 'Product size not found']);
         }
     }
+
     public function generateTableId()
     {
         $randomId = mt_rand(1, 40);
@@ -222,7 +260,8 @@ class OrderManageController extends Controller
         return Storage::url('receipt/' . $fileName);
     }
 
-    public function getDataProducts(){
+    public function getDataProducts()
+    {
         $data = Products::all();
         return response()->json($data);
     }

@@ -60,6 +60,15 @@ Route::POST('/clear-cart',[CheckOutController::class,'clearCart'])->name('clearC
 
 Route::POST('/change-status-payment', [CheckOutController::class, 'changePaymentStatus'])->name('changePaymentStatus')->withoutMiddleware(['auth']);
 
+Route::GET('/test-mail', [HomeController::class, 'testMail'])->withoutMiddleware(['auth']);
+
+Route::GET('/mail', [HomeController::class, 'mail'])->withoutMiddleware(['auth']);
+
+Route::POST('/send-mail', [CheckOutController::class, 'sendEmail'])->withoutMiddleware(['auth']);
+
+
+
+
 
 
 Route::GROUP(['middleware'=>'isAdmin','prefix' => 'manage'], function () {
@@ -70,7 +79,7 @@ Route::GROUP(['middleware'=>'isAdmin','prefix' => 'manage'], function () {
 
         Route::GET('/staff-management', [StaffManagementController::class, 'getStaffManagement'])->name('admin.staffManagement');
 
-        Route::POST('/check-dupplicate-user-name', [StaffManagementController::class, 'checkUserName'])->name('admin.checkUName');
+        Route::POST('/check-dupplicate-info', [StaffManagementController::class, 'checkExistInfo'])->name('admin.checkExistInfo');
 
         Route::POST('/reset-password-{id}', [StaffManagementController::class, 'resetPassword'])->name('admin.resetPassword');
 
@@ -107,6 +116,9 @@ Route::GROUP(['middleware'=>'isAdmin','prefix' => 'manage'], function () {
         Route::GET('/get-data-products-{category}', [CategoryController::class, 'getDataProduct'])->name('admin.category.getDataProduct');
 
         Route::POST('/create-category', [CategoryController::class, 'createCategory'])->name('admin.createCategory');
+
+        Route::POST('/change-status', [CategoryController::class, 'changeStatusCategory'])->name('admin.createCategory');
+
     });
 });
 
@@ -127,11 +139,12 @@ Route::GROUP(['prefix' => 'seller'], function () {
 
         Route::GET('/get-data-order-delivering', [OrderManageController::class, 'getOrdersDelivering']);
 
-        Route::GET('/get-all-data-products', [OrderManageController::class, 'getDataProducts']);
-
         Route::GET('/get-data-products-active', [OrderManageController::class, 'getDataProductsActive']);
 
-        Route::POST('/complete-order-{order_id}', [OrderManageController::class, 'CompleteOrder']);
+        Route::POST('/complete-order', [OrderManageController::class, 'completeOrder']);
+
+        Route::POST('/delivery-order', [OrderManageController::class, 'deliveryOrder']);
+
 
     });
 });

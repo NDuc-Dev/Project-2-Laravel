@@ -10,6 +10,8 @@ use App\Models\Sizes;
 use FPDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 
@@ -39,8 +41,7 @@ class CheckOutController extends Controller
                 list($productId, $sizeId) = explode('_', $productIdAndSizeId);
                 $product = Products::find($productId);
                 $size = Sizes::find($sizeId);
-                $productSize = ProductSizes::where('product_id', $productId)->where('size_id', $sizeId)->value('unit_price');
-                ;
+                $productSize = ProductSizes::where('product_id', $productId)->where('size_id', $sizeId)->value('unit_price');;
                 $cartItems[$productIdAndSizeId]['product'] = $product;
                 $cartItems[$productIdAndSizeId]['size'] = $size;
                 $cartItems[$productIdAndSizeId]['productSize'] = $productSize;
@@ -50,7 +51,8 @@ class CheckOutController extends Controller
         return view('CheckOut', ['cartItems' => $cartItems]);
     }
 
-    public function changePaymentStatus(Request $request){
+    public function changePaymentStatus(Request $request)
+    {
         $order = Orders::find($request->input('orderId'));
         $order->payment_status = 1;
         $order->save();
@@ -250,12 +252,11 @@ class CheckOutController extends Controller
         } else {
             echo json_encode($returnData);
         }
-        // vui lòng tham khảo thêm tại code demo
     }
 
     public function clearCart()
     {
-        if (Auth::check()){
+        if (Auth::check()) {
             $userId = Auth::id();
             Session::forget("user_cart_$userId");
         } else {
@@ -279,7 +280,6 @@ class CheckOutController extends Controller
         $pdf->Ln(1);
         $pdf->Cell(0, 5, iconv("UTF-8", "ISO-8859-1", "------------------------------------------------------"), 0, 0, 'C');
         $pdf->Ln(5);
-
         $pdf->SetFont('Arial', 'B', 12);
         $pdf->MultiCell(0, 5, iconv("UTF-8", "ISO-8859-1", strtoupper("** RECEIPT **")), 0, 'C', false);
         $pdf->SetFont('Arial', '', 9);
@@ -321,7 +321,6 @@ class CheckOutController extends Controller
         $pdf->Cell(44, 5, iconv("UTF-8", "ISO-8859-1", number_format($Total, 0, '.', '.') . " VND"), 0, 0, 'C');
         $pdf->Ln(5);
         $pdf->SetFont('Arial', '', 9);
-
         $pdf->Ln(5);
         $pdf->Cell(72, 5, iconv("UTF-8", "ISO-8859-1", "-------------------------------------------------------------------"), 0, 0, 'C');
         $pdf->Ln(5);
@@ -335,7 +334,31 @@ class CheckOutController extends Controller
         $pdf->Ln(9);
         $pdfContent = $pdf->Output('S');
         $fileName = 'receipt_' . 'id_' . $orderCode . '.pdf';
+        $publicPath = public_path('receipt');
+        File::makeDirectory($publicPath, $mode = 0777, true, true);
+        $pdfContent = $pdf->Output('S');
+        $fileName = 'receipt_' . 'id_' . $orderCode . '.pdf';
         Storage::disk('public')->put('receipt/' . $fileName, $pdfContent);
         return Storage::url('receipt/' . $fileName);
+    }
+
+    public function sendEmail(Request $request)
+    {
+        $order_id = $request->input('order_id');
+        $order = Orders::find($order_id);
+        if ($order) {
+            $pdf_path = public_path($order->receipt_path);
+            $name = explode("-", $order->delivery_address);
+            $guest_email = $order->guest_email;
+            if($guest_email != null){
+                Mail::send('emails.receiptmail', compact('name'), function ($email) use ($name, $pdf_path, $guest_email) {
+                    $email->subject('Receipt Info');
+                    $email->to($guest_email, $name);
+                    $email->attach($pdf_path);
+                });
+            } else {
+
+            }
+        }
     }
 }

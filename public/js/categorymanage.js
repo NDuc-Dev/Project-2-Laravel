@@ -36,7 +36,6 @@ $(document).ready(function () {
                 icon: "question",
             }).then((willCreate) => {
                 if (willCreate) {
-
                     var formData = $(form).serialize();
                     $.ajax({
                         type: "POST",
@@ -53,9 +52,7 @@ $(document).ready(function () {
                                     timer: 1500,
                                 }).then(() => {
                                     var categoryTable =
-                                        $(
-                                            "#categoryTable"
-                                        ).DataTable();
+                                        $("#categoryTable").DataTable();
                                     categoryTable.ajax.reload();
                                     var form =
                                         document.getElementById(
@@ -82,7 +79,6 @@ $(document).ready(function () {
                         },
                     });
                 }
-
             });
         },
     });
@@ -97,7 +93,6 @@ $(document).ready(function () {
             event.preventDefault();
         }
     });
-
 
     // //role
     $.validator.addMethod("selectRequired", function (value, element, arg) {
@@ -114,14 +109,24 @@ $(document).ready(function () {
         columns: [
             { data: "category_id", title: "ID" },
             { data: "category_name", title: " Category" },
-            { data: "descriptions", title: "Descriptions" },
+            {
+                data: "category_status",
+                title: "Status",
+                render: function (data, type, row) {
+                    if (data == 1) {
+                        return '<label class="badge badge-success">Active</label>';
+                    } else if (data == 0) {
+                        return '<label class="badge badge-danger">Inactive</label>';
+                    } else {
+                        return "";
+                    }
+                },
+            },
             {
                 data: "group_id",
                 title: "Group",
                 render: function (data, tyep, row) {
-                    return parseInt(data) === 1
-                        ? 'Drink'
-                        : 'Food';
+                    return parseInt(data) === 1 ? "Drink" : "Food";
                 },
             },
             {
@@ -129,15 +134,20 @@ $(document).ready(function () {
                 title: "Actions",
                 render: function (data, type, row) {
                     return (
-                        '<button class="btn btn-info btn-sm edit-btn py-1 view-btn" data-bs-toggle="modal" data-bs-target="#modal-product-list" data-name="' +
+                        '<button class="btn btn-info btn-sm view-btn py-1" data-bs-toggle="modal" data-bs-target="#modal-product-list" data-name="' +
                         row.category_name +
-                        '">View Product In Category</button>'
+                        '">View Product In Category</button>' +
+                        '<span class ="p-1"></span>' +
+                        '<button class="btn btn-danger btn-sm py-1" id="change-status-category" data-id="' +
+                        row.category_id +
+                        '">Change Status</button>'
                     );
                 },
             },
         ],
     });
-    var categoryname = '';
+    
+    var categoryname = "";
     $("#categoryTable").on("click", ".view-btn", function () {
         var table = $("#categoryTable").DataTable();
         var rowIdx = table.cell($(this).closest("td, li")).index().row;
@@ -145,9 +155,58 @@ $(document).ready(function () {
         categoryname = rowData.category_name;
         handleUpdateClickView(categoryname);
     });
-
+    
     function handleUpdateClickView(category) {
         createProductsTable(category);
+    }
+
+    $("#categoryTable").on("click", "#change-status-category", function () {
+        var table = $("#categoryTable").DataTable();
+        var rowIdx = table.cell($(this).closest("td, li")).index().row;
+        var rowData = table.row(rowIdx).data();
+        categoryId = rowData.category_id;
+        handleUpdateClickChangeCategoryStatus(categoryId);
+    });
+
+    function handleUpdateClickChangeCategoryStatus(categoryId){
+        var csrfToken = $('meta[name="csrf-token"]').attr("content");
+        $.ajax({
+            url: "/manage/categories/change-status",
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+            },
+            data: {
+                category_id : categoryId,
+            },
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success",
+                        text: response.messages,
+                        showConfirmButton: false,
+                        timer: 1000,
+                    }).then(() => {
+                        var categoryTable = $("#categoryTable").DataTable();
+                        categoryTable.ajax.reload();
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                var errorMessage = "An unexpected error occurred";
+                if (xhr && xhr.responseJSON && xhr.responseJSON.error) {
+                    errorMessage = xhr.responseJSON.error;
+                } else {
+                    errorMessage = error;
+                }
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: errorMessage,
+                });
+            },
+        });
     }
 
     function createProductsTable(category) {

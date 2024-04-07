@@ -175,7 +175,5 @@
 
 
     <script src="{{ asset('js/ordermanage.js') }}"></script>
-    <script>
-        var products = @json($products);
-    </script>
+
 @endsection

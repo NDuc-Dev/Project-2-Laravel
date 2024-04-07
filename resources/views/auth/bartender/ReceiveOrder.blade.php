@@ -36,7 +36,7 @@
                             </div>
                             <table id="orderProcessingTable" class="table"></table>
                         </div>
-                        <button class="btn btn-success" id="complete-order-btn">Complete</button>
+                        <button class="btn btn-info" id="complete-order-btn">Ready</button>
                     </div>
                 </div>
             </div>

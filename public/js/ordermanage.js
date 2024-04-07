@@ -430,6 +430,9 @@ $(document).ready(function () {
                 if (Total > value) {
                     return "The receipt must be bigger than the total amount to be paid";
                 }
+                if (value - Total > 500000) {
+                    return "The amount received is too large, please try again";
+                }
             },
         }).then((result) => {
             if (result.isConfirmed) {
@@ -501,7 +504,7 @@ $(document).ready(function () {
         formattedTime = "";
     }
 
-    var orderPending = $("#orderReadyTable").DataTable({
+    var orderReady = $("#orderReadyTable").DataTable({
         ajax: {
             url: "get-data-order-ready",
             dataSrc: "data",
@@ -573,14 +576,14 @@ $(document).ready(function () {
                         : '<div class="text-success py-1">Online</div>';
                 },
             },
-            { data: "delivery_at", title: "Order Date" },
+            { data: "delivery_code", title: "Delivery Code" },
             {
                 data: "null",
                 title: "Actions",
                 render: function (data, type, row) {
                     return (
-                        '<button class="btn btn-outline-success btn-sm complete-deli-btn py-1" data-id="' +
-                        row.user_id +
+                        '<button class="btn btn-outline-success btn-sm-btn py-1" id="complete-deli" data-id="' +
+                        row.order_id +
                         '">Complete Order</button>'
                     );
                 },
@@ -592,7 +595,78 @@ $(document).ready(function () {
         var orderId = $(this).data("id");
         console.log("Order ID:", orderId);
         $.ajax({
-            url: `complete-order-` + orderId,
+            url: "complete-order",
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+            },
+            data: {
+                order_id: orderId,
+            },
+            success: function (response) {
+                if (response.success) {
+                    swal.fire({
+                        icon: "success",
+                        title: "SUCCESS",
+                        text: "Order Completed",
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                    orderReady.ajax.reload();
+                } else {
+                }
+            },
+        });
+    });
+
+    $("#orderReadyTable").on("click", "#delivery-btn", function () {
+        var orderId = $(this).data("id");
+        Swal.fire({
+            title: "Delivery Code",
+            input: "text",
+            inputLabel: "Enter Delivery Code.",
+            showCancelButton: true,
+            inputValidator: (value) => {
+                if (!value) {
+                    return "This field is required !";
+                }
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const deliverycode = result.value;
+                var csrfToken = $('meta[name="csrf-token"]').attr("content");
+                $.ajax({
+                    url: "delivery-order",
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": csrfToken,
+                    },
+                    data: {
+                        order_id: orderId,
+                        delivery_code: deliverycode,
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            swal.fire({
+                                icon: "success",
+                                title: "SUCCESS",
+                                showConfirmButton: false,
+                                timer: 1500,
+                            });
+                            orderReady.ajax.reload();
+                        } else {
+                        }
+                    },
+                });
+            }
+        });
+    });
+
+    $("#orderDelivery").on("click", "#complete-deli", function () {
+        var orderId = $(this).data("id");
+        console.log("Order ID:", orderId);
+        $.ajax({
+            url: "complete-order",
             method: "POST",
             headers: {
                 "X-CSRF-TOKEN": csrfToken,
@@ -616,7 +690,7 @@ $(document).ready(function () {
     });
 
     setInterval(function () {
-        orderPending.ajax.reload();
+        orderReady.ajax.reload();
         resutlTable.ajax.reload();
         orderDeli.ajax.reload();
     }, 10000);

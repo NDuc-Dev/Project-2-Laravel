@@ -4,7 +4,7 @@
         <div class="d-flex justify-content-center mt-5">
             <div class="col-md-8 col-xs-6 mt-5">
                 <h3 class="mb-4 text-center subheading">{{ __('Sign Up') }}</h3>
-                <form method="POST" action="{{ route('register') }}" class="login-form">
+                <form method="POST" action="{{ route('register') }}" class="login-form" id="form-validate">
                     @csrf
                     <div class="row">
                         <div class="col-md-6">
@@ -52,4 +52,5 @@
             </div>
         </div>
     </section>
+    <script src="{{asset('js/register.js')}}"></script>
 @endsection

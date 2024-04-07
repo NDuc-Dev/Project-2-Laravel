@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
+    protected $redirectTo = '/home';
+
     public function __construct()
     {
         $this->middleware('checkRole:admin,admin');
@@ -128,7 +130,6 @@ class ProductController extends Controller
             return response()->json(['success' => true, 'messages' => "Change Status success"]);
         } catch (\Exception $e) {
             DB::rollBack();
-            // \Log::error('Error: ' . $e->getMessage());
             return back()->withInput()->with('error', 'Failed to change');
         }
     }

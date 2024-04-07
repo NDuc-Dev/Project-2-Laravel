@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    // validate form
     $("#form-validate").validate({
         rules: {
             name: {
@@ -24,8 +23,9 @@ $(document).ready(function () {
                 required: true,
                 regexPassword: true,
             },
-            role: {
-                selectRequired: "",
+            password_confirmation: {
+                required: true,
+                equalToPassword: true,
             },
         },
         messages: {
@@ -52,8 +52,9 @@ $(document).ready(function () {
                 required: "Vui lòng nhập mật khẩu",
                 regexPassword: "Mật khẩu phải chứa ít nhất 6-18 kí tự",
             },
-            role: {
-                selectRequired: "Vui lòng chọn vai trò cho người dùng",
+            password_confirmation: {
+                equalToPassword: "mật khẩu không khớp",
+                required: "Vui lòng nhập mật khẩu",
             },
         },
         errorPlacement: function (error, element) {
@@ -107,18 +108,8 @@ $(document).ready(function () {
                                                 icon: "success",
                                                 showConfirmButton: false,
                                                 timer: 1500,
-                                            }).then(() => {
-                                                var staffTable =
-                                                    $(
-                                                        "#staffTable"
-                                                    ).DataTable();
-                                                staffTable.ajax.reload();
-                                                var form =
-                                                    document.getElementById(
-                                                        "form-validate"
-                                                    );
-                                                form.reset();
                                             });
+                                            window.location.href = "/login";
                                         } else {
                                             hideSpinner();
                                             Swal.fire({
@@ -201,146 +192,12 @@ $(document).ready(function () {
         return arg !== value;
     });
 
-    $("#staffTable").DataTable({
-        ajax: {
-            url: "get-data-staff",
-            dataSrc: "data",
+    $.validator.addMethod(
+        "equalToPassword",
+        function (value, element) {
+            var password = $("#password").val();
+            return value === password;
         },
-        autoWidth: true,
-        responsive: true,
-        columns: [
-            { data: "user_id", title: "ID" },
-            { data: "name", title: "Name" },
-            { data: "role", title: "Role" },
-            { data: "email", title: "Email" },
-            { data: "phone", title: "Phone" },
-            {
-                data: "status",
-                title: "Status",
-                render: function (data, type, row) {
-                    return parseInt(data) === 1
-                        ? '<label class="badge badge-success py-1">Active</label>'
-                        : '<label class="badge badge-warning py-1">Inactive</label>';
-                },
-            },
-            {
-                data: null,
-                title: "Actions",
-                render: function (data, type, row) {
-                    return (
-                        '<button class="btn btn-info btn-sm edit-btn py-1" data-id="' +
-                        row.user_id +
-                        '">Update</button>' +
-                        '<span class ="p-1"></span>' +
-                        '<button class="btn btn-danger btn-sm status-btn py-1" data-id="' +
-                        row.user_id +
-                        '">Change Status</button>'
-                    );
-                },
-            },
-        ],
-    });
-
-    $("#staffTable").on("click", ".status-btn", function () {
-        var userId = $(this).data("id");
-        Swal.fire({
-            title: "Change Status?",
-            text: "Are you sure you want to change the status?",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonText: "Yes",
-            cancelButtonText: "No",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                handleUpdateClickChange(userId);
-            }
-        });
-    });
-
-    function handleUpdateClickChange(userId) {
-        var csrfToken = $('meta[name="csrf-token"]').attr("content");
-        showSpinner();
-        $.ajax({
-            url: "/manage/staffs/change-status-" + userId,
-            method: "POST",
-            headers: {
-                "X-CSRF-TOKEN": csrfToken,
-            },
-            success: function (response) {
-                if (response.success) {
-                    hideSpinner();
-                    Swal.fire({
-                        icon: "success",
-                        title: "Success",
-                        text: response.messages,
-                        showConfirmButton: false,
-                        timer: 1000,
-                    }).then(() => {
-                        var staffTable = $("#staffTable").DataTable();
-                        staffTable.ajax.reload();
-                    });
-                }
-            },
-            error: function (xhr, status, error) {
-                var errorMessage = "An unexpected error occurred";
-                if (xhr && xhr.responseJSON && xhr.responseJSON.error) {
-                    errorMessage = xhr.responseJSON.error;
-                } else {
-                    errorMessage = error;
-                    hideSpinner();
-                }
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: errorMessage,
-                });
-            },
-        });
-    }
-    $("#staffTable").on("click", ".edit-btn", function () {
-        var userId = $(this).data("id");
-        handleUpdateClickUpdate(userId);
-    });
-
-    function handleUpdateClickUpdate(userId) {
-        showSpinner();
-        $.ajax({
-            url: "/manage/staffs/update-staff-" + userId,
-            method: "GET",
-            success: function (response) {
-                if (response.error) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error",
-                        text: response.error,
-                    });
-                } else {
-                    window.location.href =
-                        "/manage/staffs/update-staff-" + userId;
-                }
-            },
-            error: function (xhr, status, error) {
-                var errorMessage = "An unexpected error occurred";
-                if (xhr && xhr.responseJSON && xhr.responseJSON.error) {
-                    errorMessage = xhr.responseJSON.error;
-                } else {
-                    errorMessage = error;
-                    hideSpinner();
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error",
-                        text: errorMessage,
-                    });
-                }
-            },
-        });
-    }
-
-    function showSpinner() {
-        $("#container-spinner").removeClass("d-none");
-    }
-
-    function hideSpinner() {
-        $("#container-spinner").addClass("d-none");
-    }
+        "Confirm password does not match."
+    );
 });

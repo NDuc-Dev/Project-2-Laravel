@@ -6,6 +6,7 @@ use App\Models\Products;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Number;
+use Illuminate\Support\Facades\Mail;
 
 class HomeController extends Controller
 {
@@ -49,5 +50,20 @@ class HomeController extends Controller
             $product->unit_price = $unit_price = preg_replace('/[^0-9,.]/', '', $unit_price);
         }
         return view('home', compact('drinkProducts', 'foodProducts'));
+    }
+
+    public function testMail()
+    {
+        $pdf_path = storage_path('app/public/receipt/receipt_id_6.pdf');
+        $name = 'Nguyen Ngoc Duc';
+        Mail::send('emails.receiptmail', compact('name'), function ($email) use($name, $pdf_path) {
+            $email->subject('Receipt Info');
+            $email->to('nguyenngocduc260504@gmail.com', $name);
+            $email->attach($pdf_path);
+        });
+    }
+
+    public function mail(){
+        return view('emails.receiptmail');
     }
 }

@@ -5,13 +5,12 @@ namespace App\Http\Controllers\auth\admin;
 use App\Http\Controllers\Controller;
 use App\Models\Categories;
 use App\Models\Products;
-use GrahamCampbell\ResultType\Success;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
-  
+    protected $redirectTo = '/home';
 
     public function getCategories()
     {
@@ -49,7 +48,23 @@ class CategoryController extends Controller
             return response()->json(['success' => true, 'message' => 'Category created successfully'], 200);
         } catch (\Exception $e) {
             DB::rollback();
-            return response()->json(['success' => false, 'message' => 'An error occurred while creating product'], 500);
+            return response()->json(['success' => false, 'message' => 'An error occurred while creating category'], 500);
+        }
+    }
+
+    public function changeStatusCategory(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $category_id = $request->input('category_id');
+            $category = Categories::find($category_id);
+            $category->category_status = ($category->category_status == 1) ? 0 : 1;
+            $category->save();
+            DB::commit();
+            return response()->json(['success' => true, 'messages' => "Change Status success"]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['success' => false, 'message' => 'An error occurred while change'], 500);
         }
     }
 }

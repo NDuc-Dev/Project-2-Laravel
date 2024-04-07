@@ -171,10 +171,26 @@
                             'X-CSRF-TOKEN': csrfToken
                         },
                         success: function(response) {
-                            window.location.href = '/cart';
+                            $.ajax({
+                                url: 'send-mail',
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': csrfToken
+                                },
+                                data: {
+                                    order_id: orderId,
+                                },
+                                success: function(response) {
+
+                                    window.location.href = '/cart';
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error(error);
+                                }
+                            });
                         },
                         error: function(xhr, status, error) {
-                            console.error(error); // Xử lý lỗi nếu có
+                            console.error(error);
                         }
                     });
                 } else {
@@ -187,7 +203,6 @@
                     });
                 }
             }
-            // Kiểm tra giá trị của tham số vnp_ResponseCode
         });
     </script>
 @endsection

@@ -3,15 +3,11 @@
 namespace App\Http\Controllers\auth\admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Middleware\AdminMiddleware;
-use App\Http\Middleware\CheckRole;
 use App\Models\Users;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 
 class StaffManagementController extends Controller
@@ -19,18 +15,23 @@ class StaffManagementController extends Controller
 
     protected $redirectTo = '/home';
 
-    
+    public function __construct()
+    {
+        $this->middleware('checkRole:admin,admin');
+    }
+
+
     public function getStaffManagement()
     {
         return view('auth.admin.staffs.staffmanage');
     }
 
-    public function getDataStaff(){
-        $data = Users::where('role', '!=', 'admin')->get();
+    public function getDataStaff()
+    {
+        $roles = ['bartender', 'seller'];
+        $data = Users::whereIn('role', $roles)->get();
         return response()->json(['data' => $data]);
     }
-
-
 
     protected function validator(array $data)
     {
@@ -43,14 +44,11 @@ class StaffManagementController extends Controller
         ]);
     }
 
-
-
     protected function createStaff(Request $request)
     {
-        DB::beginTransaction();
-
-        $data = $request->all();
         try {
+            DB::beginTransaction();
+            $data = $request->all();
             Users::create([
                 'name' => $data['name'],
                 'user_name' => $data['user_name'],
@@ -63,19 +61,16 @@ class StaffManagementController extends Controller
 
             DB::commit();
             return response()->json(['success' => true, 'message' => 'Create User Successfully']);
-
         } catch (\Exception $e) {
             DB::rollback();
-            // \Log::error('Error creating user: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Create User failed']);
-
         }
     }
 
     public function getUpdateStaff($id)
     {
         $user = Users::find($id);
-        if (!$user) {
+        if (!$user || $user->role = 'admin' || $user->role = 'guest') {
             return response()->json(['error' => 'User not found'], 404);
         } else {
         }
@@ -84,11 +79,9 @@ class StaffManagementController extends Controller
 
     public function putUpdateStaff(Request $request, $user_id)
     {
-        // Start transaction
-        DB::beginTransaction();
-
+        
         try {
-            // Validate request data
+            DB::beginTransaction();
             $request->validate([
                 'name' => 'required|string|minimumLetters|max:255',
                 'email' => 'required|string|regexEmail|max:255',
@@ -100,10 +93,8 @@ class StaffManagementController extends Controller
                 'email.required' => 'Vui lòng nhập email.',
             ]);
 
-            // Find the user by ID
             $user = Users::findOrFail($user_id);
 
-            // Update user data
             $user->name = $request->input('name');
             $user->email = $request->input('email');
             $user->phone = $request->input('phone');
@@ -123,11 +114,11 @@ class StaffManagementController extends Controller
 
     public function changeStatus($id)
     {
-        DB::beginTransaction();
-
-        $user = Users::find($id);
 
         try {
+            DB::beginTransaction();
+
+            $user = Users::find($id);
             $user->status = ($user->status == 1) ? 0 : 1;
             $user->save();
             DB::commit();
@@ -139,16 +130,22 @@ class StaffManagementController extends Controller
         }
     }
 
-    public function checkUsername(Request $request)
+    public function checkExistInfo(Request $request)
     {
         $username = $request->input('username');
+        $phone = $request->input('phone');
+        $mail = $request->input('email');
 
-        $user = Users::where('user_name', $username)->first();
+        $user_name = Users::where('user_name', $username)->first();
+        $phone_num = Users::where('phone', $phone)->first();
+        $email = Users::where('email', $mail)->first();
 
-        // dd($user);
-
-        if ($user) {
-            return response()->json(['exists' => true]);
+        if ($user_name) {
+            return response()->json(['exists' => true, 'message' => "User Name is already exist !"]);
+        } else if ($phone_num) {
+            return response()->json(['exists' => true, 'message' => "Phone Number is already exist !"]);
+        } else if ($email) {
+            return response()->json(['exists' => true, 'message' => "Email is already exist !"]);
         } else {
             return response()->json(['exists' => false]);
         }
