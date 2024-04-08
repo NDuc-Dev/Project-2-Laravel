@@ -235,8 +235,7 @@
                                                             <div
                                                                 style="font-size: 14px; color: #ffffff; line-height: 140%; text-align: center; word-wrap: break-word;">
                                                                 <p style="font-size: 14px; line-height: 140%;">
-                                                                    <strong>T H A N K S&nbsp; &nbsp;F O R&nbsp; &nbsp;S
-                                                                        I G N I N G&nbsp; &nbsp;U P !</strong>
+                                                                    <strong>THANKS&nbsp; &nbsp;FOR&nbsp; &nbsp;SIGNING&nbsp; &nbsp;UP !</strong>
                                                                 </p>
                                                             </div>
 

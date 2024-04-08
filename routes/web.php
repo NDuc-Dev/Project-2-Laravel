@@ -12,6 +12,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckOutController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProductDetailsController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,8 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+
 
 Auth::routes();
 
@@ -69,8 +72,16 @@ Route::POST('/send-mail', [CheckOutController::class, 'sendEmail'])->withoutMidd
 
 Route::POST('/check-dupplicate-info-guest', [RegisterController::class, 'checkExistInfo']);
 
-Route::Get('/actived/{user}/{token}', [RegisterController::class, 'activedAccount'])->name('actived_account');
+Route::GET('/actived-{user}-{token}', [RegisterController::class, 'activedAccount'])->name('actived_account');
 
+Route::POST('/register-request', [RegisterController::class, 'registerAjax'])->name('registerAjax');
+
+Route::GET('/forgot-password', [HomeController::class, 'forgotPass'])->name('forgotPass');
+
+Route::POST('/post-forgot-password', [HomeController::class, 'postforgotPass'])->name('PostForgetPassword');
+
+
+// Route::POST('/register-request', [RegisterController::class, 'registerAjax'])->name('registerAjax');
 
 
 
@@ -123,7 +134,6 @@ Route::GROUP(['middleware'=>'isAdmin','prefix' => 'manage'], function () {
         Route::POST('/create-category', [CategoryController::class, 'createCategory'])->name('admin.createCategory');
 
         Route::POST('/change-status', [CategoryController::class, 'changeStatusCategory'])->name('admin.createCategory');
-
     });
 });
 
@@ -177,3 +187,6 @@ Route::GROUP(['prefix' => 'bartender'], function () {
         Route::POST('/change-status-instock-{id}', [ProductStockController::class, 'changeStatusInstock']);
     });
 });
+
+Route::ANY('{catchall}', [PageController::class, 'notfound'])->where('catchall', '.*');
+

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Products;
+use App\Models\Users;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Number;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
@@ -52,18 +54,23 @@ class HomeController extends Controller
         return view('home', compact('drinkProducts', 'foodProducts'));
     }
 
-    public function testMail()
+    public function forgotPass()
     {
-        $pdf_path = storage_path('app/public/receipt/receipt_id_6.pdf');
-        $name = 'Nguyen Ngoc Duc';
-        Mail::send('emails.receiptmail', compact('name'), function ($email) use($name, $pdf_path) {
-            $email->subject('Receipt Info');
-            $email->to('nguyenngocduc260504@gmail.com', $name);
-            $email->attach($pdf_path);
-        });
+        return view('forgotpassword');
     }
 
-    public function mail(){
-        return view('activated');
+    public function postforgotPass(Request $request)
+    {
+        $user = Users::where('email', $request->email)->first();
+        if ($user) {
+            $user->token = Str::random(20, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
+            Mail::send('emails.active_account', compact('user'), function ($email) use ($user) {
+                $email->subject('NDC COFFEE - Confirm password change.');
+                $email->to($user->email, $user->name);
+            });
+            return response()->json(['success' => true, 'message' => 'Success, please check your email to reset password'], 200);
+        } else {
+            return response()->json(['success' => true, 'message' => 'Success, please check your email to reset password'], 200);
+        }
     }
 }

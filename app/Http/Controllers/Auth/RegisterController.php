@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Users;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
@@ -89,12 +90,25 @@ class RegisterController extends Controller
                 });
             }
 
-            return response()->json(['status' => 'success', 'message' => 'User created successfully'], 201);
+            return response()->json(['success' => true, 'message' => 'User created successfully'], 201);
         } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
 
+
+    public function registerAjax(Request $request)
+    {
+        $validator = $this->validator($request->all());
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
+        }
+
+        event(new Registered($user = $this->create($request->all())));
+
+        return response()->json(['success' => true, 'message' => 'Success, we will send you an email to activate your account. Please check your email. '], 201);
+    }
 
     public function checkExistInfo(Request $request)
     {
@@ -120,10 +134,10 @@ class RegisterController extends Controller
     {
         if ($user->token === $token) {
             $user->status = 1;
+            $user->token = null;
             $user->save();
             return view('activated');
         } else {
-
         }
         // dd($user);
     }

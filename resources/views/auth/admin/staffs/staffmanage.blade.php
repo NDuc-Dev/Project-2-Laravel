@@ -77,7 +77,7 @@
                                             </select>
                                         </div>
                                         <button type="submit" class="btn btn-outline-primary me-2"
-                                            data-url="{{ route('admin.checkUName') }}">Submit</button>
+                                            data-url="{{ route('admin.checkExistInfo') }}">Submit</button>
                                         <button type="button" class="btn btn-dark" data-bs-toggle="modal"
                                             data-bs-target="#form-focus">Cancel</button>
                                     </form>

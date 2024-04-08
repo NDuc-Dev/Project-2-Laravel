@@ -35,7 +35,7 @@
                             Sign In
                         </button>
                         <div class="d-flex justify-content-center">
-                            <a class="w-50 text-start" href="{{ route('password.request') }}">
+                            <a class="w-50 text-start" href="{{ route('forgotPass') }}">
                                 {{ __('Forgot Your Password ?') }}
                             </a>
                             <a class="w-50 text-end" style="text-align: right;" href="{{ route('register') }}">

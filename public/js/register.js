@@ -93,6 +93,7 @@ $(document).ready(function () {
                                 });
                             } else {
                                 var formData = $(form).serialize();
+                                console.log($(form).attr("action"));
                                 $.ajax({
                                     type: "POST",
                                     url: $(form).attr("action"),
@@ -104,10 +105,11 @@ $(document).ready(function () {
                                                 title: "Success",
                                                 text: response.message,
                                                 icon: "success",
-                                                showConfirmButton: false,
-                                                timer: 1500,
+                                            }).then((confirm)=>{
+                                                if(confirm){
+                                                    window.location.href = "/login";
+                                                }
                                             });
-                                            window.location.href = "/login";
                                         } else {
                                             Swal.fire({
                                                 title: "Error",
