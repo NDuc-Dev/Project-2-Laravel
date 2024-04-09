@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Number;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class HomeController extends Controller
@@ -64,7 +65,8 @@ class HomeController extends Controller
         $user = Users::where('email', $request->email)->first();
         if ($user) {
             $user->token = Str::random(20, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
-            Mail::send('emails.active_account', compact('user'), function ($email) use ($user) {
+            $user->save();
+            Mail::send('emails.forgot_password', compact('user'), function ($email) use ($user) {
                 $email->subject('NDC COFFEE - Confirm password change.');
                 $email->to($user->email, $user->name);
             });
@@ -72,5 +74,39 @@ class HomeController extends Controller
         } else {
             return response()->json(['success' => true, 'message' => 'Success, please check your email to reset password'], 200);
         }
+    }
+
+    public function getNewPassword(Users $user, $token)
+    {
+        if ($user->token === $token) {
+            $u_id = $user->user_id;
+            return view('getNewPassword', compact('u_id'));
+        } else {
+            return view('errors.404');
+        }
+    }
+
+    public function postNewPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'password' => 'required',
+            'confirmation_password' => 'required|same:password',
+        ], [
+            'confirmation_password.same' => 'The password confirmation does not match.',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $request->errors()->first()]);
+        }
+        $password_h = bcrypt($request->password);
+        $user = Users::find($request->input('u_id'));
+        $user->password = $password_h;
+        $user->token = null;
+        $user->save();
+        return response()->json(['success' => true, 'message' => 'Change password success, you can login now.']);
+    }
+
+    public function getActive()
+    {
+        return view('getActive');
     }
 }

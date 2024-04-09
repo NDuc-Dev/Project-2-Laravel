@@ -58,9 +58,9 @@ Route::GET('/checkout', [CheckOutController::class, 'Index'])->name('checkout')-
 
 Route::GET('/check-total-amount-in-cart', [CheckOutController::class, 'GetTotalPay'])->name('GetTotalPay')->withoutMiddleware(['auth']);
 
-Route::POST('/vnpay-payment',[CheckOutController::class,'vnpay_payment'])->name('vnpay-payment')->withoutMiddleware(['auth']);
+Route::POST('/vnpay-payment', [CheckOutController::class, 'vnpay_payment'])->name('vnpay-payment')->withoutMiddleware(['auth']);
 
-Route::POST('/clear-cart',[CheckOutController::class,'clearCart'])->name('clearCart')->withoutMiddleware(['auth']);
+Route::POST('/clear-cart', [CheckOutController::class, 'clearCart'])->name('clearCart')->withoutMiddleware(['auth']);
 
 Route::POST('/change-status-payment', [CheckOutController::class, 'changePaymentStatus'])->name('changePaymentStatus')->withoutMiddleware(['auth']);
 
@@ -80,14 +80,17 @@ Route::GET('/forgot-password', [HomeController::class, 'forgotPass'])->name('for
 
 Route::POST('/post-forgot-password', [HomeController::class, 'postforgotPass'])->name('PostForgetPassword');
 
+Route::GET('/get-new-password-{user}-{token}', [HomeController::class, 'getNewPassword'])->name('getNewPassword');
 
-// Route::POST('/register-request', [RegisterController::class, 'registerAjax'])->name('registerAjax');
+Route::POST('/post-new-password', [HomeController::class, 'postNewPassword'])->name('postNewPassword');
+
+Route::GET('/getActive', [HomeController::class, 'getActive'])->name('getActive');
+
+Route::GET('/postActive', [HomeController::class, 'postActive'])->name('postActive');
 
 
 
-
-
-Route::GROUP(['middleware'=>'isAdmin','prefix' => 'manage'], function () {
+Route::GROUP(['middleware' => 'isAdmin', 'prefix' => 'manage'], function () {
 
     Route::GROUP(['prefix' => 'staffs'], function () {
 
@@ -159,8 +162,6 @@ Route::GROUP(['prefix' => 'seller'], function () {
         Route::POST('/complete-order', [OrderManageController::class, 'completeOrder']);
 
         Route::POST('/delivery-order', [OrderManageController::class, 'deliveryOrder']);
-
-
     });
 });
 
@@ -180,6 +181,7 @@ Route::GROUP(['prefix' => 'bartender'], function () {
     });
 
     Route::GROUP(['prefix' => 'product'], function () {
+
         Route::GET('/get-product-stock', [ProductStockController::class, 'getProductStock'])->name('bartender.getProductStock');
 
         Route::GET('/get-data-products', [ProductStockController::class, 'getDataProduct']);
@@ -189,4 +191,3 @@ Route::GROUP(['prefix' => 'bartender'], function () {
 });
 
 Route::ANY('{catchall}', [PageController::class, 'notfound'])->where('catchall', '.*');
-

@@ -57,9 +57,10 @@ class LoginController extends Controller
 
             // Thêm kiểm tra trạng thái của người dùng vào điều kiện đăng nhập
             $user = Users::where('user_name', $credentials['user_name'])->first();
-            if (!$user) {
+            if (!$user || !Auth::attempt($credentials) ) {
                 return response()->json(['success' => false, 'message' => "Invalid User Name or Password, Please re-enter"]);
             } else if ($user->status == 0) {
+                Auth::logout();
                 return response()->json(['success' => false, 'message' => "Your Account is not actived"]);
             } else if (Auth::attempt($credentials)) {
                 $userId = Auth::id();

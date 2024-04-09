@@ -4,7 +4,7 @@
     <div class="d-flex justify-content-center mt-5">
         <div class="col-md-8 col-xs-6 mt-5">
             <h3 class="mb-4 text-center subheading">Forgot Password</h3>
-            <form method="POST" action="{{ route('PostForgetPassword') }}" class="login-form">
+            <form method="POST" action="{{ route('PostForgetPassword') }}" class="login-form" id="form-validate">
                 @csrf
                 <div class="form-group">
                     <div class="mb-4">

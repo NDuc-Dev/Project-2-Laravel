@@ -1,0 +1,25 @@
+@extends('layout-guest')
+@section('content')
+    <section>
+        <div class="d-flex justify-content-center mt-5">
+            <div class="col-md-8 col-xs-6 mt-5">
+                <h3 class="mb-4 text-center subheading">Active Account</h3>
+                <form method="POST" action="{{ route('postActive') }}" class="login-form" id="form-validate">
+                    @csrf
+                    <div class="form-group">
+                        <div class="mb-4">
+                            <input id="password" type="email" class="form-control" name="password" value="" required
+                                autocomplete="password" autofocus placeholder="Enter your email you registered your account with us.">
+                        </div>
+                    </div>
+                    <div class="form-group mb-2">
+                        <button type="submit" class="btn btn-white mb-5">
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    <script src="{{asset('js/getNewPass.js')}}"></script>
+@endsection

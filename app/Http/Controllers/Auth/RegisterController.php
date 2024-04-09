@@ -138,7 +138,7 @@ class RegisterController extends Controller
             $user->save();
             return view('activated');
         } else {
+            return view('errors.404');
         }
-        // dd($user);
     }
 }

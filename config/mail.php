@@ -34,14 +34,25 @@ return [
     */
 
     'mailers' => [
+        // 'smtp' => [
+        //     'transport' => 'smtp',
+        //     'url' => env('MAIL_URL'),
+        //     'host' => 'pro56.emailserver.vn',
+        //     'port' => 465,
+        //     'encryption' => 'tls',
+        //     'username' => 'nduc-dev@nguyenngocduc.id.vn',
+        //     'password' => 'Duc265204@',
+        //     'timeout' => null,
+        //     'local_domain' => env('MAIL_EHLO_DOMAIN'),
+        // ],
         'smtp' => [
             'transport' => 'smtp',
             'url' => env('MAIL_URL'),
-            'host' => 'pro56.emailserver.vn',
+            'host' => 'smtp.gmail.com',
             'port' => 587,
             'encryption' => 'tls',
-            'username' => 'nduc-dev@nguyenngocduc.id.vn',
-            'password' => 'Duc265204@',
+            'username' => 'servicendccoffee@gmail.com',
+            'password' => 'wjdvuwysvwbdfqnr',
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN'),
         ],
@@ -108,7 +119,7 @@ return [
     */
 
     'from' => [
-        'address' => 'nduc-dev@nguyenngocduc.id.vn',
+        'address' => 'servicendccoffee@gmail.com',
         'name' => 'NDC COFFEE',
     ],
 
