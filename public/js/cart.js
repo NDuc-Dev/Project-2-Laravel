@@ -143,8 +143,10 @@ document.addEventListener("DOMContentLoaded", function () {
         // Hiển thị tổng giá trị
         var totalSpan = document.getElementById("total");
         var subTotalSpan = document.getElementById("sub-total");
+        if(totalSpan&&subTotalSpan){
+            totalSpan.textContent = formatCurrency(totalPrice) + " VND";
+            subTotalSpan.textContent = formatCurrency(totalPrice) + " VND";
+        }
 
-        totalSpan.textContent = formatCurrency(totalPrice) + " VND";
-        subTotalSpan.textContent = formatCurrency(totalPrice) + " VND";
     }
 });

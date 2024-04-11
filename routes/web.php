@@ -32,6 +32,8 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
+Route::GET('/', [HomeController::class, 'index'])->name('home')->withoutMiddleware(['auth']);
+
 Route::GET('/home', [HomeController::class, 'index'])->name('home')->withoutMiddleware(['auth']);
 
 Route::GET('/menu', [MenuController::class, 'index'])->name('menu')->withoutMiddleware(['auth']);
@@ -84,9 +86,9 @@ Route::GET('/get-new-password-{user}-{token}', [HomeController::class, 'getNewPa
 
 Route::POST('/post-new-password', [HomeController::class, 'postNewPassword'])->name('postNewPassword');
 
-Route::GET('/getActive', [HomeController::class, 'getActive'])->name('getActive');
+// Route::GET('/getActive', [HomeController::class, 'getActive'])->name('getActive');
 
-Route::GET('/postActive', [HomeController::class, 'postActive'])->name('postActive');
+// Route::GET('/postActive', [HomeController::class, 'postActive'])->name('postActive');
 
 
 

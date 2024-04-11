@@ -105,8 +105,29 @@ class HomeController extends Controller
         return response()->json(['success' => true, 'message' => 'Change password success, you can login now.']);
     }
 
-    public function getActive()
-    {
-        return view('getActive');
-    }
+    // public function getActive()
+    // {
+    //     return view('getActive');
+    // }
+
+    // public function postActive(Request $request)
+    // {
+    //     $email = $request->input('email');
+    //     $user = Users::where('email', $email)->first();
+    //     if ($user) {
+    //         if ($user->status == 1) {
+    //             return response()->json(['success' => false, 'message' => 'Error, Your account has been activated, no need to activate again']);
+    //         } else {
+    //             $user->token =  Str::random(20, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
+    //             $user->save();
+    //             Mail::send('emails.active_account', compact('user'), function ($email) use ($user) {
+    //                 $email->subject('NDC COFFEE - Confirm registration and activate your account.');
+    //                 $email->to($user->email, $user->name);
+    //             });
+    //             return response()->json(['success' => true, 'message' => 'Success, we will send you an email to activate your account. Please check your email.']);
+    //         }
+    //     } else {
+    //         return response()->json(['success' => false, 'message' => 'Error, Account is not exits, please try again']);
+    //     }
+    // }
 }

@@ -7,17 +7,7 @@ $(document).ready(function () {
             method: "POST",
             data: formData, // Dữ liệu từ form đã được serialized
             success: function (response) {
-                if (response.message === "Your Account is not actived") {
-                    Swal.fire({
-                        title: "Error",
-                        icon: "error",
-                        html: `
-                        Your Account is not actived, click
-                          <a href="/getActive">here</a>,
-                          to active your account
-                        `,
-                    });
-                } else if (!response.success) {
+                if (!response.success) {
                     Swal.fire({
                         icon: "error",
                         text: response.message,

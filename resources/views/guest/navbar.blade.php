@@ -56,16 +56,14 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link" id="profileDropdown" href="#" data-bs-toggle="dropdown">
                             <div class="navbar-profile d-flex align-items-center">
-                                <img class="img-xs rounded-circle" src="/admin/assets/images/faces/face15.jpg"
-                                    alt="" style="width: 30px; height: 30px;">
                                 <p class="px-2 mb-0 d-none d-sm-block navbar-profile-name">{{ Auth::user()->name }}</p>
                                 <i class="fa-solid fa-caret-down d-none d-sm-block ms-1"></i>
                             </div>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
                             aria-labelledby="profileDropdown">
-                            <h5 class="p-3 mb-0">Profile</h5>
-                            <div class="dropdown-divider"></div>
+                            {{-- <h5 class="p-3 mb-0">Profile</h5>
+                            <div class="dropdown-divider"></div> --}}
                             <a class="dropdown-item preview-item">
                                 <div class="preview-thumbnail">
                                     <div class="preview-icon bg-dark rounded-circle">

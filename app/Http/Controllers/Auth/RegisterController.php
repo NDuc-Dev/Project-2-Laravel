@@ -90,7 +90,7 @@ class RegisterController extends Controller
                 });
             }
 
-            return response()->json(['success' => true, 'message' => 'User created successfully'], 201);
+            return response()->json(['success' => true, 'message' => 'Success, please check your email for active account'], 201);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
@@ -107,7 +107,7 @@ class RegisterController extends Controller
 
         event(new Registered($user = $this->create($request->all())));
 
-        return response()->json(['success' => true, 'message' => 'Success, we will send you an email to activate your account. Please check your email. '], 201);
+        return response()->json(['success' => true, 'message' => 'Success, we will send you an email to activate your account. Please check your email.'], 201);
     }
 
     public function checkExistInfo(Request $request)

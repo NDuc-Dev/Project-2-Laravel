@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail; 
 
 class LoginController extends Controller
 {
@@ -54,14 +56,18 @@ class LoginController extends Controller
         try {
             $this->validateLogin($request);
             $credentials = $request->only('user_name', 'password');
-
-            // Thêm kiểm tra trạng thái của người dùng vào điều kiện đăng nhập
             $user = Users::where('user_name', $credentials['user_name'])->first();
             if (!$user || !Auth::attempt($credentials) ) {
                 return response()->json(['success' => false, 'message' => "Invalid User Name or Password, Please re-enter"]);
             } else if ($user->status == 0) {
                 Auth::logout();
-                return response()->json(['success' => false, 'message' => "Your Account is not actived"]);
+                $user->token =  Str::random(20, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
+                $user->save();
+                Mail::send('emails.active_account', compact('user'), function ($email) use ($user) {
+                    $email->subject('NDC COFFEE - Confirm registration and activate your account.');
+                    $email->to($user->email, $user->name);
+                });
+                return response()->json(['success' => false, 'message' => "Your Account is not actived, please check email to active account"]);
             } else if (Auth::attempt($credentials)) {
                 $userId = Auth::id();
                 session(["user_cart_$userId" => []]);

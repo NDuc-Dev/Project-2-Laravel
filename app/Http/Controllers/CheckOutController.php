@@ -22,6 +22,9 @@ class CheckOutController extends Controller
         if (Auth::check()) {
             $userId = Auth::id();
             $cartItems = Session::get("user_cart_$userId", []);
+            if ($cartItems == null) {
+                return redirect('home');
+            }
 
             foreach ($cartItems as $productIdAndSizeId => $item) {
                 list($productId, $sizeId) = explode('_', $productIdAndSizeId);
@@ -36,7 +39,9 @@ class CheckOutController extends Controller
             }
         } else {
             $cartItems = Session::get('guest_cart', []);
-
+            if ($cartItems == null) {
+                return redirect('home');
+            }
             foreach ($cartItems as $productIdAndSizeId => $item) {
                 list($productId, $sizeId) = explode('_', $productIdAndSizeId);
                 $product = Products::find($productId);
@@ -350,14 +355,13 @@ class CheckOutController extends Controller
             $pdf_path = public_path($order->receipt_path);
             $name = explode("-", $order->delivery_address);
             $guest_email = $order->guest_email;
-            if($guest_email != null){
+            if ($guest_email != null) {
                 Mail::send('emails.receiptmail', compact('name'), function ($email) use ($name, $pdf_path, $guest_email) {
                     $email->subject('Receipt Info');
                     $email->to($guest_email, $name);
                     $email->attach($pdf_path);
                 });
             } else {
-
             }
         }
     }

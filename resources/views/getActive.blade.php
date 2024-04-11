@@ -8,8 +8,8 @@
                     @csrf
                     <div class="form-group">
                         <div class="mb-4">
-                            <input id="password" type="email" class="form-control" name="password" value="" required
-                                autocomplete="password" autofocus placeholder="Enter your email you registered your account with us.">
+                            <input id="email" type="email" class="form-control" name="email" value="" required
+                                autocomplete="email" autofocus placeholder="Enter your email you registered your account with us.">
                         </div>
                     </div>
                     <div class="form-group mb-2">
