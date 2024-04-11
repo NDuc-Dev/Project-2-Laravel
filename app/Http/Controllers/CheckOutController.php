@@ -127,7 +127,7 @@ class CheckOutController extends Controller
                 'order_by' => Auth::id(),
                 'total' => $totalAmt,
                 'table_id' => 0,
-                'order_status' => 0,
+                'order_status' => 1,
                 'delivery_address' => $deliveryInfo
             ]);
             $order_id = $order->order_id;

@@ -1,13 +1,83 @@
 $(document).ready(function () {
     var orderDateElement = $("#order-date");
     var orderTableElement = $("#order-table");
+    var orderTableErrElement = $("#order-table-err");
+    var orderDateErrElement = $("#order-date-err");
+    var orderIdErrElement = $("#order-code-err");
+    var orderTypeElement = $("#order-type-err")
     var dataOrders = [];
+    var dataOrdersErr = [];
     var orderTable = "";
+    var orderTableErr = "";
+    var orderIdErr = "";
     var orderDate = "";
+    var orderDateErr = "";
     var csrfToken = $('meta[name="csrf-token"]').attr("content");
     var formattedTime = "";
 
     var resutlTable = $("#result").DataTable({
+        ajax: {
+            url: "get-data-products-active",
+            dataSrc: "products",
+        },
+        scrollY: "250px",
+        ordering: false,
+        paging: true,
+        lengthChange: false,
+        // autoWidth: true,
+        limit: 10,
+        responsive: true,
+        searching: true,
+        language: {
+            search: "", // Tùy chỉnh văn bản gợi ý trong thanh tìm kiếm
+            searchPlaceholder: "Search Product", // Tùy chỉnh placeholder cho thanh tìm kiếm
+        },
+        columns: [
+            {
+                data: "product_images",
+                title: "Image",
+                render: function (data, type, row) {
+                    if (!data || data.length === 0) {
+                        return "";
+                    }
+                    const firstImagePath = data;
+                    if (firstImagePath) {
+                        return `<img src="${firstImagePath}" alt="${row.product_name}" style="width: 50px; height: 50px; object-fit: cover; border-radius:5px" onerror="this.src='https://via.placeholder.com/50x50';">`;
+                    } else {
+                        return "";
+                    }
+                },
+            },
+            {
+                data: "product_name",
+                title: "Product",
+            },
+            {
+                data: "unit",
+                title: "",
+                render: function (data, type, row) {
+                    if (data == "Piece/Pack") {
+                        return '<i class="fa-solid fa-plus btn btn-outline-success p-2 px-4" id="food-product"></i>';
+                    } else if (data == "Cup") {
+                        return (
+                            '<button class="btn btn-outline-success fa-solid fa-plus p-2 px-4" id="drink-product" type="button" id="dropdownMenuIconButton1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+                            "</button>" +
+                            '<div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton1" style="min-width: 0 !important;">' +
+                            '<h6 class="dropdown-header">Size</h6>' +
+                            '<div class="dropdown-item" id="size" data-id="1" >S</div>' +
+                            '<div class="dropdown-item" id="size" data-id="2" >M</div>' +
+                            '<div class="dropdown-item" id="size" data-id="3" >L</div>' +
+                            "</div>"
+                        );
+                    } else {
+                        return "";
+                    }
+                },
+            },
+        ],
+    });
+
+    var resutlTableErr = $("#result-product-edit").DataTable({
         ajax: {
             url: "get-data-products-active",
             dataSrc: "products",
@@ -238,7 +308,6 @@ $(document).ready(function () {
                 searching: false,
                 columns: [
                     { data: "product_name", title: "Product" },
-                    // { data: "unit_price", title: "Unit Price" },
                     {
                         data: "quantity",
                         title: "Quantity",
@@ -328,6 +397,35 @@ $(document).ready(function () {
         }
         $("#order-details-after").removeClass("d-none");
         $("#order-details-before").addClass("d-none");
+    }
+
+    function generateOrderErrInfo(order_table, order_date, order_id, order_type) {
+        if (orderTableErrElement.text() === "") {
+            orderTableErrElement.text(order_table);
+            orderTableErr = order_table;
+        }
+        if (orderDateElement.text() === "") {
+            orderDateErrElement.text(order_date);
+            orderDateErr = order_date;
+        }
+        if (orderDateElement.text() === "") {
+            orderIdErrElement.text(order_id);
+            orderIdErr = order_date;
+        }
+        if (orderTypeElement.text() === "") {
+            var order_type_text;
+            if(order_type == 0){
+                orderTypeElement.addClass('text-success');
+                orderTypeElement.removeClass('text-info');
+                order_type_text = 'Online'
+            } else {
+                orderTypeElement.addClass('text-info');
+                orderTypeElement.removeClass('text-success');
+                order_type_text = 'Direct'
+            }
+            orderTypeElement.text(order_type_text);
+        }
+        $("#order-err-card").removeClass("d-none");
     }
 
     function formatCurrency(data) {
@@ -689,9 +787,135 @@ $(document).ready(function () {
         });
     });
 
+    var orderErr = $("#orderError").DataTable({
+        ajax: {
+            url: "get-data-order-error",
+            dataSrc: "data",
+        },
+        ordering: false,
+        paging: true,
+        lengthChange: false,
+        responsive: true,
+        limit: 10,
+        searching: true,
+        autoWidth: true,
+        responsive: true,
+        columns: [
+            { data: "order_id", title: "ID" },
+            {
+                data: "order_type",
+                title: "Type",
+                render: function (data, type, row) {
+                    return parseInt(data) === 1
+                        ? '<div class="text-info py-1">Direct</div>'
+                        : '<div class="text-success py-1">Online</div>';
+                },
+            },
+            { data: "order_date", title: "Order Date" },
+            { data: "table_id", title: "Order Table" },
+            {
+                data: null,
+                title: "Actions",
+                render: function (data, type, row) {
+                    return (
+                        '<button class="btn btn-outline-danger btn-sm py-1" id="handle-btn" data-id="' +
+                        row.order_id +
+                        '">Handle</button>'
+                    );
+                },
+            },
+        ],
+    });
+
+    $("#orderError").on("click", "#handle-btn", function () {
+        var table = $("#orderError").DataTable();
+        var rowIdx = table.cell($(this).closest("td, li")).index().row;
+        var rowData = table.row(rowIdx).data();
+        var orderId = rowData.order_id;
+        $.ajax({
+            url: `details-order-error`,
+            method: "GET",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+            },
+            data: {
+                order_id: orderId,
+            },
+            success: function (response) {
+                if (response.success) {
+                    console.log(response);
+                    dataOrdersErr = response.products;
+                    generateOrderErrInfo(
+                        response.order.table_id,
+                        response.order.order_date,
+                        response.order.order_id
+                    );
+                    var errtable = $("#productOrderError").DataTable({
+                        data: dataOrdersErr,
+                        scrollY: false,
+                        scrollX: true,
+                        info: false,
+                        ordering: false,
+                        paging: false,
+                        lengthChange: false,
+                        autoWidth: true,
+                        responsive: true,
+                        searching: false,
+                        columns: [
+                            { data: "product_name", title: "Product" },
+                            {
+                                data: "quantity",
+                                title: "Quantity",
+                                render: function (data, type, row) {
+                                    var html = '<div class="d-flex">';
+                                    html +=
+                                        '<button class="fa-solid fa-minus px-2 border mx-2 btn btn-outline-primary mb-1"></button>';
+                                    html +=
+                                        '<div class="mt-1">' + data + "</div>";
+                                    html +=
+                                        '<button class="fa-solid fa-plus px-2 border mx-2 btn btn-outline-primary mb-1"></button>';
+                                    html += "</div>";
+                                    return html;
+                                },
+                            },
+                            {
+                                data: "amount",
+                                title: "Amount",
+                                render: function (data, type, row) {
+                                    return formatCurrency(data);
+                                },
+                            },
+                            {
+                                data: null,
+                                title: "",
+                                render: function (data, type, row) {
+                                        return '<button class="btn btn-danger btn-sm status-btn py-1 btn-delete-product">Delete</button>';
+                                },
+                            },
+                            {
+                                data: "out_of_stock",
+                                title: "",
+                                render: function (data, type, row) {
+                                    if(data == true){
+                                        return '<p class="text-danger mb-0">OOS</p>';
+                                    } else {
+                                        return ''
+                                    }
+                                },
+                            },
+                        ],
+                    });
+                } else {
+                }
+            },
+        });
+    });
+
     setInterval(function () {
         orderReady.ajax.reload();
         resutlTable.ajax.reload();
         orderDeli.ajax.reload();
+        resutlTableErr.ajax.reload();
+        orderErr.ajax.reload();
     }, 10000);
 });

@@ -8,7 +8,6 @@ use App\Models\Orders;
 use App\Models\Products;
 use App\Models\ProductSizes;
 use App\Models\Tables;
-use App\PDF\InvoicePdf;
 use FPDF;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
@@ -39,15 +38,21 @@ class OrderManageController extends Controller
         return response()->json(['products' => $products]);
     }
 
+    public function getOrdersError()
+    {
+        $data = Orders::where('order_status', '=', 0)->get();
+        return response()->json(['data' => $data]);
+    }
+
     public function getOrdersReady()
     {
-        $data = Orders::where('order_status', '=', 2)->get();
+        $data = Orders::where('order_status', '=', 3)->get();
         return response()->json(['data' => $data]);
     }
 
     public function getOrdersDelivering()
     {
-        $data = Orders::where('order_status', '=', 3)->get();
+        $data = Orders::where('order_status', '=', 4)->get();
         return response()->json(['data' => $data]);
     }
 
@@ -63,7 +68,7 @@ class OrderManageController extends Controller
             }
 
             Orders::where('id', $order_id)->update([
-                'order_status' => 3,
+                'order_status' => 4,
                 'delivery_code' => $delivery_code,
             ]);
 
@@ -82,7 +87,7 @@ class OrderManageController extends Controller
             DB::beginTransaction();
             $order_id = $request->input('order_id');
             Orders::where('order_id', $order_id)->update([
-                'order_status' => 4,
+                'order_status' => 5,
                 'success_at' => Carbon::now(),
             ]);
             $order = Orders::find($order_id);
@@ -160,7 +165,7 @@ class OrderManageController extends Controller
                 'order_by' => Auth::id(),
                 'total' => $total_amount,
                 'table_id' => $request->input('orderTable'),
-                'order_status' => 0,
+                'order_status' => 1,
                 'payment_status' => 1,
 
             ]);
@@ -258,6 +263,30 @@ class OrderManageController extends Controller
         $fileName = 'receipt_' . 'id_' . $orderCode . '.pdf';
         Storage::disk('public')->put('receipt/' . $fileName, $pdfContent);
         return Storage::url('receipt/' . $fileName);
+    }
+
+    public function GetDetailsOrderError(Request $request)
+    {
+        $product_out_of_stock = Products::where('status_in_stock', 0)->select('product_id')->get()->toArray();
+        $product_size_out_of_stock = [];
+        foreach ($product_out_of_stock as $product) {
+            $product_sizes = ProductSizes::where('product_id', $product)->select('product_size_id')->get()->toArray();
+            $product_size_out_of_stock = array_merge($product_size_out_of_stock, $product_sizes);
+        }
+        $order_id = $request->input('order_id');
+        $order = Orders::find($order_id);
+        $products = OrderDetails::where('order_id', $order_id)->get();
+        foreach ($products as $product) {
+            $out_of_stock = false;
+            foreach ($product_size_out_of_stock as $size) {
+                if ($product->product_size_id == $size['product_size_id']) {
+                    $out_of_stock = true;
+                    break;
+                }
+            }
+            $product->out_of_stock = $out_of_stock;
+        }
+        return response()->json(['success' => true, 'order' => $order, 'products' => $products, ' product_size_out_of_stock'=>  $product_size_out_of_stock, 'product_out_of_stock'=>$product_out_of_stock]);
     }
 
     public function getDataProducts()

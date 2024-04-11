@@ -70,7 +70,8 @@ class StaffManagementController extends Controller
     public function getUpdateStaff($id)
     {
         $user = Users::find($id);
-        if (!$user || $user->role = 'admin' || $user->role = 'guest') {
+        // dd($user);
+        if (!$user || $user->role === 'admin' || $user->role === 'guest') {
             return response()->json(['error' => 'User not found'], 404);
         } else {
         }
