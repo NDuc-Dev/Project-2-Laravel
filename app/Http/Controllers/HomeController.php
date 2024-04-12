@@ -105,6 +105,7 @@ class HomeController extends Controller
         return response()->json(['success' => true, 'message' => 'Change password success, you can login now.']);
     }
 
+
     // public function getActive()
     // {
     //     return view('getActive');

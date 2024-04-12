@@ -224,6 +224,11 @@
                                                                 <p id="order-date" class="text-light"></p>
                                                             </div>
                                                         </div>
+                                                        <div id="cus-inf" class="d-none">
+                                                            <p class="text-light">Customer Info: <span
+                                                                id="cus-inf-err" class="text-light"></span></p>
+                                                        <p id="order-date" class="text-light"></p>
+                                                        </div>
                                                         <div class="table-responsive">
                                                             <table class="table m-md-0" id="productOrderError">
                                                                 <thead>
@@ -235,7 +240,7 @@
                                                                 <div class="col-lg-7 ms-auto p-0">
                                                                 </div>
                                                                 <div class="col-lg-5 ms-auto p-0">
-                                                                    <h6>Total: <span id="total"></span> VND</h6>
+                                                                    <h6>Total: <span id="total-err"></span> VND</h6>
                                                                 </div>
                                                             </div>
                                                         </div>

@@ -277,6 +277,7 @@ class OrderManageController extends Controller
         $order = Orders::find($order_id);
         $products = OrderDetails::where('order_id', $order_id)->get();
         foreach ($products as $product) {
+            $product->unit_price = $product->amount / $product->quantity;
             $out_of_stock = false;
             foreach ($product_size_out_of_stock as $size) {
                 if ($product->product_size_id == $size['product_size_id']) {
@@ -286,7 +287,7 @@ class OrderManageController extends Controller
             }
             $product->out_of_stock = $out_of_stock;
         }
-        return response()->json(['success' => true, 'order' => $order, 'products' => $products, ' product_size_out_of_stock'=>  $product_size_out_of_stock, 'product_out_of_stock'=>$product_out_of_stock]);
+        return response()->json(['success' => true, 'order' => $order, 'products' => $products, ' product_size_out_of_stock' =>  $product_size_out_of_stock, 'product_out_of_stock' => $product_out_of_stock]);
     }
 
     public function getDataProducts()

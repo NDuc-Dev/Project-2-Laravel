@@ -86,9 +86,6 @@ Route::GET('/get-new-password-{user}-{token}', [HomeController::class, 'getNewPa
 
 Route::POST('/post-new-password', [HomeController::class, 'postNewPassword'])->name('postNewPassword');
 
-// Route::GET('/getActive', [HomeController::class, 'getActive'])->name('getActive');
-
-// Route::GET('/postActive', [HomeController::class, 'postActive'])->name('postActive');
 
 
 

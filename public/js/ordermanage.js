@@ -1,17 +1,22 @@
 $(document).ready(function () {
     var orderDateElement = $("#order-date");
     var orderTableElement = $("#order-table");
+    var orderTypeElement = $("#order-type-err");
+    var dataOrders = [];
+    var orderTable = "";
+    var orderDate = "";
+
     var orderTableErrElement = $("#order-table-err");
     var orderDateErrElement = $("#order-date-err");
     var orderIdErrElement = $("#order-code-err");
-    var orderTypeElement = $("#order-type-err")
-    var dataOrders = [];
     var dataOrdersErr = [];
-    var orderTable = "";
+    var tableOrderErr;
     var orderTableErr = "";
     var orderIdErr = "";
-    var orderDate = "";
     var orderDateErr = "";
+    var cusInfElement = $("#cus-inf");
+    var cusInf = $("#cus-inf-err");
+
     var csrfToken = $('meta[name="csrf-token"]').attr("content");
     var formattedTime = "";
 
@@ -399,7 +404,16 @@ $(document).ready(function () {
         $("#order-details-before").addClass("d-none");
     }
 
-    function generateOrderErrInfo(order_table, order_date, order_id, order_type) {
+    function generateOrderErrInfo(
+        order_table,
+        order_date,
+        order_id,
+        order_type,
+        customer_inf
+    ) {
+        console.log(customer_inf);
+        var deliveryArray = customer_inf.split("-");
+        console.log(order_type);
         if (orderTableErrElement.text() === "") {
             orderTableErrElement.text(order_table);
             orderTableErr = order_table;
@@ -414,17 +428,22 @@ $(document).ready(function () {
         }
         if (orderTypeElement.text() === "") {
             var order_type_text;
-            if(order_type == 0){
-                orderTypeElement.addClass('text-success');
-                orderTypeElement.removeClass('text-info');
-                order_type_text = 'Online'
+            if (order_type == 0) {
+                orderTypeElement.addClass("text-success");
+                orderTypeElement.removeClass("text-info");
+                order_type_text = "Online";
             } else {
-                orderTypeElement.addClass('text-info');
-                orderTypeElement.removeClass('text-success');
-                order_type_text = 'Direct'
+                orderTypeElement.addClass("text-info");
+                orderTypeElement.removeClass("text-success");
+                order_type_text = "Direct";
             }
             orderTypeElement.text(order_type_text);
         }
+        if (order_type == 0) {
+            cusInfElement.removeClass("d-none");
+            cusInf.text(deliveryArray[0] + " - " + deliveryArray[1]);
+        }
+        formatTotalErr(checkTotal(dataOrdersErr));
         $("#order-err-card").removeClass("d-none");
     }
 
@@ -493,7 +512,7 @@ $(document).ready(function () {
     function checkTotal(dOrder) {
         var total = 0;
         for (var i = 0; i < dOrder.length; i++) {
-            total += dOrder[i].amount;
+            total += parseInt(dOrder[i].amount);
         }
         return total;
     }
@@ -787,7 +806,7 @@ $(document).ready(function () {
         });
     });
 
-    var orderErr = $("#orderError").DataTable({
+    var ordersErr = $("#orderError").DataTable({
         ajax: {
             url: "get-data-order-error",
             dataSrc: "data",
@@ -843,14 +862,15 @@ $(document).ready(function () {
             },
             success: function (response) {
                 if (response.success) {
-                    console.log(response);
                     dataOrdersErr = response.products;
                     generateOrderErrInfo(
                         response.order.table_id,
                         response.order.order_date,
-                        response.order.order_id
+                        response.order.order_id,
+                        response.order.order_type,
+                        response.order.delivery_address
                     );
-                    var errtable = $("#productOrderError").DataTable({
+                    tableOrderErr = $("#productOrderError").DataTable({
                         data: dataOrdersErr,
                         scrollY: false,
                         scrollX: true,
@@ -869,11 +889,11 @@ $(document).ready(function () {
                                 render: function (data, type, row) {
                                     var html = '<div class="d-flex">';
                                     html +=
-                                        '<button class="fa-solid fa-minus px-2 border mx-2 btn btn-outline-primary mb-1"></button>';
+                                        '<button id="btn-minus-err" class="fa-solid fa-minus px-2 border mx-2 btn btn-outline-primary mb-1"></button>';
                                     html +=
                                         '<div class="mt-1">' + data + "</div>";
                                     html +=
-                                        '<button class="fa-solid fa-plus px-2 border mx-2 btn btn-outline-primary mb-1"></button>';
+                                        '<button id="btn-plus-err" class="fa-solid fa-plus px-2 border mx-2 btn btn-outline-primary mb-1"></button>';
                                     html += "</div>";
                                     return html;
                                 },
@@ -889,17 +909,17 @@ $(document).ready(function () {
                                 data: null,
                                 title: "",
                                 render: function (data, type, row) {
-                                        return '<button class="btn btn-danger btn-sm status-btn py-1 btn-delete-product">Delete</button>';
+                                    return '<button class="btn btn-danger btn-sm status-btn py-1 btn-delete-product">Delete</button>';
                                 },
                             },
                             {
                                 data: "out_of_stock",
                                 title: "",
                                 render: function (data, type, row) {
-                                    if(data == true){
+                                    if (data == true) {
                                         return '<p class="text-danger mb-0">OOS</p>';
                                     } else {
-                                        return ''
+                                        return "";
                                     }
                                 },
                             },
@@ -911,11 +931,256 @@ $(document).ready(function () {
         });
     });
 
+    $("#productOrderError").on(
+        "click",
+        "#btn-minus-err, #btn-plus-err",
+        function () {
+            var table = $("#productOrderError").DataTable();
+            var rowIdx = table.cell($(this).closest("td, li")).index().row; // Lấy chỉ số dòng của ô chứa nút được click
+            var rowData = table.row(rowIdx).data(); // Lấy dữ liệu của dòng được click
+
+            var quantity = rowData.quantity;
+            var amount = rowData.amount;
+            var unit_price = rowData.unit_price;
+            console.log(quantity);
+            if ($(this).hasClass("fa-plus") && quantity < 10) {
+                quantity++;
+                amount = quantity * unit_price;
+            } else if ($(this).hasClass("fa-minus") && quantity > 1) {
+                if (quantity > 1) {
+                    quantity--;
+                    amount = quantity * unit_price;
+                } else if (quantity == 1) {
+                }
+            }
+
+            rowData.quantity = quantity;
+            rowData.amount = amount;
+            console.log(rowData);
+            table.row(rowIdx).data(rowData).draw(false);
+
+            formatTotalErr(checkTotal(dataOrdersErr));
+            // Cập nhật lại tổng tiền
+        }
+    );
+
+    function addDataToTableErr(rowData) {
+        dataOrdersErr.push(rowData);
+        if (dataOrders.length == 1) {
+            var table = $("#productOrderError").DataTable({
+                data: dataOrdersErr,
+                scrollY: false,
+                scrollX: true,
+                info: false,
+                ordering: false,
+                paging: false,
+                lengthChange: false,
+                autoWidth: true,
+                responsive: true,
+                searching: false,
+                columns: [
+                    { data: "product_name", title: "Product" },
+                    {
+                        data: "quantity",
+                        title: "Quantity",
+                        render: function (data, type, row) {
+                            var html = '<div class="d-flex">';
+                            html +=
+                                '<button class="fa-solid fa-minus px-2 border mx-2 btn btn-outline-primary mb-1"></button>';
+                            html += '<div class="mt-1">' + data + "</div>";
+                            html +=
+                                '<button class="fa-solid fa-plus px-2 border mx-2 btn btn-outline-primary mb-1"></button>';
+                            html += "</div>";
+                            return html;
+                        },
+                    },
+                    {
+                        data: "amount",
+                        title: "Amount",
+                        render: function (data, type, row) {
+                            return formatCurrency(data); // Gọi hàm định dạng tiền tệ và trả về giá trị đã định dạng
+                        },
+                    },
+                    {
+                        data: null,
+                        title: "",
+                        render: function (data, type, row) {
+                            return '<button class="btn btn-danger btn-sm status-btn py-1 btn-delete-product">Delete</button>';
+                        },
+                    },
+                ],
+            });
+        } else if (dataOrdersErr.length > 1) {
+            var table = $("#productOrderError").DataTable();
+            table.clear();
+            table.rows.add(dataOrdersErr).draw();
+        }
+
+        formatTotalErr(checkTotal(dataOrdersErr));
+    }
+
+    $("#result-product-edit").on("click", "#food-product", function () {
+        var table = $("#result-product-edit").DataTable();
+        var rowIdx = table.cell($(this).closest("td, li")).index().row;
+        var rowData = table.row(rowIdx).data();
+        var productId = rowData.product_id;
+        $.ajax({
+            url: `get-data-product-size-{id}`,
+            method: "GET",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+            },
+            data: {
+                product_id: productId,
+            },
+            success: function (response) {
+                if (response.success) {
+                    var rowDataProductEdit = {
+                        product_name: rowData.product_name,
+                        size: 4,
+                        product_size_id:
+                            response.productSize[0].product_size_id,
+                        unit_price: response.productSize[0].unit_price,
+                        quantity: 1,
+                        amount: parseInt(response.productSize[0].unit_price),
+                    };
+                    console.log(rowDataProductEdit);
+                    if (dataOrdersErr.length == 0) {
+                        addDataToTableErr(rowDataProductEdit);
+                    } else {
+                        var duplicateProductErr = findDuplicateProduct(
+                            dataOrdersErr,
+                            rowDataProductEdit
+                        );
+                        console.log(duplicateProductErr);
+                        if (duplicateProductErr) {
+                            duplicateProductErr.quantity =
+                                parseInt(duplicateProductErr.quantity) +
+                                parseInt(rowDataProductEdit.quantity);
+
+                            duplicateProductErr.amount =
+                                duplicateProductErr.unit_price *
+                                duplicateProductErr.quantity;
+                            var table = $("#productOrderError").DataTable();
+                            table.clear();
+                            table.rows.add(dataOrdersErr).draw();
+                            var totalErr = 0;
+                            for (var i = 0; i < dataOrdersErr.length; i++) {
+                                totalErr += dataOrders[i].amount;
+                            }
+                            formatTotalErr(checkTotal(dataOrdersErr));
+                        } else {
+                            addDataToTableErr(rowDataProductEdit);
+                        }
+                    }
+                } else {
+                }
+            },
+        });
+    });
+
+    $("#result-product-edit").on("click", ".dropdown-item", function () {
+        var table = $("#result-product-edit").DataTable();
+        var rowIdx = table.cell($(this).closest("td, li")).index().row;
+        var rowData = table.row(rowIdx).data();
+        var productId = rowData.product_id;
+        datasizeId = $(this).data("id");
+        dataSize = $(this).text();
+        $.ajax({
+            url: `get-data-product-size-{id}`,
+            method: "GET",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+            },
+            data: {
+                product_id: productId,
+            },
+            success: function (response) {
+                if (response.success) {
+                    var productSizes = response.productSize;
+                    console.log(response);
+                    for (var i = 0; i < productSizes.length; i++) {
+                        if (
+                            productSizes[i].size_id == datasizeId &&
+                            productSizes[i].product_id == productId
+                        ) {
+                            var matches = productSizes[i];
+                            var rowDataProduct = {
+                                product_name:
+                                    rowData.product_name + " " + dataSize,
+                                size: matches.size_id,
+                                product_size_id: matches.product_size_id,
+                                unit_price: matches.unit_price,
+                                quantity: 1,
+                                amount: parseInt(matches.unit_price),
+                            };
+                            console.log(rowDataProduct);
+                            if (dataOrdersErr.length == 0) {
+                                addDataToTableErr(rowDataProduct);
+                            } else {
+                                var duplicateProduct = findDuplicateProduct(
+                                    dataOrdersErr,
+                                    rowDataProduct
+                                );
+                                if (duplicateProduct) {
+                                    duplicateProduct.quantity =
+                                        parseInt(duplicateProduct.quantity) +
+                                        parseInt(rowDataProduct.quantity);
+
+                                    duplicateProduct.amount =
+                                        duplicateProduct.unit_price *
+                                        duplicateProduct.quantity;
+                                    var table =
+                                        $("#productOrderError").DataTable();
+                                    table.clear();
+                                    table.rows.add(dataOrdersErr).draw();
+                                    var total = 0;
+                                    for (
+                                        var i = 0;
+                                        i < dataOrders.length;
+                                        i++
+                                    ) {
+                                        total += dataOrdersErr[i].amount;
+                                    }
+                                    formatTotalErr(checkTotal(dataOrdersErr));
+                                } else {
+                                    addDataToTableErr(rowDataProduct);
+                                }
+                            }
+                            // matches.length = 0;
+                        }
+                        // rowDataProduct.length = 0;
+                    }
+                }
+            },
+        });
+    });
+
+    function formatTotalErr(total) {
+        totalFormat = formatCurrency(total);
+        var totalErrElement = $("#total-err");
+        totalErrElement.text(totalFormat);
+    }
+
+    $("#productOrderError").on("click", ".btn-delete-product", function () {
+        var table = $("#productOrderError").DataTable();
+        var rowIdx = table.cell($(this).closest("td, li")).index().row;
+        var rowData = table.row(rowIdx).data();
+        table.row(rowIdx).remove().draw();
+        dataOrdersErr.splice(rowIdx, 1);
+        if (dataOrders.length == 0) {
+            table.destroy();
+        }
+        console.log(dataOrdersErr);
+        // Cập nhật lại tổng tiền
+        formatTotal(checkTotal(dataOrdersErr));
+    });
+
     setInterval(function () {
         orderReady.ajax.reload();
         resutlTable.ajax.reload();
         orderDeli.ajax.reload();
         resutlTableErr.ajax.reload();
-        orderErr.ajax.reload();
+        ordersErr.ajax.reload();
     }, 10000);
 });
