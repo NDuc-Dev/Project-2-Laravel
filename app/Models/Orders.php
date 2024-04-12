@@ -21,15 +21,15 @@ class Orders extends Model
         'order_by',
         'delivery_address',
         'customer_phone',
+        'customer_email',
         'total',
         'order_status',
         'table_id',
         'prepared_at',
         'prepared_by',
         'delivery_code',
-        'complete_at',
+        'success_at',
         'receipt_path',
-        'payment_status'
     ];
 
     public function user()

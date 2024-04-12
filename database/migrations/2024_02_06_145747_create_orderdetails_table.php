@@ -15,11 +15,11 @@ class CreateOrderDetailsTable extends Migration
             $table->id('details_id');
             $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('product_size_id');
-            $table->foreign('order_id')->references('order_id')->on('orders')->onDelete('cascade');
-            $table->foreign('product_size_id')->references('product_size_id')->on('productsizes')->onDelete('cascade');
             $table->integer('quantity');
             $table->decimal('amount');
             $table->string('product_name', 300);
+            $table->foreign('order_id')->references('order_id')->on('orders')->onDelete('cascade');
+            $table->foreign('product_size_id')->references('product_size_id')->on('productsizes')->onDelete('cascade');
         });
     }
 
@@ -30,4 +30,5 @@ class CreateOrderDetailsTable extends Migration
     {
         Schema::dropIfExists('orderdetails');
     }
-};
+}
+;

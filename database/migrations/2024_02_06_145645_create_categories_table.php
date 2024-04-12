@@ -16,6 +16,7 @@ class CreateCategoriesTable extends Migration
             $table->string('category_name', 50);
             $table->string('descriptions', 300)->nullable();
             $table->integer('group_id');
+            $table->integer('status');
         });
     }
 

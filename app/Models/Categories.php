@@ -16,7 +16,10 @@ class Categories extends Model
     protected $primaryKey = 'category_id';
 
     protected $fillable = [
-        'category_name','descriptions','group_id'
+        'category_name',
+        'descriptions',
+        'group_id',
+        'status'
     ];
 
 }

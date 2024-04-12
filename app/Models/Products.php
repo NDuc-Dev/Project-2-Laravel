@@ -16,7 +16,13 @@ class Products extends Model
     protected $primaryKey = 'product_id';
 
     protected $fillable = [
-        'status', 'product_name','product_images', 'product_category', 'descriptions','status_in_stock','unit_name'
+        'product_name',
+        'descriptions',
+        'product_images',
+        'product_category',
+        'unit',
+        'status',
+        'status_in_stock',
     ];
 
     public function productSizes()
@@ -26,7 +32,7 @@ class Products extends Model
 
     public function sizes()
     {
-        return $this->belongsToMany(Sizes::class, 'productsizes','product_id', 'size_id')->withPivot('unit_price');
+        return $this->belongsToMany(Sizes::class, 'productsizes', 'product_id', 'size_id')->withPivot('unit_price');
     }
 
 }

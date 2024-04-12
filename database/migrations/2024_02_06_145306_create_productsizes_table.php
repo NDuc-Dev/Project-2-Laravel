@@ -15,7 +15,7 @@ class CreateProductSizesTable extends Migration
             $table->id('product_size_id');
             $table->foreignId('product_id')->constrained('products', 'product_id');
             $table->foreignId('size_id')->constrained('sizes', 'size_id');
-            $table->decimal('unit_price');
+            $table->decimal('unit_price', 8, 0);
         });
     }
 
@@ -26,4 +26,5 @@ class CreateProductSizesTable extends Migration
     {
         Schema::dropIfExists('productsizes');
     }
-};
+}
+;

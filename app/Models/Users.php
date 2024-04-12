@@ -17,11 +17,19 @@ class Users extends Authenticatable
     protected $primaryKey = 'user_id';
 
     protected $fillable = [
-        'name', 'user_name', 'password', 'role', 'email', 'phone','status', 'token', 'delivery_address'
+        'name',
+        'user_name',
+        'password',
+        'role',
+        'email',
+        'phone',
+        'status',
+        'token',
+        'address'
     ];
 
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
     ];
 
     public $timestamps = false;

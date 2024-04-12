@@ -21,7 +21,9 @@ class CreateUsersTable extends Migration
             $table->string('role', 20);
             $table->string('email', 50);
             $table->string('phone', 20);
-            $table->integer('status'); // or $table->unsignedInteger('status');
+            $table->integer('status');
+            $table->string('token', 20);
+            $table->string('address', 400);
         });
     }
 
@@ -34,4 +36,5 @@ class CreateUsersTable extends Migration
     {
         Schema::dropIfExists('users');
     }
-};
+}
+;
