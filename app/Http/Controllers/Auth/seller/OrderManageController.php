@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\auth\seller;
 
+use App\Http\Controllers\CheckOutController;
 use App\Http\Controllers\Controller;
 use App\Models\OrderDetails;
 use App\Models\Orders;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Laravel\Prompts\Table;
+use Illuminate\Support\Str;
 
 class OrderManageController extends Controller
 {
@@ -40,19 +41,19 @@ class OrderManageController extends Controller
 
     public function getOrdersError()
     {
-        $data = Orders::where('order_status', '=', 0)->get();
+        $data = Orders::where('order_status', '=', -1)->get();
         return response()->json(['data' => $data]);
     }
 
     public function getOrdersReady()
     {
-        $data = Orders::where('order_status', '=', 3)->get();
+        $data = Orders::where('order_status', '=', 2)->get();
         return response()->json(['data' => $data]);
     }
 
     public function getOrdersDelivering()
     {
-        $data = Orders::where('order_status', '=', 4)->get();
+        $data = Orders::where('order_status', '=', 3)->get();
         return response()->json(['data' => $data]);
     }
 
@@ -87,7 +88,7 @@ class OrderManageController extends Controller
             DB::beginTransaction();
             $order_id = $request->input('order_id');
             Orders::where('order_id', $order_id)->update([
-                'order_status' => 5,
+                'order_status' => 4,
                 'success_at' => Carbon::now(),
             ]);
             $order = Orders::find($order_id);
@@ -165,7 +166,7 @@ class OrderManageController extends Controller
                 'order_by' => Auth::id(),
                 'total' => $total_amount,
                 'table_id' => $request->input('orderTable'),
-                'order_status' => 1,
+                'order_status' => 0,
                 'payment_status' => 1,
 
             ]);
@@ -294,5 +295,64 @@ class OrderManageController extends Controller
     {
         $data = Products::all();
         return response()->json($data);
+    }
+
+    public function deleteOrder(Request $request)
+    {
+        $order_id = $request->order_id;
+        $order = Orders::find($order_id);
+        $order->order_status = -1;
+        $order->save();
+        $orderTotal = $order->total;
+        return response()->json(["success" => true, 'orderTotal' => $orderTotal]);
+    }
+
+    public function updateOrder(Request $request)
+    {
+        $order_id = $request->order_id;
+        $products = $request->products;
+        $order_details = OrderDetails::where('order_id', $order_id)->get();
+        foreach ($order_details as $product) {
+            $product->delete();
+        }
+        $products = $request->products;
+        $count = count($products);
+        foreach ($products as $product) {
+            Validator::make($product, [
+                'quantity' => 'required|integer|between:1,10',
+            ])->validate();
+        }
+        $total_amount = 0;
+        foreach ($products as $product) {
+            $total_amount += $product['amount'];
+        }
+        $order = Orders::find($order_id);
+        $last_total = $order->total;
+        if ($order) {
+            $old_receipt_path = $order->receipt_path;
+            $current_receipt_name = Str::afterLast($old_receipt_path, '/');
+            Storage::delete('public/receipt/' . $current_receipt_name);
+        }
+        if ($order->order_type == 0) {
+            $checkOutController = new CheckOutController();
+            $receipt_path = asset($checkOutController->CreateInvoice($count, $products, $order->order_date, $order_id, $total_amount));
+        } else {
+            $receipt_path = asset($this->CreateInvoice($count, $products, $order->order_date, $order->order_table, $order_id, $total_amount));
+        }
+        $order->total = $total_amount;
+        $order->receipt_path = $receipt_path;
+        $order->order_status = 1;
+        $order->save();
+        foreach ($products as $product) {
+            OrderDetails::create([
+                'order_id' => $order_id,
+                'product_size_id' => $product['product_size_id'],
+                'product_name' => $product['product_name'],
+                'quantity' => $product['quantity'],
+                'amount' => $product['amount']
+            ]);
+        }
+
+        return response()->json(['success' => true, 'last_total' => $last_total, 'total_amount' => $total_amount]);
     }
 }

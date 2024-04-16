@@ -64,13 +64,11 @@ Route::POST('/vnpay-payment', [CheckOutController::class, 'vnpay_payment'])->nam
 
 Route::POST('/clear-cart', [CheckOutController::class, 'clearCart'])->name('clearCart')->withoutMiddleware(['auth']);
 
-Route::POST('/change-status-payment', [CheckOutController::class, 'changePaymentStatus'])->name('changePaymentStatus')->withoutMiddleware(['auth']);
-
-Route::GET('/test-mail', [HomeController::class, 'testMail'])->withoutMiddleware(['auth']);
+Route::POST('/change-status-payment', [CheckOutController::class, 'changePaymentStatusFailed'])->name('changePaymentStatusFailed')->withoutMiddleware(['auth']);
 
 Route::GET('/mail', [HomeController::class, 'mail'])->withoutMiddleware(['auth']);
 
-Route::POST('/send-mail', [CheckOutController::class, 'sendEmail'])->withoutMiddleware(['auth']);
+Route::GET('/send-mail', [CheckOutController::class, 'sendEmail'])->withoutMiddleware(['auth']);
 
 Route::POST('/check-dupplicate-info-guest', [RegisterController::class, 'checkExistInfo']);
 
@@ -167,6 +165,10 @@ Route::GROUP(['prefix' => 'seller'], function () {
         Route::GET('/details-order-error', [OrderManageController::class, 'GetDetailsOrderError']);
 
         Route::GET('/test', [OrderManageController::class, 'GetDetailsOrderError']);
+
+        Route::POST('/delete-order', [OrderManageController::class, 'deleteOrder']);
+
+        Route::POST('/update-order', [OrderManageController::class, 'updateOrder']);
 
     });
 });

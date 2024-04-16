@@ -202,7 +202,7 @@ $(document).ready(function () {
         });
     });
 
-    $(document).on("click", ".dropdown-item", function () {
+    $("#result").on("click", ".dropdown-item", function () {
         var table = $("#result").DataTable();
         var rowIdx = table.cell($(this).closest("td, li")).index().row;
         var rowData = table.row(rowIdx).data();
@@ -422,7 +422,7 @@ $(document).ready(function () {
             orderDateErrElement.text(order_date);
             orderDateErr = order_date;
         }
-        if (orderDateElement.text() === "") {
+        if (orderIdErrElement.text() === "") {
             orderIdErrElement.text(order_id);
             orderIdErr = order_date;
         }
@@ -847,6 +847,11 @@ $(document).ready(function () {
     });
 
     $("#orderError").on("click", "#handle-btn", function () {
+        if ($.fn.DataTable.isDataTable("#productOrderError")) {
+            $("#productOrderError").DataTable().destroy();
+            $("#productOrderError").empty();
+        }
+
         var table = $("#orderError").DataTable();
         var rowIdx = table.cell($(this).closest("td, li")).index().row;
         var rowData = table.row(rowIdx).data();
@@ -966,55 +971,10 @@ $(document).ready(function () {
 
     function addDataToTableErr(rowData) {
         dataOrdersErr.push(rowData);
-        if (dataOrders.length == 1) {
-            var table = $("#productOrderError").DataTable({
-                data: dataOrdersErr,
-                scrollY: false,
-                scrollX: true,
-                info: false,
-                ordering: false,
-                paging: false,
-                lengthChange: false,
-                autoWidth: true,
-                responsive: true,
-                searching: false,
-                columns: [
-                    { data: "product_name", title: "Product" },
-                    {
-                        data: "quantity",
-                        title: "Quantity",
-                        render: function (data, type, row) {
-                            var html = '<div class="d-flex">';
-                            html +=
-                                '<button class="fa-solid fa-minus px-2 border mx-2 btn btn-outline-primary mb-1"></button>';
-                            html += '<div class="mt-1">' + data + "</div>";
-                            html +=
-                                '<button class="fa-solid fa-plus px-2 border mx-2 btn btn-outline-primary mb-1"></button>';
-                            html += "</div>";
-                            return html;
-                        },
-                    },
-                    {
-                        data: "amount",
-                        title: "Amount",
-                        render: function (data, type, row) {
-                            return formatCurrency(data); // Gọi hàm định dạng tiền tệ và trả về giá trị đã định dạng
-                        },
-                    },
-                    {
-                        data: null,
-                        title: "",
-                        render: function (data, type, row) {
-                            return '<button class="btn btn-danger btn-sm status-btn py-1 btn-delete-product">Delete</button>';
-                        },
-                    },
-                ],
-            });
-        } else if (dataOrdersErr.length > 1) {
-            var table = $("#productOrderError").DataTable();
-            table.clear();
-            table.rows.add(dataOrdersErr).draw();
-        }
+
+        var table = $("#productOrderError").DataTable();
+        table.clear();
+        table.rows.add(dataOrdersErr).draw();
 
         formatTotalErr(checkTotal(dataOrdersErr));
     }
@@ -1043,6 +1003,7 @@ $(document).ready(function () {
                         unit_price: response.productSize[0].unit_price,
                         quantity: 1,
                         amount: parseInt(response.productSize[0].unit_price),
+                        out_of_stock: false,
                     };
                     console.log(rowDataProductEdit);
                     if (dataOrdersErr.length == 0) {
@@ -1080,9 +1041,9 @@ $(document).ready(function () {
     });
 
     $("#result-product-edit").on("click", ".dropdown-item", function () {
-        var table = $("#result-product-edit").DataTable();
-        var rowIdx = table.cell($(this).closest("td, li")).index().row;
-        var rowData = table.row(rowIdx).data();
+        var tableresult = $("#result-product-edit").DataTable();
+        var rowIdx = tableresult.cell($(this).closest("td, li")).index().row;
+        var rowData = tableresult.row(rowIdx).data();
         var productId = rowData.product_id;
         datasizeId = $(this).data("id");
         dataSize = $(this).text();
@@ -1113,6 +1074,7 @@ $(document).ready(function () {
                                 unit_price: matches.unit_price,
                                 quantity: 1,
                                 amount: parseInt(matches.unit_price),
+                                out_of_stock: false,
                             };
                             console.log(rowDataProduct);
                             if (dataOrdersErr.length == 0) {
@@ -1147,9 +1109,7 @@ $(document).ready(function () {
                                     addDataToTableErr(rowDataProduct);
                                 }
                             }
-                            // matches.length = 0;
                         }
-                        // rowDataProduct.length = 0;
                     }
                 }
             },
@@ -1168,12 +1128,163 @@ $(document).ready(function () {
         var rowData = table.row(rowIdx).data();
         table.row(rowIdx).remove().draw();
         dataOrdersErr.splice(rowIdx, 1);
-        if (dataOrders.length == 0) {
-            table.destroy();
-        }
+        // if (dataOrders.length == 0) {
+        //     table.destroy();
+        // }
         console.log(dataOrdersErr);
         // Cập nhật lại tổng tiền
-        formatTotal(checkTotal(dataOrdersErr));
+        formatTotalErr(checkTotal(dataOrdersErr));
+    });
+
+    function removeDataProductTableErr() {
+        dataOrdersErr = [];
+        $("#productOrderError").DataTable().destroy();
+        orderTableErrElement.text("");
+        orderIdErrElement.text("");
+        orderTableErrElement.text("");
+        cusInf.text("");
+        orderTypeElement.text("");
+        $("#order-err-card").addClass("d-none");
+    }
+
+    $("#order-error").on("click", "#delete-order-err-btn", function () {
+        Swal.fire({
+            title: "Cancel ?",
+            icon: "question",
+            text: "Do you want to cancel this order ?",
+            showCancelButton: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var order_id = $("#order-code-err").text();
+                // console.log(order_id);
+                var csrfToken = $('meta[name="csrf-token"]').attr("content");
+                $.ajax({
+                    url: "delete-order",
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": csrfToken,
+                    },
+                    data: {
+                        order_id: order_id,
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: "Success",
+                                icon: "success",
+                                text: "Cancel Order Successfully !",
+                                showConfirmButton: false,
+                                timer: 1000,
+                            }).then(() => {
+                                Swal.fire({
+                                    title: "Return",
+                                    icon: "info",
+                                    text:
+                                        "Return the customer " +
+                                        response.orderTotal +
+                                        " VND",
+                                    showConfirmButton: true,
+                                }).then(() => {
+                                    var orderErrorTable =
+                                        $("#orderError").DataTable();
+                                    orderErrorTable.ajax.reload();
+                                    removeDataProductTableErr();
+                                });
+                            });
+                        }
+                    },
+                });
+            }
+        });
+    });
+
+    $("#order-error").on("click", "#exit-btn", function () {
+        removeDataProductTableErr();
+    });
+
+    $("#order-error").on("click", "#update-order-btn", function () {
+        const hasOutOfStockProduct = dataOrdersErr.some(
+            (product) => product.out_of_stock
+        );
+        if (hasOutOfStockProduct) {
+            Swal.fire({
+                title: "Error",
+                icon: "error",
+                text: "Please remove out-of-stock products before updating",
+                showConfirmButton: false,
+                timer: 2500,
+            });
+        } else {
+            Swal.fire({
+                title: "Update",
+                icon: "question",
+                text: "Do you want to update order ?",
+                showCancelButton: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var csrfToken = $('meta[name="csrf-token"]').attr(
+                        "content"
+                    );
+                    var order_id = $("#order-code-err").text();
+                    $.ajax({
+                        url: "update-order",
+                        method: "POST",
+                        headers: {
+                            "X-CSRF-TOKEN": csrfToken,
+                        },
+                        data: {
+                            order_id: order_id,
+                            products: dataOrdersErr,
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                curent_total = response.total_amount;
+                                last_total = response.last_total;
+                                Swal.fire({
+                                    title: "Success",
+                                    icon: "success",
+                                    text: "Update Order Successfully !",
+                                    showConfirmButton: false,
+                                    timer: 1000,
+                                }).then(() => {
+                                    if (curent_total >= last_total) {
+                                        Swal.fire({
+                                            title: "Additional charge",
+                                            icon: "info",
+                                            text:
+                                                "Additional charge from customer " +
+                                                (curent_total - last_total) +
+                                                " VND",
+                                            showConfirmButton: true,
+                                        }).then(() => {
+                                            var orderErrorTable =
+                                                $("#orderError").DataTable();
+                                            orderErrorTable.ajax.reload();
+                                            removeDataProductTableErr();
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: "Return",
+                                            icon: "info",
+                                            text:
+                                                "Return the customer " +
+                                                (last_total - curent_total) +
+                                                " VND",
+                                            showConfirmButton: true,
+                                        }).then(() => {
+                                            var orderErrorTable =
+                                                $("#orderError").DataTable();
+                                            orderErrorTable.ajax.reload();
+                                            removeDataProductTableErr();
+                                        });
+                                    }
+                                });
+                            }
+                        },
+                    });
+                }
+            });
+        }
     });
 
     setInterval(function () {

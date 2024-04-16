@@ -42,11 +42,6 @@ class Orders extends Model
         return $this->belongsTo(Tables::class, 'table_id', 'table_id');
     }
 
-    public function invoice()
-    {
-        return $this->hasMany(Invoices::class, 'order_id', 'order_id');
-    }
-
     public function orderDetails()
     {
         return $this->hasMany(OrderDetails::class, 'order_id', 'order_id');

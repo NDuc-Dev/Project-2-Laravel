@@ -21,7 +21,7 @@ $(document).ready(function () {
                 success: function (response) {
                     $.ajax({
                         url: "send-mail",
-                        method: "POST",
+                        method: "GET",
                         headers: {
                             "X-CSRF-TOKEN": csrfToken,
                         },
@@ -47,6 +47,22 @@ $(document).ready(function () {
                 icon: "error",
                 showConfirmButton: false,
                 timer: 2000,
+            });
+            $.ajax({
+                url: "change-status-payment",
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,
+                },
+                data: {
+                    order_id: orderId,
+                },
+                success: function (response) {
+                    
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                },
             });
         }
     }

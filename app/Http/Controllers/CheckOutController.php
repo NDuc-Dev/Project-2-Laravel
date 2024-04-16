@@ -56,10 +56,10 @@ class CheckOutController extends Controller
         return view('CheckOut', ['cartItems' => $cartItems]);
     }
 
-    public function changePaymentStatus(Request $request)
+    public function changePaymentStatusFailed(Request $request)
     {
-        $order = Orders::find($request->input('orderId'));
-        $order->payment_status = 1;
+        $order = Orders::find($request->input('order_id'));
+        $order->payment_status = -2;
         $order->save();
     }
 
@@ -93,6 +93,8 @@ class CheckOutController extends Controller
     public function vnpay_payment(Request $request)
     {
         $deliveryInfo = $request->input('name') . "-" . $request->input('phone') . "-" . $request->input('address');
+        $email = $request->input('email');
+        // dd($email);
         $productArray = [];
         $order_date = date('Y-m-d H:i:s');
         if (Auth::check()) {
@@ -128,6 +130,7 @@ class CheckOutController extends Controller
                 'total' => $totalAmt,
                 'table_id' => 0,
                 'order_status' => 1,
+                'guest_email' => $email,
                 'delivery_address' => $deliveryInfo
             ]);
             $order_id = $order->order_id;
@@ -176,6 +179,7 @@ class CheckOutController extends Controller
                 'delivery_address' => $deliveryInfo
             ]);
             $order_id = $order->order_id;
+            $order->guest_email = $email;
             $order->receipt_path = asset($this->CreateInvoice($count, $productArray, $order_date, $order_id, $totalAmt));
             $order->save();
             foreach ($productArray as $product) {
@@ -351,15 +355,16 @@ class CheckOutController extends Controller
     {
         $order_id = $request->input('order_id');
         $order = Orders::find($order_id);
-        if ($order) {
-            $pdf_path = public_path($order->receipt_path);
-            $name = explode("-", $order->delivery_address);
+        if ($order->guest_email != null) {
+            $pdf_path = 'receipt/receipt_id_' . $order_id . '.pdf';
+            $pdf_absolute_path = storage_path('app/public/' . $pdf_path);
+            $name = explode("-", $order->delivery_address)[0];
             $guest_email = $order->guest_email;
             if ($guest_email != null) {
-                Mail::send('emails.receiptmail', compact('name'), function ($email) use ($name, $pdf_path, $guest_email) {
+                Mail::send('emails.receiptmail', compact('name'), function ($email) use ($name,  $pdf_absolute_path, $guest_email) {
                     $email->subject('Receipt Info');
                     $email->to($guest_email, $name);
-                    $email->attach($pdf_path);
+                    $email->attach($pdf_absolute_path);
                 });
             } else {
             }

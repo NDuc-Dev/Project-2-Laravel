@@ -219,15 +219,15 @@
                                                                 <p id="order-staff" class="text-light">Staff:
                                                                     {{ Auth::user()->name }}
                                                                 </p>
-                                                                <p class="text-light">Type: <span
-                                                                        id="order-type-err" class="text-info"></span></p>
+                                                                <p class="text-light">Type: <span id="order-type-err"
+                                                                        class="text-info"></span></p>
                                                                 <p id="order-date" class="text-light"></p>
                                                             </div>
                                                         </div>
                                                         <div id="cus-inf" class="d-none">
-                                                            <p class="text-light">Customer Info: <span
-                                                                id="cus-inf-err" class="text-light"></span></p>
-                                                        <p id="order-date" class="text-light"></p>
+                                                            <p class="text-light">Customer Info: <span id="cus-inf-err"
+                                                                    class="text-light"></span></p>
+                                                            <p id="order-date" class="text-light"></p>
                                                         </div>
                                                         <div class="table-responsive">
                                                             <table class="table m-md-0" id="productOrderError">
@@ -247,12 +247,16 @@
                                                     </div>
                                                     <div class=" mt-2 p-0 row">
                                                         <button class="btn btn-inverse-primary btn-md"
-                                                            id="submit-order-btn" style="flex: auto" type="button">
-                                                            Submit
+                                                            id="update-order-btn" style="flex: auto" type="button">
+                                                            Update
                                                         </button>
                                                         <button class="btn btn-inverse-danger btn-md mt-2"
-                                                            id="cancel-order-btn" style="flex: auto" type="button">
-                                                            Cancel
+                                                            id="delete-order-err-btn" style="flex: auto" type="button">
+                                                            Cancel Order
+                                                        </button>
+                                                        <button class="btn btn-inverse-info btn-md mt-2"
+                                                            id="exit-btn" style="flex: auto" type="button">
+                                                            Exit
                                                         </button>
                                                     </div>
                                                 </div>
