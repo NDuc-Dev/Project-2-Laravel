@@ -10,7 +10,6 @@ use App\Models\Products;
 use App\Models\ProductSizes;
 use App\Models\Tables;
 use FPDF;
-use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -69,7 +68,7 @@ class OrderManageController extends Controller
             }
 
             Orders::where('id', $order_id)->update([
-                'order_status' => 4,
+                'order_status' => 3,
                 'delivery_code' => $delivery_code,
             ]);
 
@@ -301,7 +300,7 @@ class OrderManageController extends Controller
     {
         $order_id = $request->order_id;
         $order = Orders::find($order_id);
-        $order->order_status = -1;
+        $order->order_status = -2;
         $order->save();
         $orderTotal = $order->total;
         return response()->json(["success" => true, 'orderTotal' => $orderTotal]);

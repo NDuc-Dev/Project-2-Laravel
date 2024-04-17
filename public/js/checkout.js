@@ -57,9 +57,7 @@ $(document).ready(function () {
                 data: {
                     order_id: orderId,
                 },
-                success: function (response) {
-                    
-                },
+                success: function (response) {},
                 error: function (xhr, status, error) {
                     console.error(error);
                 },

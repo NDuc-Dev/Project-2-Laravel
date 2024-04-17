@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\auth\admin\CategoryController;
+use App\Http\Controllers\auth\admin\DashboardController;
 use App\Http\Controllers\auth\admin\ProductController;
 use App\Http\Controllers\auth\admin\StaffManagementController;
 use App\Http\Controllers\auth\bartender\PrepareOrderController;
@@ -88,6 +89,9 @@ Route::POST('/post-new-password', [HomeController::class, 'postNewPassword'])->n
 
 
 Route::GROUP(['middleware' => 'isAdmin', 'prefix' => 'manage'], function () {
+    Route::GET('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::GET('/daily-income-calc', [DashboardController::class, 'calculateRevenueGrowth'])->name('calculateRevenueGrowth');
 
     Route::GROUP(['prefix' => 'staffs'], function () {
 
@@ -169,7 +173,6 @@ Route::GROUP(['prefix' => 'seller'], function () {
         Route::POST('/delete-order', [OrderManageController::class, 'deleteOrder']);
 
         Route::POST('/update-order', [OrderManageController::class, 'updateOrder']);
-
     });
 });
 

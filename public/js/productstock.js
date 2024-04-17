@@ -91,6 +91,9 @@ $(document).ready(function () {
             headers: {
                 "X-CSRF-TOKEN": csrfToken,
             },
+            data:{
+                product_id: productId,
+            },
             success: function (response) {
                 if (response.success) {
                     // hideSpinner();

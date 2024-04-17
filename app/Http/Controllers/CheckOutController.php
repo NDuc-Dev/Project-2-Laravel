@@ -59,7 +59,7 @@ class CheckOutController extends Controller
     public function changePaymentStatusFailed(Request $request)
     {
         $order = Orders::find($request->input('order_id'));
-        $order->payment_status = -2;
+        $order->payment_status = -3;
         $order->save();
     }
 
@@ -129,7 +129,7 @@ class CheckOutController extends Controller
                 'order_by' => Auth::id(),
                 'total' => $totalAmt,
                 'table_id' => 0,
-                'order_status' => 1,
+                'order_status' => 0,
                 'guest_email' => $email,
                 'delivery_address' => $deliveryInfo
             ]);

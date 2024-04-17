@@ -65,7 +65,7 @@
 
             @if (Auth::user()->role == 'admin')
                 <li class="nav-item menu-items">
-                    <a class="nav-link" href="index.html">
+                    <a class="nav-link" href="{{ route('dashboard') }}">
                         <span class="menu-icon">
                             <i class="mdi mdi-speedometer"></i>
                         </span>

@@ -259,19 +259,19 @@ $(document).ready(function () {
                     }
                 },
             },
-            {
-                data: "status_in_stock",
-                title: "Status In Stock",
-                render: function (data, type, row) {
-                    if (data == 1) {
-                        return '<label class="badge badge-success">In Stock</label>';
-                    } else if (data == 0) {
-                        return '<label class="badge badge-danger">Out Of Stock</label>';
-                    } else {
-                        return "";
-                    }
-                },
-            },
+            // {
+            //     data: "status_in_stock",
+            //     title: "Status In Stock",
+            //     render: function (data, type, row) {
+            //         if (data == 1) {
+            //             return '<label class="badge badge-success">In Stock</label>';
+            //         } else if (data == 0) {
+            //             return '<label class="badge badge-danger">Out Of Stock</label>';
+            //         } else {
+            //             return "";
+            //         }
+            //     },
+            // },
             {
                 data: null,
                 title: "Action",

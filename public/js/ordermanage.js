@@ -1295,3 +1295,4 @@ $(document).ready(function () {
         ordersErr.ajax.reload();
     }, 10000);
 });
+    
