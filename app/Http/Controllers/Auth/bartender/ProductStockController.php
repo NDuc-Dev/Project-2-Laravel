@@ -17,7 +17,6 @@ class ProductStockController extends Controller
         $this->middleware('checkRole:bartender,bartender');
     }
 
-
     public function getProductStock()
     {
         return view('auth.bartender.productstock');

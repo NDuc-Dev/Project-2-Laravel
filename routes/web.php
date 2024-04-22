@@ -91,7 +91,12 @@ Route::POST('/post-new-password', [HomeController::class, 'postNewPassword'])->n
 Route::GROUP(['middleware' => 'isAdmin', 'prefix' => 'manage'], function () {
     Route::GET('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::GET('/daily-income-calc', [DashboardController::class, 'calculateRevenueGrowth'])->name('calculateRevenueGrowth');
+    Route::GET('/daily-income-calc', [DashboardController::class, 'calculateRevenueGrowth']);
+
+    Route::GET('/daily-order-calc', [DashboardController::class, 'calculateAverageOrdersPerDay']);
+
+    Route::GET('/transacion-history', [DashboardController::class, 'TransactionHistory']);
+
 
     Route::GROUP(['prefix' => 'staffs'], function () {
 

@@ -64,4 +64,73 @@ class DashboardController extends Controller
             'success' => true,
         ]);
     }
+
+    function calculateAverageOrdersPerDay()
+    {
+        // Ngày đầu tiên của tháng hiện tại
+        $firstDayOfMonth = Carbon::now()->firstOfMonth();
+
+        // Ngày hiện tại
+        $currentDate = Carbon::now();
+
+        // Số ngày đã qua trong tháng
+        $daysPassed = $currentDate->diffInDays($firstDayOfMonth) + 1;
+
+        $currentOrderInday = Orders::where('order_status', 4)
+            ->whereDate('order_date', $currentDate)
+            ->count();
+
+        // Truy xuất số lượng đơn hàng của mỗi ngày trong tháng hiện tại từ cơ sở dữ liệu
+        $totalOrders = Orders::where('order_status', 4)
+            ->whereBetween('order_date', [$firstDayOfMonth, $currentDate])
+            ->count();
+
+        // Tính trung bình số đơn hàng mỗi ngày trong tháng hiện tại
+        if ($daysPassed > 0) {
+            $averageOrdersPerDay = $totalOrders / $daysPassed;
+        } else {
+            $averageOrdersPerDay = 0;
+        }
+
+        if ($averageOrdersPerDay > 0) {
+            $growth_rate = (($currentOrderInday / $totalOrders) - 1) * 100;
+        } else {
+            $growth_rate = 0;
+        }
+
+        $growth_rate_formatted = number_format($growth_rate, 1);
+
+        if ($growth_rate_formatted < 0) {
+            $growth = false;
+        } else {
+            $growth = true;
+        }
+
+
+        return response()->json(['currentOrderInday' => $currentOrderInday, 'growth_rate_formatted' => $growth_rate_formatted, 'success' => true, 'growth' => $growth]);
+    }
+
+    public function TransactionHistory()
+    {
+        // Ngày đầu tiên của tháng hiện tại
+        $firstDayOfMonth = Carbon::now()->firstOfMonth();
+
+        // Ngày hiện tại
+        $currentDate = Carbon::now();
+
+        // Truy xuất tổng doanh thu từ đơn hàng direct trong tháng hiện tại
+        $directRevenue = Orders ::where('order_type', 1)
+            ->whereBetween('order_date', [$firstDayOfMonth, $currentDate])
+            ->sum('total');
+
+        // Truy xuất tổng doanh thu từ đơn hàng online trong tháng hiện tại
+        $onlineRevenue = Orders::where('order_type', 0)
+            ->whereBetween('order_date', [$firstDayOfMonth, $currentDate])
+            ->sum('total');
+
+        return response()->json([
+            'direct_revenue' => $directRevenue,
+            'online_revenue' => $onlineRevenue,
+        ]) ;
+    }
 }

@@ -26,7 +26,8 @@ class ProductController extends Controller
         return view('auth.admin.products.productmanage', compact( 'dataGroupCategory', 'dataCategory'));
     }
 
-    public function getDataProduct(){
+    public function getDataProduct()
+    {
         $dataProducts = Products::all();
         return response()->json(['dataProducts' => $dataProducts]);
     }

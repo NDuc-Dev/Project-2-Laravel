@@ -20,7 +20,6 @@ class StaffManagementController extends Controller
         $this->middleware('checkRole:admin,admin');
     }
 
-
     public function getStaffManagement()
     {
         return view('auth.admin.staffs.staffmanage');

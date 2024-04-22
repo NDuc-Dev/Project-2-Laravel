@@ -40,9 +40,5 @@ class Users extends Authenticatable
         return $this->hasMany(Orders::class, 'user_id', 'order_by');
     }
 
-    public function invoice()
-    {
-        return $this->hasMany(Invoices::class, 'user_id', 'print_by');
-    }
 }
 
