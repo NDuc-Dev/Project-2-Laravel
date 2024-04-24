@@ -83,7 +83,7 @@
                     </div>
                 </div>
                 <div class="row justify-content-end">
-                    <div class="col col-lg-3 col-md-6 mt-5 cart-wrap ftco-animate">
+                    <div class="col col-lg-3 col-md-6 mt-5 cart-wrap ftco-animate cart-element">
                         <div class="cart-total mb-3">
                             <h3>Cart Totals</h3>
                             <p class="d-flex">
@@ -107,7 +107,7 @@
                 <div class="row">
                     <div class="col-md-12 ftco-animate">
                         <div class="cart-list">
-                            <table class="table">
+                            <table class="table no-products">
                                 <thead class="thead-primary">
                                     <tr class="text-center">
                                         <th>&nbsp;</th>
@@ -119,7 +119,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <td colspan="6" class="text-center">Không có sản phẩm trong giỏ hàng</td>
+                                    <td colspan="6" class="text-center">There are no products in cart</td>
                                 </tbody>
                             </table>
                         </div>

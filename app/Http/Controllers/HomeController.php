@@ -28,6 +28,7 @@ class HomeController extends Controller
     {
         $drinkProducts = Products::where('status', 1)
             ->where('unit', 'Cup')
+            ->where('status_in_stock', 1)
             ->take(3)
             ->get();
         foreach ($drinkProducts as $product) {
@@ -41,6 +42,7 @@ class HomeController extends Controller
         }
         $foodProducts = Products::where('status', 1)
             ->where('unit', 'Piece/Pack')
+            ->where('status_in_stock', 1)
             ->take(3)
             ->get();
         foreach ($foodProducts as $product) {

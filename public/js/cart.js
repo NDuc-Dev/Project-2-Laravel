@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         input.addEventListener("blur", function () {
             if (input.value.trim() === "" || parseInt(input.value) === 0) {
-                var quantity = input.value = 1;
+                var quantity = (input.value = 1);
                 var productIdAndSizeIdInput = input.getAttribute(
                     "data-productIdAndSizeId"
                 );
@@ -111,7 +111,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (xhr.status >= 200 && xhr.status < 300) {
                     var response = JSON.parse(xhr.responseText);
                     if (response.success) {
-                        console.log("Product removed successfully from cart");
                         productRow.remove();
                         calculateAndDisplayTotal();
                     } else {
@@ -129,24 +128,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function calculateAndDisplayTotal() {
         var totalPrice = 0;
-
-        // Lặp qua từng hàng trong bảng
         var rows = document.querySelectorAll(".cart-list tbody tr");
-        rows.forEach(function (row) {
-            var totalCell = row.querySelector(".total");
-            var total = parseFloat(
-                totalCell.textContent.replace(" VND", "").replace(",", "")
-            );
-            totalPrice += total;
-        });
-
-        // Hiển thị tổng giá trị
-        var totalSpan = document.getElementById("total");
-        var subTotalSpan = document.getElementById("sub-total");
-        if(totalSpan&&subTotalSpan){
-            totalSpan.textContent = formatCurrency(totalPrice) + " VND";
-            subTotalSpan.textContent = formatCurrency(totalPrice) + " VND";
+        console.log(rows.length);
+        if (rows.length != 0) {
+            rows.forEach(function (row) {
+                var totalCell = row.querySelector(".total");
+                var total = parseFloat(
+                    totalCell.textContent.replace(" VND", "").replace(",", "")
+                );
+                totalPrice += total;
+            });
+            var totalSpan = document.getElementById("total");
+            var subTotalSpan = document.getElementById("sub-total");
+            if (totalSpan && subTotalSpan) {
+                totalSpan.textContent = formatCurrency(totalPrice) + " VND";
+                subTotalSpan.textContent = formatCurrency(totalPrice) + " VND";
+            }
+        } else {
+            var totalElement = document.querySelector(".cart-element");
+            totalElement.classList.add("d-none");
+            var table = document.querySelector("tbody");
+            var newRow = table.insertRow();
+            var cell = newRow.insertCell(0);
+            cell.colSpan = 6;
+            cell.innerHTML = "There are no products in cart";
+            newRow.classList.add('text-center');
         }
-
     }
 });

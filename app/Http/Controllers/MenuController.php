@@ -14,6 +14,7 @@ class MenuController extends Controller
     {
         $drinkProducts = Products::where('status', 1)
             ->where('unit', 'Cup')
+            ->where('status_in_stock', '1')
             ->get();
         foreach ($drinkProducts as $product) {
             $price = DB::table('productsizes')
@@ -25,7 +26,10 @@ class MenuController extends Controller
             $product->unit_price = $unit_price = preg_replace('/[^0-9,.]/', '', $unit_price);
         }
 
-        $foodProducts = Products::where('status', 1)->where('unit', 'Piece/Pack')->get();
+        $foodProducts = Products::where('status', 1)
+            ->where('unit', 'Piece/Pack')
+            ->where('status_in_stock', '1')
+            ->get();
         foreach ($foodProducts as $product) {
             $price = DB::table('productsizes')
                 ->where('product_id', $product->product_id)
@@ -42,7 +46,7 @@ class MenuController extends Controller
     {
         $product = Products::find($id);
         $product->unit_price = preg_replace('/[^0-9,.]/', '', Number::currency(ProductSizes::where('product_id', $id)->value('unit_price'), 'VND'));
-        return response()->json(['product' => $product, 'status'=> 200]);
+        return response()->json(['product' => $product, 'status' => 200]);
     }
 
     public function getProductdrink($id)
@@ -52,6 +56,6 @@ class MenuController extends Controller
         foreach ($prices as $price) {
             $price->unit_price =  preg_replace('/[^0-9,.]/', '', Number::currency($price->unit_price, 'VND'));
         }
-        return response()->json(['product' => $product, 'prices' => $prices,'status' =>200]);
+        return response()->json(['product' => $product, 'prices' => $prices, 'status' => 200]);
     }
 }
