@@ -97,7 +97,7 @@
                             </p>
                         </div>
                         <p class="text-center"><a href="{{ route('checkout') }}"
-                                class="btn btn-primary py-3 px-4">Checkout</a>
+                                class="btn btn-primary py-3 px-4" id="checkoutButton">Checkout</a>
                         </p>
                     </div>
                 </div>

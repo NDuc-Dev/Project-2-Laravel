@@ -1,244 +1,217 @@
-document.addEventListener("DOMContentLoaded", function () {
-    var inputQuantityfood = document.getElementById("quantityfood");
-    var inputQuantitydrink = document.getElementById("quantitydrink");
-    var btnMinusDrink = document.querySelector(".drink-minus");
-    var btnPlusDrink = document.querySelector(".drink-plus");
-    var btnMinusFood = document.querySelector(".food-minus");
-    var btnPlusFood = document.querySelector(".food-plus");
-    var addToCartButtonsfood = document.querySelectorAll("#add-to-cart-food");
-    var addToCartButtonsdrink = document.querySelectorAll("#add-to-cart-drink");
-    addToCartButtonsfood.forEach(function (button) {
-        button.addEventListener("click", function () {
-            var productId = this.getAttribute("data-id");
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "/get-product-food-" + productId, true);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4) {
-                    if (xhr.status == 200) {
-                        try {
-                            var response = JSON.parse(xhr.responseText);
-                            var product = response.product;
-                            document
-                                .querySelector("#product-id-food")
-                                .setAttribute("value", product.product_id);
-                            document
-                                .querySelector("#href-img-food")
-                                .setAttribute("href", product.product_images);
-                            document
-                                .querySelector("#img-food")
-                                .setAttribute("src", product.product_images);
-                            document.getElementById(
-                                "product-name-food"
-                            ).innerText = product.product_name;
-                            document.getElementById("priceSpanfood").innerText =
-                                product.unit_price + " VND";
-                            document.getElementById(
-                                "product-descriptions-food"
-                            ).innerText = product.descriptions;
-                        } catch (error) {
-                            console.error(
-                                "Error parsing JSON response:",
-                                error
-                            );
-                        }
-                    } else {
-                        console.error(
-                            "Request failed with status:",
-                            xhr.status
-                        );
-                    }
-                }
-            };
-            xhr.send();
-        });
-    });
-    
-    addToCartButtonsdrink.forEach(function (button) {
-        var prices;
-        button.addEventListener("click", function () {
-            var productId = this.getAttribute("data-id");
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "/get-product-drink-" + productId, true);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4) {
-                    if (xhr.status == 200) {
-                        try {
-                            var response = JSON.parse(xhr.responseText);
-                            var product = response.product;
-                            prices = response.prices;
-                            document
-                                .querySelector("#product-id-drink")
-                                .setAttribute("value", product.product_id);
-                            document
-                                .querySelector("#href-img-drink")
-                                .setAttribute("href", product.product_images);
-                            document
-                                .querySelector("#img-drink")
-                                .setAttribute("src", product.product_images);
-                            document.getElementById(
-                                "product-name-drink"
-                            ).innerText = product.product_name;
-                            document.getElementById(
-                                "product-descriptions-drink"
-                            ).innerText = product.descriptions;
+$(document).ready(function () {
+    var inputQuantityfood = $("#quantityfood");
+    var inputQuantitydrink = $("#quantitydrink");
+    var btnMinusDrink = $(".drink-minus");
+    var btnPlusDrink = $(".drink-plus");
+    var btnMinusFood = $(".food-minus");
+    var btnPlusFood = $(".food-plus");
+    var addToCartButtonsfood = $(".add-to-cart-food");
+    var addToCartButtonsdrink = $(".add-to-cart-drink");
+    console.log(addToCartButtonsdrink);
 
-                            var sizeSelect =
-                                document.getElementById("sizeSelect");
-                            var priceSpan =
-                                document.getElementById("priceSpandrink");
-
-                            sizeSelect.addEventListener("change", function () {
-                                var selectedSizeId = this.value;
-                                var selectedPrice = prices.find(function (
-                                    price
-                                ) {
-                                    return price.size_id == selectedSizeId;
-                                });
-                                if (selectedPrice) {
-                                    priceSpan.textContent =
-                                        selectedPrice.unit_price + " VND";
-                                } else {
-                                    console.log(
-                                        "Giá cho kích thước đã chọn không tồn tại."
-                                    );
-                                }
-                            });
-                            sizeSelect.dispatchEvent(new Event("change"));
-                        } catch (error) {
-                            console.error(
-                                "Error parsing JSON response:",
-                                error
-                            );
-                        }
-                    } else {
-                        console.error(
-                            "Request failed with status:",
-                            xhr.status
-                        );
-                    }
-                }
-            };
-            xhr.send();
-
-            // sizeSelect.dispatchEvent(new Event("change"));
+    addToCartButtonsfood.each(function () {
+        $(this).click(function () {
+            var productId = $(this).data("id");
+            $.get("/get-product-food-" + productId, function (response) {
+                var product = response.product;
+                $("#product-id-food").val(product.product_id);
+                $("#href-img-food").attr("href", product.product_images);
+                $("#img-food").attr("src", product.product_images);
+                $("#product-name-food").text(product.product_name);
+                $("#priceSpanfood").text(product.unit_price + " VND");
+                $("#product-descriptions-food").text(product.descriptions);
+            }).fail(function (xhr, status, error) {
+                console.error("Error:", error);
+            });
         });
     });
 
-    btnMinusFood.addEventListener("click", function () {
-        var currentValue = parseInt(inputQuantityfood.value);
+    addToCartButtonsdrink.each(function () {
+        $(this).click(function () {
+            var productId = $(this).data("id");
+            console.log(productId);
+            $.get("/get-product-drink-" + productId, function (response) {
+                var product = response.product;
+                var prices = response.prices;
+                $("#product-id-drink").val(product.product_id);
+                $("#href-img-drink").attr("href", product.product_images);
+                $("#img-drink").attr("src", product.product_images);
+                $("#product-name-drink").text(product.product_name);
+                $("#product-descriptions-drink").text(product.descriptions);
+                $("#sizeSelect")
+                    .change(function () {
+                        var selectedSizeId = $(this).val();
+                        var selectedPrice = prices.find(function (price) {
+                            return price.size_id == selectedSizeId;
+                        });
+                        if (selectedPrice) {
+                            $("#priceSpandrink").text(
+                                selectedPrice.unit_price + " VND"
+                            );
+                        } else {
+                            console.log(
+                                "Giá cho kích thước đã chọn không tồn tại."
+                            );
+                        }
+                    })
+                    .change();
+            }).fail(function (xhr, status, error) {
+                console.error("Error:", error);
+            });
+        });
+    });
+
+    btnMinusFood.click(function () {
+        var currentValue = parseInt(inputQuantityfood.val());
         if (!isNaN(currentValue) && currentValue > 1) {
-            inputQuantityfood.value = currentValue - 1;
+            inputQuantityfood.val(currentValue - 1);
         }
     });
 
-    btnPlusFood.addEventListener("click", function () {
-        var currentValue = parseInt(inputQuantityfood.value);
+    btnPlusFood.click(function () {
+        var currentValue = parseInt(inputQuantityfood.val());
         if (
             !isNaN(currentValue) &&
-            currentValue < parseInt(inputQuantityfood.max)
+            currentValue < parseInt(inputQuantityfood.attr("max"))
         ) {
-            inputQuantityfood.value = currentValue + 1;
+            inputQuantityfood.val(currentValue + 1);
         }
     });
 
-    btnMinusDrink.addEventListener("click", function () {
-        var currentValue = parseInt(inputQuantity.value);
+    btnMinusDrink.click(function () {
+        var currentValue = parseInt(inputQuantitydrink.val());
         if (!isNaN(currentValue) && currentValue > 1) {
-            inputQuantity.value = currentValue - 1;
+            inputQuantitydrink.val(currentValue - 1);
         }
     });
 
-    btnPlusDrink.addEventListener("click", function () {
-        var currentValue = parseInt(inputQuantitydrink.value);
+    btnPlusDrink.click(function () {
+        var currentValue = parseInt(inputQuantitydrink.val());
         if (
             !isNaN(currentValue) &&
-            currentValue < parseInt(inputQuantitydrink.max)
+            currentValue < parseInt(inputQuantitydrink.attr("max"))
         ) {
-            inputQuantitydrink.value = currentValue + 1;
+            inputQuantitydrink.val(currentValue + 1);
         }
     });
 
-    inputQuantitydrink.addEventListener("input", function () {
-        var value = inputQuantitydrink.value;
-        if (
-            isNaN(value) ||
-            parseInt(value) < parseInt(inputQuantitydrink.min)
-        ) {
-            inputQuantitydrink.value = inputQuantitydrink.min;
+    inputQuantitydrink.on("input", function () {
+        var value = parseInt($(this).val());
+        if (isNaN(value) || value < parseInt(inputQuantitydrink.attr("min"))) {
+            $(this).val(inputQuantitydrink.attr("min"));
         }
-        if (parseInt(value) > parseInt(inputQuantitydrink.max)) {
-            inputQuantitydrink.value = inputQuantitydrink.max;
+        if (value > parseInt(inputQuantitydrink.attr("max"))) {
+            $(this).val(inputQuantitydrink.attr("max"));
         }
     });
 
-    inputQuantityfood.addEventListener("input", function () {
-        var value = inputQuantityfood.value;
-        if (isNaN(value) || parseInt(value) < parseInt(inputQuantityfood.min)) {
-            inputQuantityfood.value = inputQuantityfood.min;
+    inputQuantityfood.on("input", function () {
+        var value = parseInt($(this).val());
+        if (isNaN(value) || value < parseInt(inputQuantityfood.attr("min"))) {
+            $(this).val(inputQuantityfood.attr("min"));
         }
-        if (parseInt(value) > parseInt(inputQuantityfood.max)) {
-            inputQuantityfood.value = inputQuantityfood.max;
+        if (value > parseInt(inputQuantityfood.attr("max"))) {
+            $(this).val(inputQuantityfood.attr("max"));
         }
     });
 
-    document.getElementById('submit-add-to-cart-drink').addEventListener('click', function (event) {
+    $("#submit-add-to-cart-drink").click(function (event) {
         event.preventDefault();
-        var csrfToken = document.getElementById('csrf-token').value;
-        var productId = document.getElementById('product-id-drink').value;
-        var sizeId = document.getElementById('sizeSelect').value;
-        var quantity = document.getElementById('quantitydrink').value;
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', "/add-to-cart", true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                console.log(xhr.responseText);
-                var closeButton = document.getElementById('close-drink');
-                if (closeButton) {
+        var csrfToken = $("#csrf-token").val();
+        var productId = $("#product-id-drink").val();
+        var sizeId = $("#sizeSelect").val();
+        var quantity = $("#quantitydrink").val();
+        $.ajax({
+            type: "POST",
+            url: "/add-to-cart",
+            data: {
+                product_id: productId,
+                size_id: sizeId,
+                quantity: quantity,
+            },
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+            },
+            success: function (response) {
+                if(response.success == true){
+                    swal.fire({
+                        icon: "success",
+                        text: "Add product to cart success",
+                        title: "Success",
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                } else {
+                    swal.fire({
+                        icon: "error",
+                        text: "Add product to cart failed",
+                        title: "Success",
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                }
+                var closeButton = $("#close-drink");
+                if (closeButton.length) {
                     closeButton.click();
                 }
-                var cartItemCount = JSON.parse(xhr.responseText).totalItems;
-                document.getElementById("cartItemCount").innerHTML = "<small>" + cartItemCount + "</small>";
-            } else {
-                console.error('Error:', xhr.responseText);
-            }
-        };
-        xhr.send(JSON.stringify({
-            product_id: productId,
-            size_id: sizeId,
-            quantity: quantity
-        }));
+                var cartItemCount = response.totalItems;
+                $("#cartItemCount").html(
+                    "<small>" + cartItemCount + "</small>"
+                );
+            },
+            error: function (xhr, status, error) {
+                console.error("Error:", xhr.responseText);
+            },
+        });
     });
 
-    document.getElementById('submit-add-to-cart-food').addEventListener('click', function (event) {
+    $("#submit-add-to-cart-food").click(function (event) {
         event.preventDefault();
-        var csrfToken = document.getElementById('csrf-token').value;
-        var productId = document.getElementById('product-id-food').value;
+        var csrfToken = $("#csrf-token").val();
+        var productId = $("#product-id-food").val();
         var sizeId = 4;
-        var quantity = document.getElementById('quantityfood').value;
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', "/add-to-cart", true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                // console.log(xhr.responseText);
-                var closeButton = document.getElementById('close-food');
-                if (closeButton) {
+        var quantity = $("#quantityfood").val();
+        $.ajax({
+            type: "POST",
+            url: "/add-to-cart",
+            data: {
+                product_id: productId,
+                size_id: sizeId,
+                quantity: quantity,
+            },
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+            },
+            success: function (response) {
+                if(response.success == true){
+                    swal.fire({
+                        icon: "success",
+                        text: "Add product to cart success",
+                        title: "Success",
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                } else {
+                    swal.fire({
+                        icon: "error",
+                        text: "Add product to cart failed",
+                        title: "Success",
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                }
+                var closeButton = $("#close-food");
+                if (closeButton.length) {
                     closeButton.click();
                 }
-                var cartItemCount = JSON.parse(xhr.responseText).totalItems;
-                document.getElementById("cartItemCount").innerHTML = "<small>" + cartItemCount + "</small>";
-            } else {
-                console.error('Error:', xhr.responseText);
-            }
-        };
-        xhr.send(JSON.stringify({
-            product_id: productId,
-            size_id: sizeId,
-            quantity: quantity
-        }));
+                var cartItemCount = response.totalItems;
+                $("#cartItemCount").html(
+                    "<small>" + cartItemCount + "</small>"
+                );
+            },
+            error: function (xhr, status, error) {
+                console.error("Error:", xhr.responseText);
+            },
+        });
     });
-
 });

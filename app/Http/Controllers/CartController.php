@@ -151,4 +151,39 @@ class CartController extends Controller
             }
         }
     }
+
+    public function checkout(Request $request)
+    {
+        if (Auth::check()) {
+            $user_id = Auth::id();
+            $user_cart = "user_cart_$user_id";
+        } else {
+            $user_cart = "guest_cart";
+        }
+        $cartItems = $request->session()->get($user_cart);
+        $productInfo = [];
+        $outOfStockProducts = '';
+        foreach ($cartItems as $key => $item) {
+            [$productId, $sizeId] = explode('_', $key);
+            $product = Products::select('product_name', 'status_in_stock', 'status')
+                ->find($productId);
+            if (!$product || $product->status == 0) {
+                return response()->json(['message' => 'Product does not exist.', 'success' => false]);
+            }
+
+            $productInfo[] = [
+                'product_name' => $product->product_name,
+                'status_in_stock' => $product->status_in_stock,
+            ];
+            if ($product->status_in_stock == 0) {
+                $outOfStockProducts .= ($outOfStockProducts == '') ? $product->product_name : ', ' . $product->product_name;
+            }
+        }
+
+        if ($outOfStockProducts != '') {
+            return response()->json(['message' => 'The following products are out of stock: ' . $outOfStockProducts . '. Please select another product or delete the product before continuing', 'success' => false]);
+        } else {
+            return response()->json(['message' => '', 'success' => true]);
+        }
+    }
 }

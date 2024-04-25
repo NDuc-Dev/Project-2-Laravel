@@ -87,7 +87,7 @@
                                                         {{-- <p>{{ $product->descriptions }}</p> --}}
                                                         <p class="price"><span>{{ $product->unit_price }} VND</span></p>
                                                         <p><button type="button"
-                                                                class="btn btn-primary btn-outline-primary"
+                                                                class="btn btn-primary btn-outline-primary add-to-cart-drink"
                                                                 data-toggle="modal" data-target="#productModaldrink"
                                                                 data-id="{{ $product->product_id }}" id="add-to-cart-drink">
                                                                 Add To Cart
@@ -111,7 +111,7 @@
                                                         {{-- <p>{{ $product->descriptions }}</p> --}}
                                                         <p class="price"><span>{{ $product->unit_price }} VND</span></p>
                                                         <p><button type="button"
-                                                                class="btn btn-primary btn-outline-primary"
+                                                                class="btn btn-primary btn-outline-primary add-to-cart-food"
                                                                 data-toggle="modal" data-target="#productModalfood"
                                                                 data-id="{{ $product->product_id }}" id="add-to-cart-food">
                                                                 Add To Cart

@@ -57,6 +57,8 @@ Route::DELETE('/remove-form-cart-{productIdAndSizeId}', [CartController::class, 
 
 Route::POST('/change-quantity-product-cart-{productIdAndSizeId}-{quantity}', [CartController::class, 'changeQuantity'])->withoutMiddleware(['auth']);
 
+Route::GET('/before-check-out', [CartController::class, 'checkout']);
+
 Route::GET('/checkout', [CheckOutController::class, 'Index'])->name('checkout')->withoutMiddleware(['auth']);
 
 Route::GET('/check-total-amount-in-cart', [CheckOutController::class, 'GetTotalPay'])->name('GetTotalPay')->withoutMiddleware(['auth']);

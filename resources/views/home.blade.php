@@ -32,7 +32,7 @@
                         <h1 class="mb-4">Amazing Taste &amp; Beautiful Place</h1>
                         <p class="mb-4 mb-md-5">A small river named Duden flows by their place and supplies it with the
                             necessary regelialia.</p>
-                        <p> <a href="#" class="btn btn-white btn-outline-white p-3 px-xl-4 py-xl-3">View
+                        <p> <a href="{{ route('menu') }}" class="btn btn-white btn-outline-white p-3 px-xl-4 py-xl-3">View
                                 Menu</a></p>
                     </div>
 
@@ -50,7 +50,7 @@
                         <h1 class="mb-4">Creamy Hot and Ready to Serve</h1>
                         <p class="mb-4 mb-md-5">A small river named Duden flows by their place and supplies it with the
                             necessary regelialia.</p>
-                        <p> <a href="#" class="btn btn-white btn-outline-white p-3 px-xl-4 py-xl-3">View
+                        <p> <a href="{{ route('menu') }}" class="btn btn-white btn-outline-white p-3 px-xl-4 py-xl-3">View
                                 Menu</a></p>
                     </div>
 
@@ -292,7 +292,7 @@
                                                         {{-- <p>{{ $product->descriptions }}</p> --}}
                                                         <p class="price"><span>{{ $product->unit_price }} VND</span></p>
                                                         <p><button type="button"
-                                                                class="btn btn-primary btn-outline-primary"
+                                                                class="btn btn-primary btn-outline-primary add-to-cart-drink"
                                                                 data-toggle="modal" data-target="#productModaldrink"
                                                                 data-id="{{ $product->product_id }}"
                                                                 id="add-to-cart-drink">
@@ -322,7 +322,7 @@
                                                         {{-- <p>{{ $product->descriptions }}</p> --}}
                                                         <p class="price"><span>{{ $product->unit_price }} VND</span></p>
                                                         <p><button type="button"
-                                                                class="btn btn-primary btn-outline-primary"
+                                                                class="btn btn-primary btn-outline-primary add-to-cart-food"
                                                                 data-toggle="modal" data-target="#productModalfood"
                                                                 data-id="{{ $product->product_id }}"
                                                                 id="add-to-cart-food">

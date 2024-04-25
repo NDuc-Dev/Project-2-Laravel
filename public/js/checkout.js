@@ -65,9 +65,11 @@ $(document).ready(function () {
         }
     }
     calculateAndDisplayTotal();
+
     function formatCurrency(amount) {
         return amount.toLocaleString("en-US");
     }
+    
     function calculateAndDisplayTotal() {
         var totalPrice = 0;
         $(".cart-detail tbody tr").each(function () {
