@@ -12,6 +12,7 @@ use App\Http\Controllers\auth\seller\OrderManageController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckOutController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ManageGuestInfoController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProductDetailsController;
@@ -87,6 +88,9 @@ Route::GET('/get-new-password-{user}-{token}', [HomeController::class, 'getNewPa
 
 Route::POST('/post-new-password', [HomeController::class, 'postNewPassword'])->name('postNewPassword');
 
+Route::GET('/get-new-password-{user}-{token}', [HomeController::class, 'getNewPassword'])->name('getNewPassword');
+
+Route::GET('/manage-user-info', [ManageGuestInfoController::class, 'Index'])->name('setting');
 
 
 

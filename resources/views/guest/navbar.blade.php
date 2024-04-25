@@ -54,37 +54,17 @@
                 @endguest
                 @if (Auth::check())
                     <li class="nav-item dropdown">
-                        <a class="nav-link" id="profileDropdown" href="#" data-bs-toggle="dropdown">
-                            <div class="navbar-profile d-flex align-items-center">
-                                <p class="px-2 mb-0 d-none d-sm-block navbar-profile-name">{{ Auth::user()->name }}</p>
-                                <i class="fa-solid fa-caret-down d-none d-sm-block ms-1"></i>
-                            </div>
+                        <a class="nav-link dropdown-toggle" id="profileDropdown" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            {{ Auth::user()->name }}
                         </a>
-                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
-                            aria-labelledby="profileDropdown">
-                            {{-- <h5 class="p-3 mb-0">Profile</h5>
-                            <div class="dropdown-divider"></div> --}}
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <div class="preview-icon bg-dark rounded-circle">
-                                        <i class="mdi mdi-settings text-success"></i>
-                                    </div>
-                                </div>
-                                <div class="preview-item-content">
-                                    <p class="preview-subject mb-1">Settings</p>
-                                </div>
+                        <div class="dropdown-menu" aria-labelledby="profileDropdown">
+                            <a class="dropdown-item" href="{{route('setting')}}">
+                                Settings
                             </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item" href="{{ route('logout') }}"
+                            <a class="dropdown-item" href="{{ route('logout') }}"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                <div class="preview-thumbnail">
-                                    <div class="preview-icon bg-dark rounded-circle">
-                                        <i class="mdi mdi-logout text-danger"></i>
-                                    </div>
-                                </div>
-                                <div class="preview-item-content">
-                                    <p class="preview-subject mb-1">Log out</p>
-                                </div>
+                                Log out
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                     @csrf
                                 </form>

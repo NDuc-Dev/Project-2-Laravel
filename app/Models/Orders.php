@@ -20,8 +20,6 @@ class Orders extends Model
         'order_type',
         'order_by',
         'delivery_address',
-        'customer_phone',
-        'customer_email',
         'total',
         'order_status',
         'table_id',
