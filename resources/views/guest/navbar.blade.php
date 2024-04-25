@@ -54,13 +54,14 @@
                 @endguest
                 @if (Auth::check())
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" id="profileDropdown" data-toggle="dropdown"
+                        <a class="nav-link" id="profileDropdown" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
-                            {{ Auth::user()->name }}
+                                {{ Auth::user()->name }}
+                                <i class="fa-solid fa-caret-down"></i>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="profileDropdown">
-                            <a class="dropdown-item" href="{{route('setting')}}">
-                                Settings
+                            <a class="dropdown-item" href="{{ route('setting') }}">
+                                My Info
                             </a>
                             <a class="dropdown-item" href="{{ route('logout') }}"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

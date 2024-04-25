@@ -92,6 +92,8 @@ Route::GET('/get-new-password-{user}-{token}', [HomeController::class, 'getNewPa
 
 Route::GET('/manage-user-info', [ManageGuestInfoController::class, 'Index'])->name('setting');
 
+Route::POST('/update-user-info', [ManageGuestInfoController::class,'updateUserInfo'])->name('updateUserInf');
+
 
 
 Route::GROUP(['middleware' => 'isAdmin', 'prefix' => 'manage'], function () {

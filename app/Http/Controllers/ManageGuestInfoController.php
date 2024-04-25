@@ -18,4 +18,20 @@ class ManageGuestInfoController extends Controller
         $user = Auth::user();
         return view('manageuserinfo', compact('user'));
     }
+
+    public function updateUserInfo(Request $request)
+    {
+        $id = $request->input('user_id');
+        $name = $request->input('name');
+        $email = $request->input('email');
+        $phone = $request->input('phone');
+        $address = $request->input('address');
+        $user = Users::find($id);
+        $user->name = $name;
+        $user->email = $email;
+        $user->phone = $phone;
+        $user->delivery_address = $address;
+        $user->save();
+        return response()->json(['success'=>true, 'message'=> "Update info success fully"]);
+    }
 }
