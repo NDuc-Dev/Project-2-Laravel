@@ -12,6 +12,18 @@
         .tt-menu {
             display: none !important;
         }
+
+        
+        .num {
+            width: 25px;
+            height: 24px;
+            text-align: center;
+            background: #f8b500;
+            -webkit-border-radius: 50%;
+            -moz-border-radius: 50%;
+            -ms-border-radius: 50%;
+            border-radius: 50%;
+        }
     </style>
     <div class="main-panel">
         <div class="content-wrapper">
@@ -24,17 +36,20 @@
                         type="button" role="tab" aria-controls="create-order" aria-selected="true">Create New</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="order-ready-tab" data-bs-toggle="tab" data-bs-target="#order-ready"
-                        type="button" role="tab" aria-controls="order-ready" aria-selected="false">Ready</button>
+                    <button class="nav-link d-flex" id="order-ready-tab" data-bs-toggle="tab" data-bs-target="#order-ready"
+                        type="button" role="tab" aria-controls="order-ready" aria-selected="false">Ready <div
+                            id="order-ready-tab-num" class="num ms-1"></div></button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="delivery-order-tab" data-bs-toggle="tab" data-bs-target="#delivery-order"
+                    <button class="nav-link d-flex" id="delivery-order-tab" data-bs-toggle="tab" data-bs-target="#delivery-order"
                         type="button" role="tab" aria-controls="delivery-order"
-                        aria-selected="false">Delivering</button>
+                        aria-selected="false">Delivering <div
+                        id="delivery-order-tab-num" class="num ms-1"></div></button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="rror-order-tab" data-bs-toggle="tab" data-bs-target="#error-order"
-                        type="button" role="tab" aria-controls="error-order" aria-selected="false">Error</button>
+                    <button class="nav-link d-flex" id="error-order-tab" data-bs-toggle="tab" data-bs-target="#error-order"
+                        type="button" role="tab" aria-controls="error-order" aria-selected="false">Error <div
+                            id="error-order-tab-num" class="num ms-1"></div></button>
                 </li>
             </ul>
             <div class="tab-content" id="myTabContent">
@@ -254,8 +269,8 @@
                                                             id="delete-order-err-btn" style="flex: auto" type="button">
                                                             Cancel Order
                                                         </button>
-                                                        <button class="btn btn-inverse-info btn-md mt-2"
-                                                            id="exit-btn" style="flex: auto" type="button">
+                                                        <button class="btn btn-inverse-info btn-md mt-2" id="exit-btn"
+                                                            style="flex: auto" type="button">
                                                             Exit
                                                         </button>
                                                     </div>

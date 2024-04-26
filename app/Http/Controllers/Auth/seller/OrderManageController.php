@@ -67,7 +67,7 @@ class OrderManageController extends Controller
                 throw new \Exception("Order ID and delivery code cannot be null.");
             }
 
-            Orders::where('id', $order_id)->update([
+            Orders::where('order_id', $order_id)->update([
                 'order_status' => 3,
                 'delivery_code' => $delivery_code,
             ]);

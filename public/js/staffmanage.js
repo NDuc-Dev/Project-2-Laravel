@@ -211,7 +211,7 @@ $(document).ready(function () {
         columns: [
             {
                 data: null,
-                title: "Select",
+                title: "",
                 render: function (data, type, row) {
                     return (
                         '<input type="checkbox" class="select-checkbox" data-id="' +

@@ -667,7 +667,27 @@ $(document).ready(function () {
                 },
             },
         ],
+    }).on('draw.dt', function() {
+        updateReadyOrderCount();
     });
+
+    function updateReadyOrderCount() {
+        // Lấy bảng DataTable của tab "Ready"
+        var readyTable = $('#orderReadyTable').DataTable();
+    
+        // Sử dụng Ajax của DataTable để lấy số lượng order
+        $.ajax({
+            url: readyTable.ajax.url(), // Lấy URL của yêu cầu Ajax của DataTable
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                var orderCount = data.data.length; // Đếm số lượng order từ dữ liệu mới
+                console.log(orderCount);
+                $('#order-ready-tab-num').text(orderCount); // Cập nhật số lượng vào thẻ "num" của tab "Ready"
+            }
+        });
+    }
+
 
     var orderDeli = $("#orderDelivery").DataTable({
         ajax: {
@@ -706,7 +726,24 @@ $(document).ready(function () {
                 },
             },
         ],
+    }).on('draw.dt', function() {
+        updateDeliOrderCount();
     });
+
+    function updateDeliOrderCount() {
+        var readyTable = $('#orderDelivery').DataTable();
+    
+        $.ajax({
+            url: readyTable.ajax.url(), 
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                var orderCount = data.data.length; 
+                console.log(orderCount);
+                $('#delivery-order-tab-num').text(orderCount); 
+            }
+        });
+    }
 
     $("#orderReadyTable").on("click", "#complete-btn", function () {
         var orderId = $(this).data("id");
@@ -735,6 +772,7 @@ $(document).ready(function () {
             },
         });
     });
+
 
     $("#orderReadyTable").on("click", "#delivery-btn", function () {
         var orderId = $(this).data("id");
@@ -779,9 +817,9 @@ $(document).ready(function () {
         });
     });
 
+
     $("#orderDelivery").on("click", "#complete-deli", function () {
         var orderId = $(this).data("id");
-        console.log("Order ID:", orderId);
         $.ajax({
             url: "complete-order",
             method: "POST",
@@ -800,6 +838,7 @@ $(document).ready(function () {
                         showConfirmButton: false,
                         timer: 1500,
                     });
+                    orderDeli.ajax.reload();
                 } else {
                 }
             },
@@ -844,7 +883,27 @@ $(document).ready(function () {
                 },
             },
         ],
+    }).on('draw.dt', function() {
+        updateErrorOrderCount();
     });
+
+
+    function updateErrorOrderCount() {
+        // Lấy bảng DataTable của tab "Ready"
+        var readyTable = $('#orderError').DataTable();
+    
+        // Sử dụng Ajax của DataTable để lấy số lượng order
+        $.ajax({
+            url: readyTable.ajax.url(), // Lấy URL của yêu cầu Ajax của DataTable
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                var orderCount = data.data.length; // Đếm số lượng order từ dữ liệu mới
+                console.log(orderCount);
+                $('#error-order-tab-num').text(orderCount); // Cập nhật số lượng vào thẻ "num" của tab "Ready"
+            }
+        });
+    }
 
     $("#orderError").on("click", "#handle-btn", function () {
         if ($.fn.DataTable.isDataTable("#productOrderError")) {
@@ -1286,6 +1345,7 @@ $(document).ready(function () {
             });
         }
     });
+
 
     setInterval(function () {
         orderReady.ajax.reload();
