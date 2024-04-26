@@ -4,12 +4,6 @@
         <div class="content-wrapper">
             <div class="page-header">
                 <h3 class="page-title"> Product Management </h3>
-                {{-- <nav aria-label="breadcrumb">
-                  <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">Tables</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Basic tables</li>
-                  </ol>
-                </nav> --}}
                 <button class="btn btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#form-focus">New Product
                     +</button>
             </div>
@@ -23,6 +17,7 @@
                             <tbody>
                             </tbody>
                         </table>
+                        <button class="btn btn-danger btn-sm status-btn py-1" id="btn-change-status-products" >Change Status</button>
                     </div>
                 </div>
             </div>
@@ -39,12 +34,8 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                {{-- <div class="card"> --}}
-                                {{-- <div class="card-body"> --}}
                                 <form id="form-validate" method="POST" action="{{ route('admin.createProduct') }}"
                                     enctype="multipart/form-data">
-                                    {{-- <form id="form-validate" enctype="multipart/form-data"> --}}
-
                                     @csrf
                                     <div class="form-group">
                                         <label for="image-input">{{ __('Product Image') }}
@@ -120,8 +111,6 @@
                                     <button type="button" class="btn btn-dark" data-bs-toggle="modal"
                                         data-bs-target="#form-focus">Cancel</button>
                                 </form>
-                                {{-- </div> --}}
-                                {{-- </div> --}}
                             </div>
                         </div>
                     </div>

@@ -4,12 +4,6 @@
         <div class="content-wrapper">
             <div class="page-header">
                 <h3 class="page-title"> Users Management </h3>
-                {{-- <nav aria-label="breadcrumb">
-                  <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">Tables</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Basic tables</li>
-                  </ol>
-                </nav> --}}
                 <button class="btn btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#form-focus">Add +</button>
             </div>
             <div class="card mb-3">
@@ -18,11 +12,11 @@
                     <div class="table-responsive">
                         <table class="table table-hover" id="staffTable">
                             <thead>
-
                             </thead>
                             <tbody>
                             </tbody>
                         </table>
+                        <button class="btn btn-danger btn-sm status-btn py-1" id="btn-change-status-staffs" >Change Status</button>
                     </div>
                 </div>
             </div>

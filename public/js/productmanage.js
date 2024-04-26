@@ -226,7 +226,22 @@ $(document).ready(function () {
         },
         autoWidth: true,
         responsive: true,
+        scrollX: false,
         columns: [
+            {
+                data: null,
+                title: "Select",
+                render: function (data, type, row) {
+                    return (
+                        '<input type="checkbox" class="select-checkbox" data-id="' +
+                        row.product_id +
+                        '">'
+                    );
+                },
+                orderable: false,
+                searchable: false,
+                width: "10px",
+            },
             {
                 data: "product_images",
                 title: "Image",
@@ -396,7 +411,7 @@ $(document).ready(function () {
         var file = $(this)[0].files[0];
         if (file && file.type.match("image.*")) {
             var fileSize = file.size;
-            var maxSize = 2 * 1024 * 1024; // 2MB
+            var maxSize = 8 * 1024 * 1024; // 2MB
 
             if (fileSize > maxSize) {
                 Swal.fire({
@@ -450,5 +465,91 @@ $(document).ready(function () {
 
     function hideSpinner() {
         $("#container-spinner").addClass("d-none");
+    }
+
+    var selectedProductIds = [];
+
+    $(document).on("change", ".select-checkbox", function () {
+        var productId = $(this).data("id");
+
+        if ($(this).is(":checked")) {
+            selectedProductIds.push(productId);
+        } else {
+            var index = selectedProductIds.indexOf(productId);
+            if (index !== -1) {
+                selectedProductIds.splice(index, 1);
+            }
+        }
+    });
+
+    $("#btn-change-status-products").on("click", function () {
+        if (selectedProductIds.length == 0) {
+            Swal.fire({
+                title: "Error",
+                text: "No products selected, please try again",
+                icon: "error",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+        } else {
+            Swal.fire({
+                title: "Change Status?",
+                text: "Are you sure you want to change the status?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    handleStatusChange(selectedProductIds);
+                }
+            });
+        }
+    });
+
+    function handleStatusChange(listIds) {
+        var csrfToken = $('meta[name="csrf-token"]').attr("content");
+        showSpinner();
+        $.ajax({
+            url: "change-products-status",
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+            },
+            data: {
+                listIds: listIds,
+            },
+            success: function (response) {
+                if (response.success) {
+                    hideSpinner();
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success",
+                        text: response.message,
+                        showConfirmButton: false,
+                        timer: 1000,
+                    }).then(() => {
+                        var productTable = $("#productTable").DataTable();
+                        productTable.ajax.reload();
+                        selectedProductIds = [];
+                    });
+                }
+                console.log(response);
+            },
+            error: function (xhr, status, error) {
+                var errorMessage = "An unexpected error occurred";
+                if (xhr && xhr.responseJSON && xhr.responseJSON.error) {
+                    errorMessage = xhr.responseJSON.error;
+                } else {
+                    errorMessage = error;
+                    hideSpinner();
+                }
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: errorMessage,
+                });
+            },
+        });
     }
 });

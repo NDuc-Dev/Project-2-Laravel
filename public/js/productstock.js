@@ -96,7 +96,7 @@ $(document).ready(function () {
             },
             success: function (response) {
                 if (response.success) {
-                    // hideSpinner();
+                    hideSpinner();
                     Swal.fire({
                         icon: "success",
                         title: "Success",

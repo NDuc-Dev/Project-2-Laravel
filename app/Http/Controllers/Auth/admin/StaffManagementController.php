@@ -172,4 +172,23 @@ class StaffManagementController extends Controller
             return response()->json(['success' => false, 'error' => 'An error occurred while resetting password.'], 500);
         }
     }
+
+    public function changeStatusListStaffs(Request $request)
+    {
+        $userIds = $request->input('listIds');
+        if ($userIds) {
+            foreach ($userIds as $userId) {
+                $user = Users::find($userId);
+
+                if ($user) {
+                    $user->status = ($user->status == 1) ? 0 : 1;
+                    $user->save();
+                }
+            }
+
+            return response()->json(['success' => true, 'message' => 'Staff statuses updated successfully']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'No product IDs provided']);
+    }
 }

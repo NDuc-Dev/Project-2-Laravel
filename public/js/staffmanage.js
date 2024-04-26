@@ -209,6 +209,20 @@ $(document).ready(function () {
         autoWidth: true,
         responsive: true,
         columns: [
+            {
+                data: null,
+                title: "Select",
+                render: function (data, type, row) {
+                    return (
+                        '<input type="checkbox" class="select-checkbox" data-id="' +
+                        row.user_id +
+                        '">'
+                    );
+                },
+                orderable: false,
+                searchable: false,
+                width: "10px",
+            },
             { data: "user_id", title: "ID" },
             { data: "name", title: "Name" },
             { data: "role", title: "Role" },
@@ -237,6 +251,8 @@ $(document).ready(function () {
                         '">Change Status</button>'
                     );
                 },
+                orderable: false,
+                searchable: false,
             },
         ],
     });
@@ -332,6 +348,93 @@ $(document).ready(function () {
                         text: errorMessage,
                     });
                 }
+            },
+        });
+    }
+
+    var selectedStaffIds = [];
+
+    $(document).on("change", ".select-checkbox", function () {
+        var StaffId = $(this).data("id");
+
+        if ($(this).is(":checked")) {
+            selectedStaffIds.push(StaffId);
+        } else {
+            var index = selectedStaffIds.indexOf(StaffId);
+            if (index !== -1) {
+                selectedStaffIds.splice(index, 1);
+            }
+        }
+        console.log("Selected IDs:", selectedStaffIds);
+    });
+
+    $("#btn-change-status-staffs").on("click", function () {
+        if (selectedStaffIds.length == 0) {
+            Swal.fire({
+                title: "Error",
+                text: "No staffs selected, please try again",
+                icon: "error",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+        } else {
+            Swal.fire({
+                title: "Change Status?",
+                text: "Are you sure you want to change the status?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    handleStatusChange(selectedStaffIds);
+                }
+            });
+        }
+    });
+
+    function handleStatusChange(listIds) {
+        var csrfToken = $('meta[name="csrf-token"]').attr("content");
+        showSpinner();
+        $.ajax({
+            url: "change-staffs-status",
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+            },
+            data: {
+                listIds: listIds,
+            },
+            success: function (response) {
+                if (response.success) {
+                    hideSpinner();
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success",
+                        text: response.message,
+                        showConfirmButton: false,
+                        timer: 1000,
+                    }).then(() => {
+                        var productTable = $("#staffTable").DataTable();
+                        productTable.ajax.reload();
+                        selectedProductIds = [];
+                    });
+                }
+                console.log(response);
+            },
+            error: function (xhr, status, error) {
+                var errorMessage = "An unexpected error occurred";
+                if (xhr && xhr.responseJSON && xhr.responseJSON.error) {
+                    errorMessage = xhr.responseJSON.error;
+                } else {
+                    errorMessage = error;
+                    hideSpinner();
+                }
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: errorMessage,
+                });
             },
         });
     }

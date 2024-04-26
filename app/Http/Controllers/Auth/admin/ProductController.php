@@ -23,7 +23,7 @@ class ProductController extends Controller
     {
         $dataGroupCategory = GroupCategory::all();
         $dataCategory = Categories::all();
-        return view('auth.admin.products.productmanage', compact( 'dataGroupCategory', 'dataCategory'));
+        return view('auth.admin.products.productmanage', compact('dataGroupCategory', 'dataCategory'));
     }
 
     public function getDataProduct()
@@ -245,5 +245,24 @@ class ProductController extends Controller
             DB::rollback();
             return response()->json(['success' => false, 'message' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500);
         }
+    }
+
+    public function changeStatusListProducts(Request $request)
+    {
+        $productIds = $request->input('listIds');
+        if ($productIds) {
+            foreach ($productIds as $productId) {
+                $product = Products::find($productId);
+
+                if ($product) {
+                    $product->status = ($product->status == 1) ? 0 : 1;
+                    $product->save();
+                }
+            }
+
+            return response()->json(['success' => true, 'message' => 'Product statuses updated successfully']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'No product IDs provided']);
     }
 }

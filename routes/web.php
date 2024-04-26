@@ -97,6 +97,7 @@ Route::POST('/update-user-info', [ManageGuestInfoController::class,'updateUserIn
 
 
 Route::GROUP(['middleware' => 'isAdmin', 'prefix' => 'manage'], function () {
+
     Route::GET('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::GET('/daily-income-calc', [DashboardController::class, 'calculateRevenueGrowth']);
@@ -123,6 +124,8 @@ Route::GROUP(['middleware' => 'isAdmin', 'prefix' => 'manage'], function () {
         Route::PUT('/put-update-staff-{id}', [StaffManagementController::class, 'putUpdateStaff'])->name('admin.putUpdateStaff');
 
         Route::MATCH(['GET', 'POST'], '/change-status-{id}', [StaffManagementController::class, 'changeStatus'])->name('admin.changeStatus');
+
+        Route::POST('/change-staffs-status', [StaffManagementController::class, 'changeStatusListStaffs'])->name('admin.changeStatusListStaffs');
     });
 
     Route::GROUP(['prefix' => 'products'], function () {
@@ -134,6 +137,8 @@ Route::GROUP(['middleware' => 'isAdmin', 'prefix' => 'manage'], function () {
         Route::POST('/create-product', [ProductController::class, 'createProducts'])->name('admin.createProduct');
 
         Route::POST('/change-status-{id}', [ProductController::class, 'changeStatus'])->name('admin.changeStatusProduct');
+
+        Route::POST('/change-products-status', [ProductController::class, 'changeStatusListProducts'])->name('admin.changeStatusListProducts');
 
         Route::GET('/update-product-{id}', [ProductController::class, 'getUpdateProduct'])->name('admin.getupdateProduct');
 
