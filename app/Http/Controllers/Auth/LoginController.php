@@ -59,7 +59,7 @@ class LoginController extends Controller
             $user = Users::where('user_name', $credentials['user_name'])->first();
             if (!$user || !Auth::attempt($credentials) ) {
                 return response()->json(['success' => false, 'message' => "Invalid User Name or Password, Please re-enter"]);
-            } else if ($user->status == 0) {
+            } else if ($user->status == 0 && $user->role == 'guest') {
                 Auth::logout();
                 $user->token =  Str::random(20, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
                 $user->save();
@@ -68,6 +68,9 @@ class LoginController extends Controller
                     $email->to($user->email, $user->name);
                 });
                 return response()->json(['success' => false, 'message' => "Your Account is not actived, please check email to active account"]);
+            } else if ($user->status == 0 && $user->role == 'seller'|| $user->status == 0 && $user->role == 'bartender') {
+                Auth::logout();
+                return response()->json(['success' => false, 'message' => "Your account has not been activated yet. Please contact the administrator to activate your account."]);
             } else if (Auth::attempt($credentials)) {
                 $userId = Auth::id();
                 session(["user_cart_$userId" => []]);
