@@ -96,7 +96,6 @@ $(document).ready(function () {
             },
             success: function (response) {
                 if (response.success) {
-                    hideSpinner();
                     Swal.fire({
                         icon: "success",
                         title: "Success",
@@ -115,7 +114,6 @@ $(document).ready(function () {
                     errorMessage = xhr.responseJSON.error;
                 } else {
                     errorMessage = error;
-                    hideSpinner();
                 }
                 Swal.fire({
                     icon: "error",
