@@ -115,7 +115,7 @@ Route::GROUP(['middleware' => 'isAdmin', 'prefix' => 'manage'], function () {
 
         Route::POST('/check-dupplicate-info', [StaffManagementController::class, 'checkExistInfo'])->name('admin.checkExistInfo');
 
-        Route::POST('/reset-password-{id}', [StaffManagementController::class, 'resetPassword'])->name('admin.resetPassword');
+        Route::POST('/reset-password-{id}', [StaffManagementController::class, 'postforgotPass'])->name('admin.resetPassword');
 
         Route::POST('/post-create-staff-account', [StaffManagementController::class, 'createStaff'])->name('admin.postCreateStaffs');
 

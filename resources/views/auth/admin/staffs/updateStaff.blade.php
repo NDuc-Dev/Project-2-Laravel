@@ -42,18 +42,6 @@
                                     <input type="text" disabled class="form-control" id="user_name" name="user_name"
                                         value="{{ $user->user_name }}" placeholder="User Name">
                                 </div>
-                                {{-- <div class="form-group">
-                                        <label>File upload</label>
-                                        <input type="file" name="img[]" class="file-upload-default">
-                                        <div class="input-group col-xs-12">
-                                            <input type="text" class="form-control file-upload-info" disabled
-                                                placeholder="Upload Image">
-                                            <span class="input-group-append">
-                                                <button class="file-upload-browse btn btn-primary"
-                                                    type="button">Upload</button>
-                                            </span>
-                                        </div>
-                                    </div> --}}
                                 <div class="form-group">
                                     <label for="role"
                                         class="col-md-4 col-form-label text-md-start">{{ __('Role') }}</label>
@@ -62,11 +50,12 @@
                                         <option value="bartender" {{ $user->role == 'bartender' ? 'selected' : '' }}>
                                             Bartender
                                         </option>
-                                        <option value="saler" {{ $user->role == 'saler' ? 'selected' : '' }}>Seller
+                                        <option value="saler" {{ $user->role == 'seller' ? 'selected' : '' }}>Seller
                                         </option>
                                     </select>
                                 </div>
                                 <button type="submit" class="btn btn-outline-primary me-2">Submit</button>
+                                <button type="button" class="btn btn-outline-light me-2 back-btn">Back</button>
                                 <button type="button" class="btn btn-outline-danger me-2 reset-password">Reset
                                     Password</button>
                             </form>

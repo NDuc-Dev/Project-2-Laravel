@@ -7,6 +7,7 @@ use App\Models\Users;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -151,8 +152,24 @@ class StaffManagementController extends Controller
         }
     }
 
+    public function postforgotPass($id)
+    {
+        $user = Users::find($id);
+        if ($user) {
+            $email = $user->email;
+            $user->token = Str::random(20, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
+            $user->save();
+            Mail::send('emails.forgot_password', compact('user'), function ($email) use ($user) {
+                $email->subject('NDC COFFEE - Confirm password change.');
+                $email->to($user->email, $user->name);
+            });
+            return response()->json(['success' => true, 'message' => 'Success, please request staff check email to reset password'], 200);
+        } else {
+            return response()->json(['success' => true, 'message' => 'Success, please check your email to reset password'], 200);
+        }
+    }
 
-    public function resetPassword(Request $request, $id)
+    public function resetPassword($id)
     {
         try {
             DB::beginTransaction();

@@ -59,7 +59,7 @@ class CheckOutController extends Controller
     public function changePaymentStatusFailed(Request $request)
     {
         $order = Orders::find($request->input('order_id'));
-        $order->status = -3;
+        $order->payment_status = -3;
         $order->save();
     }
 
@@ -355,12 +355,12 @@ class CheckOutController extends Controller
     {
         $order_id = $request->input('order_id');
         $order = Orders::find($order_id);
-        if ($order->guest_email != null) {
+        if ($order->guest_email != null && $order->guest_email != "") {
             $pdf_path = 'receipt/receipt_id_' . $order_id . '.pdf';
             $pdf_absolute_path = storage_path('app/public/' . $pdf_path);
             $name = explode("-", $order->delivery_address)[0];
             $guest_email = $order->guest_email;
-            if ($guest_email != null) {
+            if ($guest_email != null  && $order->guest_email != "") {
                 Mail::send('emails.receiptmail', compact('name'), function ($email) use ($name,  $pdf_absolute_path, $guest_email) {
                     $email->subject('Receipt Info');
                     $email->to($guest_email, $name);

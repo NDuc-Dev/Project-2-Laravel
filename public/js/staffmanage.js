@@ -417,7 +417,7 @@ $(document).ready(function () {
                     }).then(() => {
                         var productTable = $("#staffTable").DataTable();
                         productTable.ajax.reload();
-                        selectedProductIds = [];
+                        listIds.length = 0;
                     });
                 }
                 console.log(response);

@@ -6,7 +6,7 @@ $(document).ready(function () {
                 required: true,
                 minlength: 1,
                 regex: true,
-                minimumLetters: true
+                minimumLetters: true,
             },
             email: {
                 required: true,
@@ -18,31 +18,30 @@ $(document).ready(function () {
             },
             role: {
                 selectRequired: "--Choose a Role--",
-            }
+            },
         },
         messages: {
             name: {
                 required: "Please enter your name",
                 minlength: "Name must be at least 1 character",
                 regex: "Name cannot contain numbers and special characters",
-                minimumLetters: "Invalid name"
+                minimumLetters: "Invalid name",
             },
             email: {
                 required: "Please enter your email",
-                regexEmail: "Invalid Email"
+                regexEmail: "Invalid Email",
             },
             phone: {
                 required: "Please enter your phone number",
                 regexPhone: "Invalid Phone number",
             },
             role: {
-                selectRequired: "Please select a role for the user"
-            }
+                selectRequired: "Please select a role for the user",
+            },
         },
         errorPlacement: function (error, element) {
             error.insertAfter(element);
-            element.next().addClass(
-                "error text-danger py-2");
+            element.next().addClass("error text-danger py-2");
         },
         success: function (label, element) {
             $(element).next().remove();
@@ -56,51 +55,48 @@ $(document).ready(function () {
                 if (Update) {
                     var formData = $(form).serialize();
                     $.ajax({
-                        type: 'PUT',
-                        url: $(form).attr('action'), 
+                        type: "PUT",
+                        url: $(form).attr("action"),
                         data: formData,
-                        dataType: 'json',
-                        success: function(response) {
-                            if(response.success)
-                            {
+                        dataType: "json",
+                        success: function (response) {
+                            if (response.success) {
                                 Swal.fire({
-                                    title: 'Success',
+                                    title: "Success",
                                     text: response.message,
-                                    icon: 'success',
+                                    icon: "success",
                                     showConfirmButton: false,
-                                    timer: 1500
+                                    timer: 1500,
                                 }).then(() => {
-                                    window.location.href = '/manage/staffs/staff-management';
+                                    window.location.href =
+                                        "/manage/staffs/staff-management";
                                 });
-                            }
-                            else{
+                            } else {
                                 Swal.fire({
-                                    title: 'Error',
+                                    title: "Error",
                                     text: response.message,
-                                    icon: 'error',
+                                    icon: "error",
                                     showConfirmButton: false,
-                                    timer: 2000
+                                    timer: 2000,
                                 });
                             }
                         },
-                        error: function(xhr, status, error) {
+                        error: function (xhr, status, error) {
                             // Xử lý lỗi
                             Swal.fire({
-                                title: 'Error',
-                                text: 'An error occurred while updating staff information!',
-                                icon: 'error'
+                                title: "Error",
+                                text: "An error occurred while updating staff information!",
+                                icon: "error",
                             });
-                        }
+                        },
                     });
                 } else {
-
                 }
             });
-        }
+        },
     });
 
-
-    $('#form-validate').submit(function (event) {
+    $("#form-validate").submit(function (event) {
         if (!$(this).valid()) {
             Swal.fire({
                 icon: "error",
@@ -126,7 +122,7 @@ $(document).ready(function () {
         return /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/.test(value);
     });
 
-    //phone 
+    //phone
     $.validator.addMethod("regexPhone", function (value, element) {
         return /(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/.test(value);
     });
@@ -136,16 +132,15 @@ $(document).ready(function () {
         return arg !== value;
     });
 
-
-    $('form').on('click', '.reset-password', function () {
+    $("form").on("click", ".reset-password", function () {
         var userId = document.getElementById("user_id").value;
         Swal.fire({
-            title: 'Reset password ?',
-            text: 'Are you sure you want to reset password?',
-            icon: 'question',
+            title: "Reset password ?",
+            text: "Are you sure you want to reset password?",
+            icon: "question",
             showCancelButton: true,
-            confirmButtonText: 'Yes',
-            cancelButtonText: 'No'
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
         }).then((result) => {
             if (result.isConfirmed) {
                 handleUpdateClickResetPassword(userId);
@@ -153,24 +148,27 @@ $(document).ready(function () {
         });
     });
 
+    $("form").on("click", ".back-btn", function () {
+        window.location.href="staff-management";
+    });
+
     function handleUpdateClickResetPassword(userId) {
-        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+        var csrfToken = $('meta[name="csrf-token"]').attr("content");
         showSpinner();
         $.ajax({
-            url: '/manage/staffs/reset-password-' + userId,
-            method: 'POST',
+            url: "/manage/staffs/reset-password-" + userId,
+            method: "POST",
             headers: {
-                'X-CSRF-TOKEN': csrfToken,
+                "X-CSRF-TOKEN": csrfToken,
             },
             success: function (response) {
                 if (response.success) {
                     hideSpinner();
                     Swal.fire({
-                        icon: 'success',
-                        title: 'Change Password Success',
-                        text: 'Your new password is ' + response.newPassword
+                        icon: "success",
+                        title: "Success",
+                        text: response.message,
                     });
-
                 }
             },
             error: function (xhr, status, error) {
@@ -182,22 +180,20 @@ $(document).ready(function () {
                     hideSpinner();
                 }
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: errorMessage
+                    icon: "error",
+                    title: "Error",
+                    text: errorMessage,
                 });
-            }
+            },
         });
-
     }
 
     function showSpinner() {
-        $('#container-spinner').removeClass('d-none');
+        $("#container-spinner").removeClass("d-none");
     }
 
     // Ẩn spinner
     function hideSpinner() {
-        $('#container-spinner').addClass('d-none');
+        $("#container-spinner").addClass("d-none");
     }
 });
-

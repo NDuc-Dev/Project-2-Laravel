@@ -132,7 +132,11 @@ $(document).ready(function () {
 
     //email
     $.validator.addMethod("regexEmail", function (value, element) {
-        return /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/.test(value);
+        // Check chỉ khi input không rỗng
+        if (value.trim() !== "") {
+            return /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/.test(value);
+        }
+        return true; // Không kiểm tra nếu input rỗng
     });
 
     //phone
