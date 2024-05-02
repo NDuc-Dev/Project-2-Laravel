@@ -621,127 +621,130 @@ $(document).ready(function () {
         formattedTime = "";
     }
 
-    var orderReady = $("#orderReadyTable").DataTable({
-        ajax: {
-            url: "get-data-order-ready",
-            dataSrc: "data",
-        },
-        ordering: false,
-        paging: true,
-        lengthChange: false,
-        responsive: true,
-        limit: 10,
-        searching: true,
-        autoWidth: true,
-        responsive: true,
-        columns: [
-            { data: "order_id", title: "ID" },
-            {
-                data: "order_type",
-                title: "Type",
-                render: function (data, type, row) {
-                    return parseInt(data) === 1
-                        ? '<div class="text-info py-1">Direct</div>'
-                        : '<div class="text-success py-1">Online</div>';
-                },
+    var orderReady = $("#orderReadyTable")
+        .DataTable({
+            ajax: {
+                url: "get-data-order-ready",
+                dataSrc: "data",
             },
-            { data: "order_date", title: "Order Date" },
-            { data: "table_id", title: "Order Table" },
-            {
-                data: "order_type",
-                title: "Actions",
-                render: function (data, type, row) {
-                    if (data == 1) {
-                        return (
-                            '<button class="btn btn-outline-success btn-sm py-1" id="complete-btn" data-id="' +
-                            row.order_id +
-                            '">Complete Order</button>'
-                        );
-                    } else if (data == 0) {
-                        return (
-                            '<button class="btn btn-outline-warning btn-sm py-1" id="delivery-btn" data-id="' +
-                            row.order_id +
-                            '">Delivery</button>'
-                        );
-                    }
+            ordering: false,
+            paging: true,
+            lengthChange: false,
+            responsive: true,
+            limit: 10,
+            searching: true,
+            autoWidth: true,
+            responsive: true,
+            columns: [
+                { data: "order_id", title: "ID" },
+                {
+                    data: "order_type",
+                    title: "Type",
+                    render: function (data, type, row) {
+                        return parseInt(data) === 1
+                            ? '<div class="text-info py-1">Direct</div>'
+                            : '<div class="text-success py-1">Online</div>';
+                    },
                 },
-            },
-        ],
-    }).on('draw.dt', function() {
-        updateReadyOrderCount();
-    });
+                { data: "order_date", title: "Order Date" },
+                { data: "table_id", title: "Order Table" },
+                {
+                    data: "order_type",
+                    title: "Actions",
+                    render: function (data, type, row) {
+                        if (data == 1) {
+                            return (
+                                '<button class="btn btn-outline-success btn-sm py-1" id="complete-btn" data-id="' +
+                                row.order_id +
+                                '">Complete Order</button>'
+                            );
+                        } else if (data == 0) {
+                            return (
+                                '<button class="btn btn-outline-warning btn-sm py-1" id="delivery-btn" data-id="' +
+                                row.order_id +
+                                '">Delivery</button>'
+                            );
+                        }
+                    },
+                },
+            ],
+        })
+        .on("draw.dt", function () {
+            updateReadyOrderCount();
+        });
 
     function updateReadyOrderCount() {
         // Lấy bảng DataTable của tab "Ready"
-        var readyTable = $('#orderReadyTable').DataTable();
-    
+        var readyTable = $("#orderReadyTable").DataTable();
+
         // Sử dụng Ajax của DataTable để lấy số lượng order
         $.ajax({
             url: readyTable.ajax.url(), // Lấy URL của yêu cầu Ajax của DataTable
-            method: 'GET',
-            dataType: 'json',
-            success: function(data) {
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
                 var orderCount = data.data.length; // Đếm số lượng order từ dữ liệu mới
                 console.log(orderCount);
-                $('#order-ready-tab-num').text(orderCount); // Cập nhật số lượng vào thẻ "num" của tab "Ready"
-            }
+                $("#order-ready-tab-num").text(orderCount); // Cập nhật số lượng vào thẻ "num" của tab "Ready"
+            },
         });
     }
 
-
-    var orderDeli = $("#orderDelivery").DataTable({
-        ajax: {
-            url: "get-data-order-delivering",
-            dataSrc: "data",
-        },
-        ordering: false,
-        paging: true,
-        lengthChange: false,
-        limit: 10,
-        responsive: true,
-        searching: true,
-        autoWidth: true,
-        responsive: true,
-        columns: [
-            { data: "order_id", title: "ID" },
-            {
-                data: "order_type",
-                title: "Type",
-                render: function (data, type, row) {
-                    return parseInt(data) === 1
-                        ? '<div class="text-info py-1">Direct</div>'
-                        : '<div class="text-success py-1">Online</div>';
-                },
+    var orderDeli = $("#orderDelivery")
+        .DataTable({
+            ajax: {
+                url: "get-data-order-delivering",
+                dataSrc: "data",
             },
-            { data: "delivery_code", title: "Delivery Code" },
-            {
-                data: "null",
-                title: "Actions",
-                render: function (data, type, row) {
-                    return (
-                        '<button class="btn btn-outline-success btn-sm-btn py-1" id="complete-deli" data-id="' +
-                        row.order_id +
-                        '">Complete Order</button>'
-                    );
+            ordering: false,
+            paging: true,
+            lengthChange: false,
+            limit: 10,
+            responsive: true,
+            searching: true,
+            autoWidth: true,
+            responsive: true,
+            columns: [
+                { data: "order_id", title: "ID" },
+                {
+                    data: "order_type",
+                    title: "Type",
+                    render: function (data, type, row) {
+                        return parseInt(data) === 1
+                            ? '<div class="text-info py-1">Direct</div>'
+                            : '<div class="text-success py-1">Online</div>';
+                    },
                 },
-            },
-        ],
-    }).on('draw.dt', function() {
-        updateDeliOrderCount();
-    });
+                { data: "delivery_code", title: "Delivery Code" },
+                {
+                    data: "null",
+                    title: "Actions",
+                    render: function (data, type, row) {
+                        return (
+                            '<button class="btn btn-outline-success btn-sm-btn py-1" id="complete-deli" data-id="' +
+                            row.order_id +
+                            '">Complete Order</button>'
+                        );
+                    },
+                },
+            ],
+        })
+        .on("draw.dt", function () {
+            updateDeliOrderCount();
+        });
 
     function updateDeliOrderCount() {
-        var readyTable = $('#orderDelivery').DataTable();
-    
+        var readyTable = $("#orderDelivery").DataTable();
+
         $.ajax({
-            url: readyTable.ajax.url(), 
-            method: 'GET',
-            dataType: 'json',
-            success: function(data) {
-                var orderCount = data.data.length; 
+            url: readyTable.ajax.url(),
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                var orderCount = data.data.length;
                 console.log(orderCount);
-                $('#delivery-order-tab-num').text(orderCount); 
-            }
+                $("#delivery-order-tab-num").text(orderCount);
+            },
         });
     }
 
@@ -772,7 +775,6 @@ $(document).ready(function () {
             },
         });
     });
-
 
     $("#orderReadyTable").on("click", "#delivery-btn", function () {
         var orderId = $(this).data("id");
@@ -817,7 +819,6 @@ $(document).ready(function () {
         });
     });
 
-
     $("#orderDelivery").on("click", "#complete-deli", function () {
         var orderId = $(this).data("id");
         $.ajax({
@@ -845,63 +846,64 @@ $(document).ready(function () {
         });
     });
 
-    var ordersErr = $("#orderError").DataTable({
-        ajax: {
-            url: "get-data-order-error",
-            dataSrc: "data",
-        },
-        ordering: false,
-        paging: true,
-        lengthChange: false,
-        responsive: true,
-        limit: 10,
-        searching: true,
-        autoWidth: true,
-        responsive: true,
-        columns: [
-            { data: "order_id", title: "ID" },
-            {
-                data: "order_type",
-                title: "Type",
-                render: function (data, type, row) {
-                    return parseInt(data) === 1
-                        ? '<div class="text-info py-1">Direct</div>'
-                        : '<div class="text-success py-1">Online</div>';
-                },
+    var ordersErr = $("#orderError")
+        .DataTable({
+            ajax: {
+                url: "get-data-order-error",
+                dataSrc: "data",
             },
-            { data: "order_date", title: "Order Date" },
-            { data: "table_id", title: "Order Table" },
-            {
-                data: null,
-                title: "Actions",
-                render: function (data, type, row) {
-                    return (
-                        '<button class="btn btn-outline-danger btn-sm py-1" id="handle-btn" data-id="' +
-                        row.order_id +
-                        '">Handle</button>'
-                    );
+            ordering: false,
+            paging: true,
+            lengthChange: false,
+            responsive: true,
+            limit: 10,
+            searching: true,
+            autoWidth: true,
+            responsive: true,
+            columns: [
+                { data: "order_id", title: "ID" },
+                {
+                    data: "order_type",
+                    title: "Type",
+                    render: function (data, type, row) {
+                        return parseInt(data) === 1
+                            ? '<div class="text-info py-1">Direct</div>'
+                            : '<div class="text-success py-1">Online</div>';
+                    },
                 },
-            },
-        ],
-    }).on('draw.dt', function() {
-        updateErrorOrderCount();
-    });
-
+                { data: "order_date", title: "Order Date" },
+                { data: "table_id", title: "Order Table" },
+                {
+                    data: null,
+                    title: "Actions",
+                    render: function (data, type, row) {
+                        return (
+                            '<button class="btn btn-outline-danger btn-sm py-1" id="handle-btn" data-id="' +
+                            row.order_id +
+                            '">Handle</button>'
+                        );
+                    },
+                },
+            ],
+        })
+        .on("draw.dt", function () {
+            updateErrorOrderCount();
+        });
 
     function updateErrorOrderCount() {
         // Lấy bảng DataTable của tab "Ready"
-        var readyTable = $('#orderError').DataTable();
-    
+        var readyTable = $("#orderError").DataTable();
+
         // Sử dụng Ajax của DataTable để lấy số lượng order
         $.ajax({
             url: readyTable.ajax.url(), // Lấy URL của yêu cầu Ajax của DataTable
-            method: 'GET',
-            dataType: 'json',
-            success: function(data) {
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
                 var orderCount = data.data.length; // Đếm số lượng order từ dữ liệu mới
                 console.log(orderCount);
-                $('#error-order-tab-num').text(orderCount); // Cập nhật số lượng vào thẻ "num" của tab "Ready"
-            }
+                $("#error-order-tab-num").text(orderCount); // Cập nhật số lượng vào thẻ "num" của tab "Ready"
+            },
         });
     }
 
@@ -1262,90 +1264,105 @@ $(document).ready(function () {
     });
 
     $("#order-error").on("click", "#update-order-btn", function () {
-        const hasOutOfStockProduct = dataOrdersErr.some(
-            (product) => product.out_of_stock
-        );
-        if (hasOutOfStockProduct) {
+        if (dataOrdersErr.length == 0) {
             Swal.fire({
                 title: "Error",
                 icon: "error",
-                text: "Please remove out-of-stock products before updating",
+                text: "There must be at least one product in the order",
                 showConfirmButton: false,
                 timer: 2500,
             });
         } else {
-            Swal.fire({
-                title: "Update",
-                icon: "question",
-                text: "Do you want to update order ?",
-                showCancelButton: true,
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    var csrfToken = $('meta[name="csrf-token"]').attr(
-                        "content"
-                    );
-                    var order_id = $("#order-code-err").text();
-                    $.ajax({
-                        url: "update-order",
-                        method: "POST",
-                        headers: {
-                            "X-CSRF-TOKEN": csrfToken,
-                        },
-                        data: {
-                            order_id: order_id,
-                            products: dataOrdersErr,
-                        },
-                        success: function (response) {
-                            if (response.success) {
-                                curent_total = response.total_amount;
-                                last_total = response.last_total;
-                                Swal.fire({
-                                    title: "Success",
-                                    icon: "success",
-                                    text: "Update Order Successfully !",
-                                    showConfirmButton: false,
-                                    timer: 1000,
-                                }).then(() => {
-                                    if (curent_total >= last_total) {
-                                        Swal.fire({
-                                            title: "Additional charge",
-                                            icon: "info",
-                                            text:
-                                                "Additional charge from customer " +
-                                                (curent_total - last_total) +
-                                                " VND",
-                                            showConfirmButton: true,
-                                        }).then(() => {
-                                            var orderErrorTable =
-                                                $("#orderError").DataTable();
-                                            orderErrorTable.ajax.reload();
-                                            removeDataProductTableErr();
-                                        });
-                                    } else {
-                                        Swal.fire({
-                                            title: "Return",
-                                            icon: "info",
-                                            text:
-                                                "Return the customer " +
-                                                (last_total - curent_total) +
-                                                " VND",
-                                            showConfirmButton: true,
-                                        }).then(() => {
-                                            var orderErrorTable =
-                                                $("#orderError").DataTable();
-                                            orderErrorTable.ajax.reload();
-                                            removeDataProductTableErr();
-                                        });
-                                    }
-                                });
-                            }
-                        },
-                    });
-                }
-            });
+            const hasOutOfStockProduct = dataOrdersErr.some(
+                (product) => product.out_of_stock
+            );
+            if (hasOutOfStockProduct) {
+                Swal.fire({
+                    title: "Error",
+                    icon: "error",
+                    text: "Please remove out-of-stock products before updating",
+                    showConfirmButton: false,
+                    timer: 2500,
+                });
+            } else {
+                Swal.fire({
+                    title: "Update",
+                    icon: "question",
+                    text: "Do you want to update order ?",
+                    showCancelButton: true,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var csrfToken = $('meta[name="csrf-token"]').attr(
+                            "content"
+                        );
+                        var order_id = $("#order-code-err").text();
+                        $.ajax({
+                            url: "update-order",
+                            method: "POST",
+                            headers: {
+                                "X-CSRF-TOKEN": csrfToken,
+                            },
+                            data: {
+                                order_id: order_id,
+                                products: dataOrdersErr,
+                            },
+                            success: function (response) {
+                                if (response.success) {
+                                    curent_total = response.total_amount;
+                                    last_total = response.last_total;
+                                    Swal.fire({
+                                        title: "Success",
+                                        icon: "success",
+                                        text: "Update Order Successfully !",
+                                        showConfirmButton: false,
+                                        timer: 1000,
+                                    }).then(() => {
+                                        if (curent_total >= last_total) {
+                                            Swal.fire({
+                                                title: "Additional charge",
+                                                icon: "info",
+                                                text:
+                                                    "Additional charge from customer " +
+                                                    (curent_total -
+                                                        last_total) +
+                                                    " VND",
+                                                showConfirmButton: true,
+                                            }).then(() => {
+                                                var orderErrorTable =
+                                                    $(
+                                                        "#orderError"
+                                                    ).DataTable();
+                                                orderErrorTable.ajax.reload();
+                                                removeDataProductTableErr();
+                                            });
+                                        } else {
+                                            Swal.fire({
+                                                title: "Return",
+                                                icon: "info",
+                                                text:
+                                                    "Return the customer " +
+                                                    (last_total -
+                                                        curent_total) +
+                                                    " VND",
+                                                showConfirmButton: true,
+                                            }).then(() => {
+                                                var orderErrorTable =
+                                                    $(
+                                                        "#orderError"
+                                                    ).DataTable();
+                                                orderErrorTable.ajax.reload();
+                                                removeDataProductTableErr();
+                                            });
+                                        }
+                                    });
+                                }
+                            },
+                        });
+                    }
+                });
+            }
         }
     });
-
 
     setInterval(function () {
         orderReady.ajax.reload();
@@ -1355,4 +1372,3 @@ $(document).ready(function () {
         ordersErr.ajax.reload();
     }, 10000);
 });
-    
